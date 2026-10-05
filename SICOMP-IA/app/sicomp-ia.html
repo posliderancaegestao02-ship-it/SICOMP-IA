@@ -197,24 +197,24 @@
    priorização, alertas) roda de verdade em cima do estado abaixo.
    ========================================================================= */
 
-const PERFIS = ["Administrador geral","Autoridade competente","Unidade de planejamento","Setor de compras e licitações","Unidade demandante","Gestor e fiscal de contrato","Almoxarifado","Setor financeiro e orçamentário","Assessoria jurídica","Auditoria e controle interno","Usuário de consulta"];
+const PERFIS = ["Área Demandante","Gerência de Planejamento","Gerência de Compras Governamentais","Gerência de Execução Financeira e Orçamentária","Gestor do Contrato","Setorial Jurídica","Almoxarifado","Auditoria e Controle Interno"];
 
 const NAV = [
   {grp:"Visão geral"},
   {key:"painel", label:"Painel geral", perfis: PERFIS},
   {key:"alertas", label:"Central de alertas", perfis: PERFIS},
   {grp:"Demandas e planejamento"},
-  {key:"demandas", label:"Demandas", perfis:["Administrador geral","Autoridade competente","Unidade de planejamento","Setor de compras e licitações","Unidade demandante","Gestor e fiscal de contrato","Auditoria e controle interno","Usuário de consulta"]},
-  {key:"planejamento", label:"Planejamento anual", perfis:["Administrador geral","Autoridade competente","Unidade de planejamento","Setor de compras e licitações","Setor financeiro e orçamentário","Auditoria e controle interno","Usuário de consulta"]},
+  {key:"demandas", label:"Demandas", perfis:["Área Demandante","Gerência de Planejamento","Gerência de Compras Governamentais","Gestor do Contrato","Auditoria e Controle Interno"]},
+  {key:"planejamento", label:"Planejamento anual", perfis:["Gerência de Planejamento","Gerência de Compras Governamentais","Gerência de Execução Financeira e Orçamentária","Auditoria e Controle Interno"]},
   {grp:"Execução"},
-  {key:"processos", label:"Processos de contratação", perfis:["Administrador geral","Autoridade competente","Unidade de planejamento","Setor de compras e licitações","Unidade demandante","Gestor e fiscal de contrato","Assessoria jurídica","Setor financeiro e orçamentário","Auditoria e controle interno","Usuário de consulta"]},
-  {key:"estoque", label:"Estoque", perfis:["Administrador geral","Almoxarifado","Unidade de planejamento","Setor de compras e licitações","Unidade demandante","Gestor e fiscal de contrato","Auditoria e controle interno","Usuário de consulta"]},
-  {key:"contratos", label:"Contratos e atas", perfis:["Administrador geral","Autoridade competente","Unidade de planejamento","Setor de compras e licitações","Gestor e fiscal de contrato","Almoxarifado","Setor financeiro e orçamentário","Assessoria jurídica","Auditoria e controle interno","Usuário de consulta"]},
+  {key:"processos", label:"Processos de contratação", perfis:["Área Demandante","Gerência de Planejamento","Gerência de Compras Governamentais","Gerência de Execução Financeira e Orçamentária","Gestor do Contrato","Setorial Jurídica","Auditoria e Controle Interno"]},
+  {key:"contratos", label:"Contratos e atas", perfis:["Área Demandante","Gerência de Planejamento","Gerência de Compras Governamentais","Gerência de Execução Financeira e Orçamentária","Gestor do Contrato","Setorial Jurídica","Almoxarifado","Auditoria e Controle Interno"]},
+  {key:"estoque", label:"Estoque", perfis:["Gerência de Planejamento","Gerência de Compras Governamentais","Gestor do Contrato","Almoxarifado","Auditoria e Controle Interno"]},
   {grp:"Inteligência"},
   {key:"assistente", label:"Assistente de IA", perfis: PERFIS},
-  {key:"relatorios", label:"Relatórios e indicadores", perfis:["Administrador geral","Autoridade competente","Unidade de planejamento","Auditoria e controle interno","Usuário de consulta"]},
+  {key:"relatorios", label:"Relatórios e indicadores", perfis:["Área Demandante","Gerência de Planejamento","Gerência de Execução Financeira e Orçamentária","Gestor do Contrato","Auditoria e Controle Interno"]},
   {grp:"Governança"},
-  {key:"admin", label:"Usuários e permissões", perfis:["Administrador geral","Auditoria e controle interno"]},
+  {key:"admin", label:"Perfis e auditoria", perfis:["Auditoria e Controle Interno"]},
 ];
 
 // ---------------------------------------------------------------------------
@@ -289,10 +289,10 @@ const DB = {
       faseAtualIdx:2, faseDeadline: iso(addDays(today,2)),
       fases:[
         {nome:"Demanda & instrução", etapas:[{n:"Registro da necessidade",r:"Batalhão de Choque",sit:"concluida"},{n:"Aprovação da demanda",r:"Ana Ferreira",sit:"concluida"}]},
-        {nome:"Pré-licitatório", etapas:[{n:"Estudo técnico preliminar",r:"Unidade de Planejamento",sit:"concluida"},{n:"Termo de referência",r:"Unidade de Planejamento",sit:"concluida"},{n:"Pesquisa de preços",r:"Compras",sit:"concluida"},{n:"Autorização",r:"Autoridade competente",sit:"concluida"}]},
-        {nome:"Licitação", etapas:[{n:"Publicação do edital",r:"Compras",sit:"concluida",data:"10/08"},{n:"Recebimento de propostas",r:"Compras",sit:"concluida",data:"22/08"},{n:"Julgamento",r:"Pregoeiro",sit:"concluida",data:"25/08"},{n:"Habilitação",r:"Pregoeiro",sit:"concluida",data:"29/08"},{n:"Prazo recursal",r:"Pregoeiro",sit:"critico",prazo:iso(addDays(today,2))},{n:"Homologação",r:"Autoridade competente",sit:"pendente"}]},
-        {nome:"Contratação", etapas:[{n:"Emissão de empenho",r:"Financeiro",sit:"pendente"},{n:"Formalização do contrato",r:"Compras",sit:"pendente"}]},
-        {nome:"Execução e encerramento", etapas:[{n:"Entrega",r:"Fornecedor",sit:"pendente"},{n:"Recebimento definitivo",r:"Gestor do contrato",sit:"pendente"},{n:"Entrada no estoque",r:"Almoxarifado",sit:"pendente"}]},
+        {nome:"Pré-licitatório", etapas:[{n:"Estudo técnico preliminar",r:"Gerência de Planejamento",sit:"concluida"},{n:"Termo de referência",r:"Gerência de Planejamento",sit:"concluida"},{n:"Pesquisa de preços",r:"Gerência de Compras",sit:"concluida"},{n:"Autorização",r:"Autoridade competente",sit:"concluida"}]},
+        {nome:"Licitação", etapas:[{n:"Publicação do edital",r:"Gerência de Compras",sit:"concluida",data:"10/08"},{n:"Recebimento de propostas",r:"Gerência de Compras",sit:"concluida",data:"22/08"},{n:"Julgamento",r:"Pregoeiro",sit:"concluida",data:"25/08"},{n:"Habilitação",r:"Pregoeiro",sit:"concluida",data:"29/08"},{n:"Prazo recursal",r:"Pregoeiro",sit:"critico",prazo:iso(addDays(today,2))},{n:"Homologação",r:"Autoridade competente",sit:"pendente"}]},
+        {nome:"Contratação", etapas:[{n:"Emissão de empenho",r:"Financeiro",sit:"pendente"},{n:"Formalização do contrato",r:"Gerência de Compras",sit:"pendente"}]},
+        {nome:"Execução e encerramento", etapas:[{n:"Entrega",r:"Fornecedor",sit:"pendente"},{n:"Recebimento definitivo",r:"Gestor do Contrato",sit:"pendente"},{n:"Entrada no estoque",r:"Almoxarifado",sit:"pendente"}]},
       ]
     },
     {
@@ -301,7 +301,7 @@ const DB = {
       faseAtualIdx:1, faseDeadline: iso(addDays(today,20)),
       fases:[
         {nome:"Demanda & instrução", etapas:[{n:"Registro da necessidade",r:"Coordenação de Infraestrutura",sit:"concluida"},{n:"Aprovação da demanda",r:"Autoridade competente",sit:"concluida"}]},
-        {nome:"Pré-licitatório", etapas:[{n:"Estudo técnico preliminar",r:"Unidade de Planejamento",sit:"concluida"},{n:"Termo de referência",r:"Unidade de Planejamento",sit:"em_andamento",prazo:iso(addDays(today,20))},{n:"Pesquisa de preços",r:"Compras",sit:"pendente"},{n:"Autorização",r:"Autoridade competente",sit:"pendente"}]},
+        {nome:"Pré-licitatório", etapas:[{n:"Estudo técnico preliminar",r:"Gerência de Planejamento",sit:"concluida"},{n:"Termo de referência",r:"Gerência de Planejamento",sit:"em_andamento",prazo:iso(addDays(today,20))},{n:"Pesquisa de preços",r:"Gerência de Compras",sit:"pendente"},{n:"Autorização",r:"Autoridade competente",sit:"pendente"}]},
         {nome:"Licitação", etapas:[]},
         {nome:"Contratação", etapas:[]},
         {nome:"Execução e encerramento", etapas:[]},
@@ -313,10 +313,10 @@ const DB = {
       faseAtualIdx:4, faseDeadline:null,
       fases:[
         {nome:"Demanda & instrução", etapas:[{n:"Registro da necessidade",r:"Frota SSP-GO",sit:"concluida"},{n:"Aprovação da demanda",r:"Autoridade competente",sit:"concluida"}]},
-        {nome:"Pré-licitatório", etapas:[{n:"Estudo técnico preliminar",r:"Unidade de Planejamento",sit:"concluida"},{n:"Autorização",r:"Autoridade competente",sit:"concluida"}]},
-        {nome:"Licitação", etapas:[{n:"Publicação do edital",r:"Compras",sit:"concluida"},{n:"Homologação",r:"Autoridade competente",sit:"concluida"}]},
-        {nome:"Contratação", etapas:[{n:"Formalização do contrato",r:"Compras",sit:"concluida"}]},
-        {nome:"Execução e encerramento", etapas:[{n:"Encerramento e avaliação",r:"Unidade de Planejamento",sit:"concluida"}]},
+        {nome:"Pré-licitatório", etapas:[{n:"Estudo técnico preliminar",r:"Gerência de Planejamento",sit:"concluida"},{n:"Autorização",r:"Autoridade competente",sit:"concluida"}]},
+        {nome:"Licitação", etapas:[{n:"Publicação do edital",r:"Gerência de Compras",sit:"concluida"},{n:"Homologação",r:"Autoridade competente",sit:"concluida"}]},
+        {nome:"Contratação", etapas:[{n:"Formalização do contrato",r:"Gerência de Compras",sit:"concluida"}]},
+        {nome:"Execução e encerramento", etapas:[{n:"Encerramento e avaliação",r:"Gerência de Planejamento",sit:"concluida"}]},
       ]
     },
   ],
@@ -331,17 +331,14 @@ const DB = {
     {contratoId:"c1", data: iso(addDays(today,-30)), nota:"regular", avaliador:"Carlos Souza", obs:"Lote com folhas manchadas em 2 caixas; contratada notificada."},
   ],
   usuarios: [
-    {id:"us1", nome:"Ana Ferreira", matricula:"GO-10234", perfil:"Gestor e fiscal de contrato", unidadeId:"u1"},
+    {id:"us1", nome:"Ana Ferreira", matricula:"GO-10234", perfil:"Gestor do Contrato", unidadeId:"u1"},
+    {id:"us5", nome:"Elisa Prado", matricula:"GO-10902", perfil:"Área Demandante", unidadeId:"u2"},
+    {id:"us3", nome:"Carla Nogueira", matricula:"GO-10456", perfil:"Gerência de Planejamento", unidadeId:"u8"},
+    {id:"us4", nome:"Diego Martins", matricula:"GO-10777", perfil:"Gerência de Compras Governamentais", unidadeId:"u8"},
+    {id:"us7", nome:"Gabriela Assis", matricula:"GO-10221", perfil:"Gerência de Execução Financeira e Orçamentária", unidadeId:"u1"},
+    {id:"us8", nome:"Heitor Vasconcelos", matricula:"GO-10689", perfil:"Setorial Jurídica", unidadeId:"u1"},
     {id:"us2", nome:"Bruno Lima", matricula:"GO-10891", perfil:"Almoxarifado", unidadeId:"u4"},
-    {id:"us3", nome:"Carla Nogueira", matricula:"GO-10456", perfil:"Unidade de planejamento", unidadeId:"u8"},
-    {id:"us4", nome:"Diego Martins", matricula:"GO-10777", perfil:"Setor de compras e licitações", unidadeId:"u8"},
-    {id:"us5", nome:"Elisa Prado", matricula:"GO-10902", perfil:"Unidade demandante", unidadeId:"u2"},
-    {id:"us6", nome:"Fábio Cardoso", matricula:"GO-10345", perfil:"Autoridade competente", unidadeId:"u8"},
-    {id:"us7", nome:"Gabriela Assis", matricula:"GO-10221", perfil:"Setor financeiro e orçamentário", unidadeId:"u1"},
-    {id:"us8", nome:"Heitor Vasconcelos", matricula:"GO-10689", perfil:"Assessoria jurídica", unidadeId:"u1"},
-    {id:"us9", nome:"Isabela Tavares", matricula:"GO-10333", perfil:"Auditoria e controle interno", unidadeId:"u1"},
-    {id:"us10", nome:"Admin do Sistema", matricula:"GO-00001", perfil:"Administrador geral", unidadeId:"u1"},
-    {id:"us11", nome:"Consulta Geral", matricula:"GO-00002", perfil:"Usuário de consulta", unidadeId:"u1"},
+    {id:"us9", nome:"Isabela Tavares", matricula:"GO-10333", perfil:"Auditoria e Controle Interno", unidadeId:"u1"},
   ],
   auditoria: [],
 };
@@ -516,6 +513,12 @@ function recommendedActions(){
 // ---------------------------------------------------------------------------
 function askAssistant(q){
   const ql = q.toLowerCase();
+  if(/prorrog|document|pend[eê]n|fazer agora|o que devo|fiscaliz|checklist|ct-\d|ata-\d/.test(ql)){
+    const c = contratoFromQuestion(ql);
+    const tipo = /prorrog/.test(ql) ? "prorrogar" : /document|pend[eê]n/.test(ql) ? "documentos" : "agora";
+    const r = adviceContrato(c, tipo);
+    return {...r, ans: (ql.includes(c.numero.toLowerCase())? "" : `Considerando o contrato mais crítico (${c.numero}): `) + r.ans};
+  }
   const found = DB.itens.find(it => ql.includes(it.descricao.toLowerCase().split(" ")[0]) || normTokens(it.descricao).some(t=>ql.includes(t)&&t.length>4));
 
   // 1) material suficiente / desabastecimento
@@ -599,10 +602,242 @@ function askAssistant(q){
 }
 
 // ---------------------------------------------------------------------------
+// MÓDULO GESTÃO DO CONTRATO (execução e fiscalização contratual)
+// ---------------------------------------------------------------------------
+const GESTAO = {
+  c1:{tipo:"continuo", tipoLabel:"Fornecimento contínuo", portaria:"Portaria nº 214/2025", previsaoProrrogacao:true,
+    equipe:{gestor:"Ana Ferreira", tecnico:"Bruno Lima", administrativo:"Gabriela Assis"},
+    checklist:[
+      {g:"Técnica", item:"Conferir as entregas do mês (quantidade e especificação)", prazo: iso(addDays(today,-3)), sit:"ok"},
+      {g:"Técnica", item:"Emitir termo de recebimento provisório do lote 09", prazo: iso(addDays(today,3)), sit:"pendente"},
+      {g:"Técnica", item:"Registrar ocorrências do período", prazo: iso(addDays(today,-1)), sit:"ok"},
+      {g:"Técnica", item:"Avaliar a qualidade do fornecedor (trimestral)", prazo: iso(addDays(today,17)), sit:"pendente"},
+      {g:"Administrativa", item:"Conferir certidões de regularidade fiscal e trabalhista", prazo: iso(addDays(today,-5)), sit:"atrasado"},
+      {g:"Administrativa", item:"Atestar a nota fiscal de agosto", prazo: iso(addDays(today,-8)), sit:"ok"},
+      {g:"Administrativa", item:"Verificar a renovação da garantia contratual", prazo: iso(addDays(today,10)), sit:"pendente"},
+      {g:"Administrativa", item:"Encaminhar a documentação para pagamento", prazo: iso(addDays(today,5)), sit:"pendente"},
+    ],
+    documentos:[
+      {doc:"Portaria de designação do gestor e dos fiscais", sit:"ok"},
+      {doc:"Relatório mensal de fiscalização (agosto)", sit:"ok"},
+      {doc:"Termo de recebimento provisório (lote 09)", sit:"pendente"},
+      {doc:"Certidão negativa de débitos trabalhistas", sit:"vencido"},
+      {doc:"Apólice de garantia contratual (renovação)", sit:"pendente"},
+    ],
+    prorrogacao:[
+      {req:"Previsão de prorrogação no edital e no contrato", ok:true},
+      {req:"Vigência total dentro do limite legal", ok:true},
+      {req:"Manifestação de interesse do fornecedor", ok:false},
+      {req:"Pesquisa de preços que demonstre vantajosidade", ok:false},
+      {req:"Avaliação de desempenho do fornecedor", ok:false, obs:"última avaliação: regular"},
+      {req:"Disponibilidade orçamentária", ok:false},
+      {req:"Parecer da Setorial Jurídica", ok:false},
+      {req:"Autorização da autoridade competente", ok:false},
+    ],
+    ocorrencias:[
+      {data: iso(addDays(today,-30)), desc:"Lote com folhas manchadas em 2 caixas.", prov:"Fornecedor notificado; substituição realizada em 5 dias."},
+      {data: iso(addDays(today,-75)), desc:"Atraso de 2 dias na entrega de julho.", prov:"Registro em ata de reunião; sem aplicação de sanção."},
+    ]},
+  c2:{tipo:"continuo", tipoLabel:"Serviço contínuo", portaria:"Portaria nº 088/2026", previsaoProrrogacao:true,
+    equipe:{gestor:"Ana Ferreira", tecnico:"Marcos Vidal", administrativo:"Gabriela Assis"},
+    checklist:[
+      {g:"Técnica", item:"Conferir as ordens de serviço executadas no mês", prazo: iso(addDays(today,-2)), sit:"ok"},
+      {g:"Técnica", item:"Vistoriar as viaturas com manutenção concluída", prazo: iso(addDays(today,6)), sit:"pendente"},
+      {g:"Técnica", item:"Registrar ocorrências do período", prazo: iso(addDays(today,-1)), sit:"ok"},
+      {g:"Administrativa", item:"Conferir certidões de regularidade fiscal e trabalhista", prazo: iso(addDays(today,-4)), sit:"ok"},
+      {g:"Administrativa", item:"Atestar a nota fiscal de agosto", prazo: iso(addDays(today,2)), sit:"pendente"},
+      {g:"Administrativa", item:"Conferir o recolhimento de encargos trabalhistas da contratada", prazo: iso(addDays(today,8)), sit:"pendente"},
+    ],
+    documentos:[
+      {doc:"Portaria de designação do gestor e dos fiscais", sit:"ok"},
+      {doc:"Relatório mensal de fiscalização (agosto)", sit:"ok"},
+      {doc:"Comprovantes de encargos trabalhistas (agosto)", sit:"pendente"},
+    ],
+    prorrogacao:[
+      {req:"Previsão de prorrogação no edital e no contrato", ok:true},
+      {req:"Vigência total dentro do limite legal", ok:true},
+      {req:"Manifestação de interesse do fornecedor", ok:false},
+      {req:"Pesquisa de preços que demonstre vantajosidade", ok:false},
+      {req:"Parecer da Setorial Jurídica", ok:false},
+      {req:"Autorização da autoridade competente", ok:false},
+    ],
+    ocorrencias:[]},
+  c3:{tipo:"ata", tipoLabel:"Ata de registro de preços", portaria:"Portaria nº 301/2025", previsaoProrrogacao:true,
+    equipe:{gestor:"Diego Martins", tecnico:"Bruno Lima", administrativo:"Gabriela Assis"},
+    checklist:[
+      {g:"Técnica", item:"Controlar o saldo de quantidades registradas", prazo: iso(addDays(today,-1)), sit:"ok"},
+      {g:"Técnica", item:"Conferir a especificação dos coletes recebidos", prazo: iso(addDays(today,9)), sit:"pendente"},
+      {g:"Administrativa", item:"Acompanhar a validade dos preços registrados", prazo: iso(addDays(today,20)), sit:"pendente"},
+    ],
+    documentos:[
+      {doc:"Ata de registro de preços publicada", sit:"ok"},
+      {doc:"Controle de saldo da ata", sit:"ok"},
+      {doc:"Pesquisa de vantajosidade para eventual prorrogação", sit:"pendente"},
+    ],
+    prorrogacao:[
+      {req:"Vigência inicial de até 1 ano", ok:true},
+      {req:"Preço registrado comprovadamente vantajoso", ok:false},
+      {req:"Autorização da autoridade competente", ok:false},
+    ],
+    ocorrencias:[]},
+  c4:{tipo:"continuo", tipoLabel:"Fornecimento contínuo", portaria:"Portaria nº 177/2024", previsaoProrrogacao:false,
+    equipe:{gestor:"Ana Ferreira", tecnico:"Renata Kimura", administrativo:"Gabriela Assis"},
+    checklist:[
+      {g:"Técnica", item:"Emitir termo de recebimento definitivo das últimas entregas", prazo: iso(addDays(today,-6)), sit:"atrasado"},
+      {g:"Administrativa", item:"Elaborar relatório final e avaliação do fornecedor", prazo: iso(addDays(today,-2)), sit:"atrasado"},
+      {g:"Administrativa", item:"Verificar pagamentos pendentes e liberar a garantia", prazo: iso(addDays(today,15)), sit:"pendente"},
+    ],
+    documentos:[
+      {doc:"Termo de recebimento definitivo", sit:"pendente"},
+      {doc:"Relatório final de fiscalização", sit:"pendente"},
+    ],
+    prorrogacao:[],
+    ocorrencias:[
+      {data: iso(addDays(today,-40)), desc:"Entrega parcial de kits (80 de 150).", prov:"Notificação ao fornecedor; saldo entregue em 12 dias."},
+    ]},
+};
+const SITPILL = {ok:['ok','CUMPRIDO'], pendente:['warn','PENDENTE'], atrasado:['crit','ATRASADO'], vencido:['crit','VENCIDO']};
+
+function adviceContrato(c, tipo){
+  const g = GESTAO[c.id]; const dias = daysBetween(iso(today), c.vigenciaFim);
+  const pend = g.prorrogacao.filter(r=>!r.ok);
+  const docsPend = g.documentos.filter(d=>d.sit!=="ok");
+  const acoes = [...g.checklist.filter(x=>x.sit==="atrasado"), ...g.checklist.filter(x=>x.sit==="pendente").sort((a,b)=>new Date(a.prazo)-new Date(b.prazo))];
+  const base = {dados:`Contrato ${c.numero}: vigência, garantia, checklist de fiscalização e documentos registrados no sistema`, validacao:"Necessária: a IA apenas recomenda; a decisão cabe ao gestor do contrato e à autoridade competente"};
+  if(tipo==="prorrogar"){
+    if(dias<0) return {...base, ans:`Não. O contrato venceu em ${fmtDate(c.vigenciaFim)} e a prorrogação precisa ser formalizada durante a vigência. Avaliar nova contratação ou adesão a ata vigente.`,
+      criterios:"Prorrogação somente durante a vigência (Lei nº 14.133/2021)", confianca:"Alta (dado direto)", risco:"Desabastecimento do item", acao:"Abrir nova demanda ou verificar ata vigente para o mesmo objeto"};
+    if(g.tipo==="ata") return {...base, ans:`Em tese, sim: a ata tem vigência de 1 ano, prorrogável por igual período se o preço continuar vantajoso. Faltam ${pend.length} requisito(s): ${pend.map(r=>r.req.toLowerCase()).join("; ")}. Vencimento em ${fmtDate(c.vigenciaFim)} (${dias} dias).`,
+      criterios:"Art. 84 da Lei nº 14.133/2021 (vigência de 1 ano, prorrogável por igual período com preço vantajoso)", confianca:"Média: depende de pesquisa de preços ainda não anexada", risco: dias<=90?"Perda da ata antes da nova licitação":"Baixo no momento", acao:"Realizar pesquisa de vantajosidade e submeter à autoridade competente"};
+    return {...base, ans:`A prorrogação é juridicamente possível, mas ainda não está instruída. Faltam ${pend.length} de ${g.prorrogacao.length} requisitos: ${pend.map(r=>r.req.toLowerCase()+(r.obs?` (${r.obs})`:"")).join("; ")}. A vigência termina em ${fmtDate(c.vigenciaFim)} (${dias} dias).`,
+      criterios:"Arts. 106 e 107 da Lei nº 14.133/2021: contratos contínuos com vigência total de até 10 anos, previsão em edital e vantajosidade atestada", confianca:"Média: depende de documentos ainda não anexados",
+      risco: dias<=90 ? `Descontinuidade do fornecimento se a decisão não sair até ${fmtDate(c.vigenciaFim)}` : "Baixo no momento",
+      acao:"Solicitar a manifestação do fornecedor e a pesquisa de preços; em seguida, encaminhar à Setorial Jurídica"};
+  }
+  if(tipo==="documentos"){
+    if(!docsPend.length) return {...base, ans:"Não há documentos pendentes para este contrato.", criterios:"Lista de documentos exigidos na fase de execução", confianca:"Alta (dado direto)", risco:"Nenhum", acao:"Manter o acompanhamento mensal"};
+    return {...base, ans:`Sim, ${docsPend.length} documento(s): ${docsPend.map(d=>d.doc.toLowerCase()+(d.sit==="vencido"?" (vencido)":"")).join("; ")}.`,
+      criterios:"Documentos exigidos na fase de execução e validade das certidões", confianca:"Alta (dado direto)",
+      risco: docsPend.some(d=>d.sit==="vencido") ? "Pagamento sem comprovação de regularidade do fornecedor" : "Atraso na instrução do processo de pagamento",
+      acao: docsPend.some(d=>d.sit==="vencido") ? "Solicitar ao fornecedor as certidões atualizadas antes de atestar o próximo pagamento" : "Providenciar os documentos pendentes"};
+  }
+  // o que fazer agora
+  const top = acoes.slice(0,3).map(x=>`${x.item.toLowerCase()} (${x.sit==="atrasado"?"atrasado":"até "+fmtDate(x.prazo)})`);
+  const extra = (dias>=0 && dias<=90 && g.prorrogacao.length) ? `; decidir sobre a prorrogação até ${fmtDate(c.vigenciaFim)}` : "";
+  return {...base, ans: top.length ? `Prioridades: ${top.join("; ")}${extra}.` : `Nenhuma pendência de fiscalização${extra}.`,
+    criterios:"Itens atrasados primeiro, depois pendentes por prazo; vencimentos de vigência e garantia", confianca:"Alta (dado direto)",
+    risco: acoes.some(x=>x.sit==="atrasado") ? "Falha de fiscalização registrada em auditoria" : "Baixo", acao: top.length ? `Começar por: ${acoes[0].item.toLowerCase()}` : "Manter o acompanhamento"};
+}
+function answerHtml(r){
+  return `<div class="msg-ai" style="max-width:100%"><div class="ans">${r.ans}</div><dl class="explain">
+    <dt>Dados usados</dt><dd>${r.dados}</dd><dt>Critérios</dt><dd>${r.criterios}</dd><dt>Confiança</dt><dd>${r.confianca}</dd>
+    <dt>Risco</dt><dd>${r.risco}</dd><dt>Providência sugerida</dt><dd>${r.acao}</dd><dt>Validação humana</dt><dd>${r.validacao}</dd></dl></div>`;
+}
+function timelineContrato(c){
+  const pts=[{l:"Início",d:c.vigenciaInicio}];
+  if(c.reajuste) pts.push({l:"Reajuste",d:c.reajuste});
+  if(c.garantia) pts.push({l:"Garantia",d:c.garantia});
+  pts.push({l:"Fim da vigência",d:c.vigenciaFim});
+  const ini=new Date(c.vigenciaInicio), fim=new Date(Math.max(...pts.map(p=>new Date(p.d)), today));
+  const X=d=> 40 + (new Date(d)-ini)/(fim-ini||1)*820;
+  const tx=X(iso(today));
+  const sorted=[...pts].sort((a,b)=>new Date(a.d)-new Date(b.d));
+  return `<svg viewBox="0 0 900 120" width="100%" class="chart">
+    <line class="axis" x1="40" y1="60" x2="860" y2="60"/>
+    <line x1="${tx}" y1="22" x2="${tx}" y2="72" stroke="var(--royal)" stroke-dasharray="4 4"/>
+    <text x="${tx}" y="16" text-anchor="middle" fill="var(--royal-ink)" style="font-weight:700">hoje</text>
+    ${sorted.map((p,i)=>{const x=X(p.d); const crit=classifyDeadline(p.d)==="crit"; const up=i%2===0;
+      return `<circle cx="${x}" cy="60" r="7" fill="${new Date(p.d)<today?'var(--ok)':crit?'var(--crit)':'var(--surface)'}" stroke="${crit?'var(--crit)':'var(--line)'}" stroke-width="2"/>
+      <text x="${x}" y="${up?40:86}" text-anchor="middle" fill="var(--ink-soft)">${p.l}</text>
+      <text x="${x}" y="${up?28:100}" text-anchor="middle" class="mono" fill="var(--ink-faint)">${fmtDate(p.d)}</text>`;}).join("")}
+  </svg>`;
+}
+function renderGestaoContrato(id){
+  const c = DB.contratos.find(x=>x.id===id); const g = GESTAO[id];
+  if(!c||!g){ renderContratos(); return; }
+  const dias = daysBetween(iso(today), c.vigenciaFim);
+  const sevMap={Vigente:'ok',Vencendo:'warn',Vencido:'crit'};
+  const qual = DB.qualidade.filter(q=>q.contratoId===id);
+  const nPend = g.checklist.filter(x=>x.sit!=="ok").length, nAtr = g.checklist.filter(x=>x.sit==="atrasado").length;
+  const banner = dias<0 ? `<div class="banner crit">Contrato vencido em ${fmtDate(c.vigenciaFim)}. Concluir o encerramento e avaliar nova contratação.</div>`
+    : dias<=90 ? `<div class="banner warn">A vigência termina em ${dias} dias (${fmtDate(c.vigenciaFim)}). Decisão sobre prorrogação ou nova contratação pendente.</div>` : "";
+  document.getElementById("view").innerHTML = `
+    ${head(`Gestão do contrato ${c.numero}`, c.objeto, `<button class="btn" onclick="navigate('#/contratos')">← Contratos e atas</button>`)}
+    ${banner}
+    <div class="grid g-kpi" style="margin-bottom:14px">
+      <div class="card kpi"><div class="l">Fornecedor</div><div style="font-weight:700;font-size:14px;margin-top:6px">${getFornecedor(c.fornecedorId).nome}</div></div>
+      <div class="card kpi"><div class="l">Valor</div><div class="n royal" style="font-size:20px">${fmtMoney(c.valor)}</div></div>
+      <div class="card kpi"><div class="l">Vigência</div><div style="font-weight:700;font-size:14px;margin-top:6px">${fmtDate(c.vigenciaInicio)} a ${fmtDate(c.vigenciaFim)}</div></div>
+      <div class="card kpi"><div class="l">Situação</div><div style="margin-top:6px">${pill(sevMap[c.status],c.status.toUpperCase())} <span class="small muted">${g.tipoLabel}</span></div></div>
+    </div>
+    <div class="card pad" style="margin-bottom:14px"><h2 class="sec">Linha do tempo do contrato</h2>${timelineContrato(c)}</div>
+    <div class="grid g-2" style="margin-bottom:14px">
+      <div class="card pad">
+        <h2 class="sec">Checklist de fiscalização do período <span class="small muted">(${nPend} pendente(s), ${nAtr} atrasado(s))</span></h2>
+        ${["Técnica","Administrativa"].map(gr=>`<div class="small muted" style="text-transform:uppercase;letter-spacing:.05em;margin:8px 0 4px">Fiscalização ${gr.toLowerCase()}</div>
+          ${g.checklist.map((x,i)=>x.g!==gr?"":`<div class="steprow" style="padding:6px 0;border-bottom:1px dashed var(--line-soft);display:flex;justify-content:space-between;gap:10px;align-items:center">
+            <span class="small">${x.item} <span class="muted">· prazo ${fmtDate(x.prazo)}</span></span>
+            <span style="display:flex;gap:6px;align-items:center">${pill(...SITPILL[x.sit])}${x.sit!=="ok"?`<button class="btn" style="padding:3px 8px;font-size:11px" data-ck="${i}">Marcar cumprido</button>`:""}</span></div>`).join("")}`).join("")}
+      </div>
+      <div class="card pad">
+        <h2 class="sec">Equipe de fiscalização <span class="small muted">(${g.portaria})</span></h2>
+        <div class="small" style="display:grid;grid-template-columns:auto 1fr;gap:6px 14px;margin-bottom:14px">
+          <span class="muted">Gestor do contrato</span><b>${g.equipe.gestor}</b>
+          <span class="muted">Fiscal técnico</span><b>${g.equipe.tecnico}</b>
+          <span class="muted">Fiscal administrativo</span><b>${g.equipe.administrativo}</b>
+        </div>
+        <h2 class="sec">Documentos da execução</h2>
+        ${g.documentos.map(d=>`<div class="small" style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px dashed var(--line-soft)"><span>${d.doc}</span>${pill(...SITPILL[d.sit]==null?['neutral','—']:(d.sit==="ok"?['ok','EM DIA']:SITPILL[d.sit]))}</div>`).join("")}
+        ${g.prorrogacao.length? `<h2 class="sec" style="margin-top:14px">Requisitos para prorrogação</h2>
+        ${g.prorrogacao.map(r=>`<div class="small" style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px dashed var(--line-soft)"><span>${r.req}${r.obs?` <span class="muted">(${r.obs})</span>`:""}</span>${r.ok?pill('ok','ATENDIDO'):pill('neutral','PENDENTE')}</div>`).join("")}`:""}
+      </div>
+    </div>
+    <div class="grid g-2">
+      <div class="card pad">
+        <h2 class="sec">Assistente de IA sobre este contrato</h2>
+        <div class="chips">
+          <span class="chip" data-q="prorrogar">Posso prorrogar este contrato?</span>
+          <span class="chip" data-q="documentos">Há documentos pendentes?</span>
+          <span class="chip" data-q="agora">O que devo fazer agora?</span>
+        </div>
+        <div id="ct-ans"></div>
+      </div>
+      <div class="card pad">
+        <h2 class="sec">Registro de ocorrências</h2>
+        <div id="oc-list">${g.ocorrencias.length? g.ocorrencias.map(o=>`<div class="small" style="padding:6px 0;border-bottom:1px dashed var(--line-soft)"><b class="mono">${fmtDate(o.data)}</b> ${o.desc} <span class="muted">Providência: ${o.prov}</span></div>`).join("") : '<div class="small muted">Nenhuma ocorrência registrada.</div>'}</div>
+        <div class="field" style="margin-top:10px"><label>Nova ocorrência</label><textarea id="oc-desc" placeholder="Descreva o fato observado na execução"></textarea></div>
+        <div class="field"><label>Providência adotada</label><input id="oc-prov" placeholder="Ex.: fornecedor notificado"></div>
+        <button class="btn btn-primary" id="oc-add">Registrar ocorrência</button>
+        ${qual.length? `<h2 class="sec" style="margin-top:14px">Avaliações de qualidade</h2>${qual.map(q=>`<div class="small" style="margin-bottom:6px">${fmtDate(q.data)} ${pill(q.nota==='boa'?'ok':q.nota==='regular'?'warn':'crit', q.nota.toUpperCase())} ${q.obs?q.obs:''}</div>`).join("")}`:""}
+      </div>
+    </div>`;
+  document.querySelectorAll("[data-ck]").forEach(b=> b.onclick=()=>{
+    const x=g.checklist[Number(b.dataset.ck)]; x.sit="ok";
+    log(`Checklist do contrato ${c.numero}: item cumprido`, x.item); renderGestaoContrato(id);
+  });
+  document.querySelectorAll("#view .chip[data-q]").forEach(ch=> ch.onclick=()=>{
+    document.querySelectorAll("#view .chip[data-q]").forEach(o=>o.style.borderColor=""); ch.style.borderColor="var(--royal)";
+    document.getElementById("ct-ans").innerHTML = answerHtml(adviceContrato(c, ch.dataset.q));
+    log(`Consulta ao assistente sobre ${c.numero}: "${ch.textContent}"`);
+  });
+  document.getElementById("oc-add").onclick = ()=>{
+    const desc=document.getElementById("oc-desc").value.trim(), prov=document.getElementById("oc-prov").value.trim();
+    if(!desc){ alert("Descreva a ocorrência antes de registrar."); return; }
+    g.ocorrencias.unshift({data: iso(today), desc, prov: prov||"a definir"});
+    log(`Ocorrência registrada no contrato ${c.numero}`, desc); renderGestaoContrato(id);
+  };
+}
+function contratoFromQuestion(ql){
+  const byNum = DB.contratos.find(c=> ql.includes(c.numero.toLowerCase()));
+  if(byNum) return byNum;
+  return DB.contratos.find(c=>c.status==="Vencendo") || DB.contratos[0];
+}
+
+// ---------------------------------------------------------------------------
 // ROTEAMENTO / RENDERIZAÇÃO
 // ---------------------------------------------------------------------------
 function currentPerfil(){ return SESSION.user ? SESSION.user.perfil : null; }
-const SUBROUTE_PARENT = {"nova-demanda":"demandas", "duplicidade":"demandas", "previsao":"estoque"};
+const SUBROUTE_PARENT = {"nova-demanda":"demandas", "duplicidade":"demandas", "previsao":"estoque", "contrato":"contratos"};
 function canAccess(key){
   const item = NAV.find(n=>n.key===(SUBROUTE_PARENT[key]||key));
   if(!item) return true;
@@ -637,7 +872,7 @@ function render(){
     painel: renderPainel, alertas: renderAlertas, demandas: renderDemandas,
     "nova-demanda": renderNovaDemanda, duplicidade: ()=>renderDuplicidade(sub),
     planejamento: renderPlanejamento, processos: sub? ()=>renderProcessoDetalhe(sub) : renderProcessos,
-    estoque: renderEstoque, previsao: renderPrevisao, contratos: renderContratos,
+    estoque: renderEstoque, previsao: renderPrevisao, contratos: renderContratos, contrato: ()=>renderGestaoContrato(sub),
     assistente: renderAssistente, relatorios: renderRelatorios, admin: renderAdmin,
   };
   (map[key]||renderPainel)();
@@ -1219,7 +1454,7 @@ function paintContratos(){
     <td class="mono">${fmtDate(c.vigenciaFim)}</td><td class="mono">${c.reajuste?fmtDate(c.reajuste):'—'}</td>
     <td class="mono">${fmtMoney(c.valor)}</td><td>${pill(sevMap[c.status],c.status.toUpperCase())}</td></tr>`;
   }).join("") || `<tr><td colspan="7" class="empty">Nenhum contrato neste filtro.</td></tr>`;
-  document.querySelectorAll("#ct-tbody tr").forEach(tr=> tr.onclick=()=> openContratoDetail(tr.dataset.id));
+  document.querySelectorAll("#ct-tbody tr").forEach(tr=> tr.onclick=()=> navigate(`#/contrato/${tr.dataset.id}`));
 }
 function openContratoDetail(id){
   const c = DB.contratos.find(x=>x.id===id);
@@ -1321,20 +1556,8 @@ function renderRelatorios(){
 // ADMINISTRAÇÃO
 // ---------------------------------------------------------------------------
 function renderAdmin(){
-  const isAuditor = SESSION.user.perfil === "Auditoria e controle interno";
-  if(isAuditor){
-    document.getElementById("view").innerHTML = `
-      ${head("Trilha de auditoria", "Acesso de auditoria e controle interno — somente leitura; cadastro de usuários é exclusivo do Administrador geral")}
-      <div class="card pad">
-        <h2 class="sec">Trilha de auditoria (sessão atual)</h2>
-        <div id="audit-list" class="small" style="display:flex;flex-direction:column;gap:6px;max-height:320px;overflow-y:auto">
-          ${DB.auditoria.length? DB.auditoria.map(a=>`<div>${a.ts.toLocaleTimeString('pt-BR')} — <b>${a.usuario}</b>: ${a.acao}${a.justificativa?' — <span class="muted">'+a.justificativa+'</span>':''}</div>`).join("") : '<div class="muted">Nenhuma ação registrada ainda nesta sessão.</div>'}
-        </div>
-      </div>`;
-    return;
-  }
   document.getElementById("view").innerHTML = `
-    ${head("Usuários e permissões", `${DB.usuarios.length} servidores cadastrados`, `<button class="btn btn-primary" id="btn-novo-user">+ Novo usuário</button>`)}
+    ${head("Perfis e trilha de auditoria", `${DB.usuarios.length} perfis cadastrados · acesso somente leitura`)}
     <div class="grid" style="grid-template-columns:1.4fr 1fr;gap:16px">
       <div class="card"><div class="table-wrap"><table>
         <thead><tr><th>Nome</th><th>Matrícula</th><th>Perfil</th><th>Unidade</th></tr></thead>
@@ -1348,7 +1571,6 @@ function renderAdmin(){
         ${DB.auditoria.length? DB.auditoria.map(a=>`<div>${a.ts.toLocaleTimeString('pt-BR')} — <b>${a.usuario}</b>: ${a.acao}${a.justificativa?' — <span class="muted">'+a.justificativa+'</span>':''}</div>`).join("") : '<div class="muted">Nenhuma ação registrada ainda nesta sessão.</div>'}
       </div>
     </div>`;
-  document.getElementById("btn-novo-user").onclick = ()=> alert("Formulário de novo usuário (fora do escopo deste protótipo de demonstração).");
   document.querySelectorAll("#view tbody tr").forEach(tr=> tr.onclick=()=>{
     const u = DB.usuarios.find(x=>x.id===tr.dataset.id);
     const modKeys = NAV.filter(n=>n.key);
