@@ -1,0 +1,907 @@
+<title>SICOMP-IA — Etapa 2</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700;800&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+  :root {
+    --royal: #1E3A8A; --royal-ink: #142868; --royal-soft: #E7ECFA;
+    --honey: #C98A22; --honey-soft: #F7ECD8;
+    --paper: #F5F6FA; --surface: #FFFFFF; --surface-2: #FBFBFD;
+    --ink: #1B2233; --ink-soft: #545F78; --ink-faint: #7C87A0;
+    --line: #DBE0EC; --line-soft: #E9ECF4;
+    --sev-critical: #B23A2E; --sev-critical-soft: #F7E3E0;
+    --sev-warning: #B4791A; --sev-warning-soft: #F6E8D2;
+    --sev-info: #2C6C9C; --sev-info-soft: #DEEAF4;
+    --sev-ok: #2E7D5B; --sev-ok-soft: #DFEEE6;
+    --shadow: 0 1px 2px rgba(20,40,104,.06), 0 8px 24px -12px rgba(20,40,104,.18);
+    --wf-canvas: #FCFCFE; --wf-region: #FFFFFF;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --royal:#8EA9EC; --royal-ink:#C6D4F7; --royal-soft:#1B2748;
+      --honey:#E7B155; --honey-soft:#3A2E17;
+      --paper:#0D1220; --surface:#141A2C; --surface-2:#101524;
+      --ink:#E7EAF5; --ink-soft:#AEB7D0; --ink-faint:#7C87A0;
+      --line:#2A3252; --line-soft:#212944;
+      --sev-critical:#E28578; --sev-critical-soft:#3A2220;
+      --sev-warning:#E0AA5C; --sev-warning-soft:#382C18;
+      --sev-info:#7FB2DD; --sev-info-soft:#1B2E3E;
+      --sev-ok:#7FC3A3; --sev-ok-soft:#172E24;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px -12px rgba(0,0,0,.5);
+      --wf-canvas:#F3F4F7; --wf-region:#FFFFFF;
+    }
+  }
+  :root[data-theme="dark"] {
+    --royal:#8EA9EC; --royal-ink:#C6D4F7; --royal-soft:#1B2748;
+    --honey:#E7B155; --honey-soft:#3A2E17;
+    --paper:#0D1220; --surface:#141A2C; --surface-2:#101524;
+    --ink:#E7EAF5; --ink-soft:#AEB7D0; --ink-faint:#7C87A0;
+    --line:#2A3252; --line-soft:#212944;
+    --sev-critical:#E28578; --sev-critical-soft:#3A2220;
+    --sev-warning:#E0AA5C; --sev-warning-soft:#382C18;
+    --sev-info:#7FB2DD; --sev-info-soft:#1B2E3E;
+    --sev-ok:#7FC3A3; --sev-ok-soft:#172E24;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px -12px rgba(0,0,0,.5);
+    --wf-canvas:#F3F4F7; --wf-region:#FFFFFF;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin:0; background:var(--paper); color:var(--ink); font-family:'Source Serif 4',Georgia,serif; font-size:16px; line-height:1.6; }
+
+  .doc-shell { display:grid; grid-template-columns:272px minmax(0,1fr); max-width:1320px; margin:0 auto; align-items:start; }
+
+  .cover { grid-column:1/-1; background:linear-gradient(155deg,var(--royal-ink) 0%,var(--royal) 62%,var(--royal) 100%); color:#F3F6FF; padding:36px clamp(20px,4vw,56px) 30px; position:relative; overflow:hidden; }
+  .cover::after { content:""; position:absolute; inset:0; background-image:repeating-linear-gradient(115deg, rgba(255,255,255,0.05) 0 1px, transparent 1px 64px); pointer-events:none; }
+  .cover-kicker { font-family:'Public Sans',sans-serif; font-size:12px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:var(--honey); display:flex; align-items:center; gap:10px; }
+  .cover-kicker::before { content:""; width:22px; height:2px; background:var(--honey); display:inline-block; }
+  .cover h1 { font-family:'Public Sans',sans-serif; font-weight:800; font-size:clamp(26px,3.6vw,38px); line-height:1.1; letter-spacing:-.01em; margin:12px 0 8px; text-wrap:balance; max-width:26ch; }
+  .cover p.lede { font-size:16.5px; color:#D8E1FA; max-width:64ch; margin:0 0 18px; }
+  .cover-meta { display:flex; flex-wrap:wrap; gap:10px 28px; font-family:'IBM Plex Mono',monospace; font-size:12.5px; color:#C7D3F2; border-top:1px solid rgba(255,255,255,.18); padding-top:14px; }
+  .cover-meta strong { color:#fff; font-weight:500; }
+
+  .stage-track { grid-column:1/-1; background:var(--surface); border-bottom:1px solid var(--line); padding:14px clamp(20px,4vw,56px); display:flex; gap:6px; flex-wrap:wrap; font-family:'Public Sans',sans-serif; }
+  .stage { display:flex; align-items:center; gap:8px; font-size:12.5px; color:var(--ink-faint); padding:5px 10px 5px 6px; border-radius:999px; }
+  .stage .dot { width:20px; height:20px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; border:1.5px solid var(--line); color:var(--ink-faint); }
+  .stage.current { background:var(--royal-soft); color:var(--royal-ink); font-weight:600; }
+  .stage.current .dot { background:var(--royal); border-color:var(--royal); color:#fff; }
+  .stage.done .dot { background:var(--sev-ok); border-color:var(--sev-ok); color:#fff; }
+
+  nav.toc { position:sticky; top:0; align-self:start; height:100vh; overflow-y:auto; padding:26px 16px 40px 24px; border-right:1px solid var(--line); font-family:'Public Sans',sans-serif; }
+  nav.toc h2 { font-size:11px; text-transform:uppercase; letter-spacing:.12em; color:var(--ink-faint); margin:0 0 10px; }
+  nav.toc ol { list-style:none; margin:0; padding:0; counter-reset:toc; }
+  nav.toc li { counter-increment:toc; }
+  nav.toc a { display:flex; gap:9px; padding:6px 6px; border-radius:8px; color:var(--ink-soft); text-decoration:none; font-size:13px; line-height:1.3; }
+  nav.toc a::before { content:counter(toc,decimal-leading-zero); font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--honey); flex:none; padding-top:1px; }
+  nav.toc a:hover { background:var(--surface-2); color:var(--ink); }
+  nav.toc .toc-note { margin-top:18px; padding:12px 14px; background:var(--honey-soft); border:1px solid color-mix(in srgb, var(--honey) 35%, transparent); border-radius:10px; font-size:12.5px; color:var(--ink-soft); }
+
+  main { padding:40px clamp(20px,4vw,56px) 100px; min-width:0; }
+  section.block { padding:38px 0; border-bottom:1px solid var(--line-soft); }
+  section.block:last-child { border-bottom:none; }
+  .block-head { display:flex; gap:16px; align-items:baseline; margin-bottom:6px; flex-wrap:wrap; }
+  .block-num { font-family:'IBM Plex Mono',monospace; font-size:14px; color:var(--honey); font-weight:500; flex:none; }
+  h2 { font-family:'Public Sans',sans-serif; font-weight:700; font-size:clamp(19px,2.1vw,23px); color:var(--royal-ink); margin:0; text-wrap:balance; }
+  .who { font-family:'Public Sans',sans-serif; font-size:11.5px; color:var(--ink-faint); margin-left:auto; }
+  .who b { color:var(--ink-soft); font-weight:600; }
+  p.job { font-size:15.5px; color:var(--ink-soft); max-width:70ch; margin:8px 0 18px; }
+  p.job::before { content:"Função da tela — "; font-weight:600; color:var(--royal-ink); font-family:'Public Sans',sans-serif; font-size:11px; text-transform:uppercase; letter-spacing:.04em; display:block; margin-bottom:4px; }
+
+  figure.wf { background:var(--wf-canvas); border:1px solid var(--line); border-radius:14px; padding:16px clamp(8px,2vw,20px); margin:0 0 14px; box-shadow:var(--shadow); }
+  figure.wf svg { width:100%; height:auto; display:block; }
+  figure.wf figcaption { font-family:'Public Sans',sans-serif; font-size:12px; color:var(--ink-faint); margin-top:10px; padding-top:10px; border-top:1px dashed var(--line-soft); }
+
+  .interactions { display:flex; flex-wrap:wrap; gap:8px; margin:0 0 4px; }
+  .interactions li { list-style:none; font-family:'Public Sans',sans-serif; font-size:12.5px; color:var(--ink-soft); background:var(--surface); border:1px solid var(--line); border-radius:999px; padding:5px 12px; }
+  .interactions li b { color:var(--royal-ink); font-weight:600; }
+  ul.interactions { padding:0; margin:10px 0 0; display:flex; flex-wrap:wrap; gap:8px; }
+
+  footer.doc-foot { grid-column:1/-1; padding:30px clamp(20px,4vw,56px) 50px; font-family:'Public Sans',sans-serif; font-size:12.5px; color:var(--ink-faint); border-top:1px solid var(--line); }
+
+  @media (max-width: 880px) {
+    .doc-shell { grid-template-columns:1fr; }
+    nav.toc { position:relative; height:auto; border-right:none; border-bottom:1px solid var(--line); }
+  }
+
+  /* wireframe SVG shared look */
+  .wf text { font-family:'Public Sans',sans-serif; }
+  .wf .mono { font-family:'IBM Plex Mono',monospace; }
+  .wf .chrome-bar { fill:var(--surface); stroke:var(--line); stroke-width:1; }
+  .wf .chrome-txt { fill:var(--ink-faint); font-size:10.5px; }
+  .wf .nav-bar { fill:var(--surface-2); stroke:var(--line); stroke-width:1; }
+  .wf .nav-item { fill:var(--ink-soft); font-size:10.5px; }
+  .wf .nav-item.active { fill:var(--royal-ink); font-weight:600; }
+  .wf .nav-tick { fill:var(--honey); }
+  .wf .region { fill:var(--wf-region); stroke:var(--line); stroke-width:1.2; }
+  .wf .region-soft { fill:var(--surface-2); stroke:var(--line); stroke-width:1; stroke-dasharray:3 3; }
+  .wf .lab { fill:var(--ink-faint); font-size:9.5px; letter-spacing:.03em; text-transform:uppercase; }
+  .wf .val { fill:var(--ink); font-size:11px; }
+  .wf .big { fill:var(--royal-ink); font-weight:700; font-size:18px; }
+  .wf .btn { fill:var(--honey-soft); stroke:var(--honey); stroke-width:1.3; }
+  .wf .btn-txt { fill:var(--honey); font-weight:600; font-size:10.5px; }
+  .wf .btn-ghost { fill:none; stroke:var(--line); stroke-width:1.2; }
+  .wf .btn-ghost-txt { fill:var(--ink-soft); font-size:10.5px; }
+  .wf .pill-ok { fill:var(--sev-ok-soft); stroke:var(--sev-ok); }
+  .wf .pill-ok-txt { fill:var(--sev-ok); font-size:9.5px; font-weight:600; }
+  .wf .pill-warn { fill:var(--sev-warning-soft); stroke:var(--sev-warning); }
+  .wf .pill-warn-txt { fill:var(--sev-warning); font-size:9.5px; font-weight:600; }
+  .wf .pill-crit { fill:var(--sev-critical-soft); stroke:var(--sev-critical); }
+  .wf .pill-crit-txt { fill:var(--sev-critical); font-size:9.5px; font-weight:600; }
+  .wf .pill-info { fill:var(--sev-info-soft); stroke:var(--sev-info); }
+  .wf .pill-info-txt { fill:var(--sev-info); font-size:9.5px; font-weight:600; }
+  .wf .row-line { stroke:var(--line-soft); stroke-width:1; }
+  .wf .axis { stroke:var(--line); stroke-width:1; }
+  .wf .plot-hist { fill:none; stroke:var(--royal); stroke-width:1.6; }
+  .wf .plot-fore { fill:none; stroke:var(--honey); stroke-width:1.6; stroke-dasharray:4 3; }
+</style>
+
+<div class="doc-shell">
+
+  <div class="cover">
+    <div class="cover-kicker">Wireframes anotados</div>
+    <h1>SICOMP-IA — Etapa 2<br>As 17 telas, em baixa fidelidade</h1>
+    <p class="lede">Estrutura, conteúdo e interações de cada tela. Cores e refinamento visual ficam para a Etapa 3 — aqui o objetivo é validar <em>o que aparece onde</em> antes de desenhar a versão final.</p>
+    <div class="cover-meta">
+      <span>Etapa <strong>2 de 5</strong> — Telas e wireframes</span>
+      <span>Versão <strong>1.0</strong></span>
+      <span><strong>13/09/2026</strong></span>
+      <span>Base: <a href="#" style="color:#fff">Etapa 1 — Arquitetura</a> (validada)</span>
+    </div>
+  </div>
+
+  <div class="stage-track">
+    <div class="stage done"><span class="dot">✓</span> Arquitetura &amp; dados</div>
+    <div class="stage current"><span class="dot">2</span> Telas &amp; wireframes</div>
+    <div class="stage"><span class="dot">3</span> Protótipo funcional</div>
+    <div class="stage"><span class="dot">4</span> Testes de fluxo</div>
+    <div class="stage"><span class="dot">5</span> Plano de evolução</div>
+  </div>
+
+  <nav class="toc">
+    <h2>As 17 telas</h2>
+    <ol>
+      <li><a href="#s1">Login</a></li>
+      <li><a href="#s2">Painel geral</a></li>
+      <li><a href="#s3">Cadastro de demanda</a></li>
+      <li><a href="#s4">Central de demandas</a></li>
+      <li><a href="#s5">Análise de duplicidades</a></li>
+      <li><a href="#s6">Planejamento anual</a></li>
+      <li><a href="#s7">Processo de contratação</a></li>
+      <li><a href="#s8">Linha do tempo da licitação</a></li>
+      <li><a href="#s9">Controle de documentos</a></li>
+      <li><a href="#s10">Estoque geral</a></li>
+      <li><a href="#s11">Estoque por unidade</a></li>
+      <li><a href="#s12">Previsão de consumo</a></li>
+      <li><a href="#s13">Contratos e atas</a></li>
+      <li><a href="#s14">Central de alertas</a></li>
+      <li><a href="#s15">Assistente de IA</a></li>
+      <li><a href="#s16">Relatórios e indicadores</a></li>
+      <li><a href="#s17">Usuários e permissões</a></li>
+    </ol>
+    <div class="toc-note">Convenção: caixas cinza = estrutura fixa da tela. Contorno <strong style="color:var(--honey)">honey</strong> = ação primária/clicável. Pílulas coloridas = estado (crítico/atenção/ok/informativo).</div>
+  </nav>
+
+  <main>
+
+    <!-- 1 LOGIN -->
+    <section class="block" id="s1">
+      <div class="block-head"><span class="block-num">01</span><h2>Login</h2><span class="who">Acesso: <b>todos os perfis</b></span></div>
+      <p class="job">Autenticar o servidor e, se ele atuar em mais de uma unidade, deixá-lo escolher com qual está trabalhando nesta sessão.</p>
+      <figure class="wf">
+        <svg viewBox="0 0 760 420" class="wf" role="img" aria-label="Tela de login com campo de matrícula, senha, seletor de unidade de acesso e botão entrar, centralizada sobre fundo institucional.">
+          <rect x="0" y="0" width="760" height="420" fill="var(--royal-soft)"/>
+          <rect x="230" y="60" width="300" height="300" rx="12" class="region"/>
+          <text x="380" y="98" text-anchor="middle" class="big">SICOMP-IA</text>
+          <text x="380" y="116" text-anchor="middle" class="lab">SSP-GO · acesso restrito</text>
+
+          <text x="256" y="150" class="lab">Matrícula funcional</text>
+          <rect x="256" y="156" width="248" height="30" rx="6" class="region-soft"/>
+
+          <text x="256" y="204" class="lab">Senha</text>
+          <rect x="256" y="210" width="248" height="30" rx="6" class="region-soft"/>
+
+          <text x="256" y="258" class="lab">Unidade de acesso</text>
+          <rect x="256" y="264" width="248" height="30" rx="6" class="region-soft"/>
+          <text x="270" y="283" class="val mono">Batalhão de Choque ▾</text>
+
+          <rect x="256" y="308" width="248" height="34" rx="8" class="btn"/>
+          <text x="380" y="329" text-anchor="middle" class="btn-txt">ENTRAR</text>
+
+          <text x="380" y="362" text-anchor="middle" class="lab" style="text-transform:none">Esqueci minha senha</text>
+        </svg>
+        <figcaption>O seletor de unidade só aparece para servidores vinculados a mais de uma unidade — a maioria dos usuários pula direto para a senha.</figcaption>
+      </figure>
+      <ul class="interactions">
+        <li><b>Entrar</b> → valida credencial e carrega o Painel geral filtrado pela unidade escolhida</li>
+        <li><b>Esqueci minha senha</b> → fluxo de recuperação institucional (fora do escopo deste protótipo)</li>
+      </ul>
+    </section>
+
+    <!-- 2 PAINEL GERAL -->
+    <section class="block" id="s2">
+      <div class="block-head"><span class="block-num">02</span><h2>Painel geral</h2><span class="who">Acesso: <b>todos os perfis</b>, conteúdo varia por permissão</span></div>
+      <p class="job">Responder em um olhar: o que está atrasado, o que está acabando, o que vence em breve e o que fazer agora.</p>
+      <figure class="wf">
+        <svg viewBox="0 0 900 520" class="wf" role="img" aria-label="Painel geral com barra superior, menu lateral, quatro indicadores no topo, cartões de alerta, lista de próximas ações e um gráfico de consumo.">
+          <rect x="0" y="0" width="900" height="44" class="chrome-bar"/>
+          <text x="16" y="27" class="big" style="font-size:13px">SICOMP-IA</text>
+          <text x="820" y="27" class="chrome-txt">Ana Ferreira ▾</text>
+
+          <rect x="0" y="44" width="150" height="476" class="nav-bar"/>
+          <rect x="0" y="60" width="4" height="22" class="nav-tick"/>
+          <text x="16" y="76" class="nav-item active">Painel geral</text>
+          <text x="16" y="104" class="nav-item">Demandas</text>
+          <text x="16" y="132" class="nav-item">Planejamento</text>
+          <text x="16" y="160" class="nav-item">Processos</text>
+          <text x="16" y="188" class="nav-item">Estoque</text>
+          <text x="16" y="216" class="nav-item">Contratos e atas</text>
+          <text x="16" y="244" class="nav-item">Alertas</text>
+          <text x="16" y="272" class="nav-item">Assistente IA</text>
+          <text x="16" y="300" class="nav-item">Relatórios</text>
+
+          <!-- KPI row -->
+          <rect x="166" y="60" width="172" height="64" rx="8" class="region"/>
+          <text x="180" y="80" class="lab">Processos atrasados</text>
+          <text x="180" y="106" class="big" style="fill:var(--sev-critical)">7</text>
+          <rect x="350" y="60" width="172" height="64" rx="8" class="region"/>
+          <text x="364" y="80" class="lab">Estoques críticos</text>
+          <text x="364" y="106" class="big" style="fill:var(--sev-warning)">3</text>
+          <rect x="534" y="60" width="172" height="64" rx="8" class="region"/>
+          <text x="548" y="80" class="lab">Contratos vencendo (90d)</text>
+          <text x="548" y="106" class="big" style="fill:var(--sev-warning)">5</text>
+          <rect x="718" y="60" width="166" height="64" rx="8" class="region"/>
+          <text x="732" y="80" class="lab">Demandas pendentes</text>
+          <text x="732" y="106" class="big" style="fill:var(--royal-ink)">12</text>
+
+          <!-- alert cards -->
+          <text x="166" y="150" class="lab" style="font-size:11px">Alertas do dia</text>
+          <rect x="166" y="158" width="345" height="54" rx="8" class="region"/>
+          <rect x="166" y="158" width="4" height="54" fill="var(--sev-critical)"/>
+          <text x="180" y="178" class="val">Possível duplicidade — Colete Balístico III-A</text>
+          <text x="180" y="194" class="lab">Batalhão de Choque × Academia de Polícia · 91% similar</text>
+
+          <rect x="521" y="158" width="363" height="54" rx="8" class="region"/>
+          <rect x="521" y="158" width="4" height="54" fill="var(--sev-warning)"/>
+          <text x="535" y="178" class="val">Previsão de desabastecimento — Papel A4</text>
+          <text x="535" y="194" class="lab">Saldo esgota em 18 dias no ritmo atual</text>
+
+          <rect x="166" y="220" width="345" height="54" rx="8" class="region"/>
+          <rect x="166" y="220" width="4" height="54" fill="var(--sev-info)"/>
+          <text x="180" y="240" class="val">Sugestão de transferência — Toner laser</text>
+          <text x="180" y="256" class="lab">Delegacia Sul tem 18un ociosas; Delegacia Norte solicitou 6</text>
+
+          <rect x="521" y="220" width="363" height="54" rx="8" class="region"/>
+          <rect x="521" y="220" width="4" height="54" fill="var(--sev-critical)"/>
+          <text x="535" y="240" class="val">Processo SEI 202600011122233 atrasado</text>
+          <text x="535" y="256" class="lab">Prazo recursal vence em 2 dias</text>
+
+          <!-- próximas ações + chart -->
+          <rect x="166" y="292" width="345" height="210" rx="8" class="region"/>
+          <text x="180" y="314" class="val" style="font-weight:600">Próximas ações recomendadas</text>
+          <line x1="180" y1="326" x2="496" y2="326" class="row-line"/>
+          <text x="180" y="346" class="val" style="font-size:10.5px">1. Decidir alerta de duplicidade (Colete Balístico)</text>
+          <text x="180" y="368" class="val" style="font-size:10.5px">2. Iniciar aditivo — Papel A4 (SICOMP prevê ruptura)</text>
+          <text x="180" y="390" class="val" style="font-size:10.5px">3. Aprovar transferência de Toner entre unidades</text>
+          <text x="180" y="412" class="val" style="font-size:10.5px">4. Interpor recurso — processo SEI ...122233</text>
+
+          <rect x="521" y="292" width="363" height="210" rx="8" class="region"/>
+          <text x="535" y="314" class="val" style="font-weight:600">Consumo × previsão — Papel A4</text>
+          <line x1="535" y1="450" x2="860" y2="450" class="axis"/>
+          <line x1="535" y1="340" x2="535" y2="450" class="axis"/>
+          <polyline class="plot-hist" points="535,430 575,420 615,410 655,400 695,392"/>
+          <polyline class="plot-fore" points="695,392 740,378 785,358 830,332"/>
+          <text x="830" y="322" class="lab" style="fill:var(--honey)">esgota ~10/out</text>
+        </svg>
+        <figcaption>Cada cartão de alerta leva à tela correspondente (duplicidade, estoque, transferência ou processo) — o Painel nunca resolve nada sozinho, só direciona.</figcaption>
+      </figure>
+      <ul class="interactions">
+        <li><b>Clique no cartão de alerta</b> → abre a tela de tratamento específica</li>
+        <li><b>Clique em uma ação recomendada</b> → leva direto à etapa pendente</li>
+        <li>Conteúdo é <b>filtrado por perfil</b>: Almoxarifado não vê KPI de contratos, por exemplo</li>
+      </ul>
+    </section>
+
+    <!-- 3 CADASTRO DE DEMANDA -->
+    <section class="block" id="s3">
+      <div class="block-head"><span class="block-num">03</span><h2>Cadastro de demanda</h2><span class="who">Acesso: <b>Unidade demandante</b></span></div>
+      <p class="job">Registrar uma necessidade e, antes de enviar, já mostrar se ela pode ser resolvida sem uma compra nova.</p>
+      <figure class="wf">
+        <svg viewBox="0 0 900 480" class="wf" role="img" aria-label="Formulário de nova demanda à esquerda com campos de unidade, item, quantidade, justificativa e urgência; painel de verificação automática à direita mostrando estoque, processos e contratos encontrados.">
+          <rect x="0" y="0" width="900" height="44" class="chrome-bar"/>
+          <text x="16" y="27" class="big" style="font-size:13px">SICOMP-IA</text>
+          <text x="720" y="27" class="chrome-txt">Nova demanda</text>
+          <rect x="0" y="44" width="150" height="436" class="nav-bar"/>
+          <rect x="0" y="88" width="4" height="22" class="nav-tick"/>
+          <text x="16" y="76" class="nav-item">Painel geral</text>
+          <text x="16" y="104" class="nav-item active">Demandas</text>
+          <text x="16" y="132" class="nav-item">Planejamento</text>
+
+          <rect x="166" y="60" width="440" height="404" rx="8" class="region"/>
+          <text x="182" y="86" class="val" style="font-weight:600">Dados da demanda</text>
+
+          <text x="182" y="112" class="lab">Unidade solicitante</text>
+          <rect x="182" y="118" width="408" height="26" rx="5" class="region-soft"/><text x="192" y="135" class="val mono">Batalhão de Choque</text>
+
+          <text x="182" y="158" class="lab">Item (catálogo padronizado)</text>
+          <rect x="182" y="164" width="408" height="26" rx="5" class="region-soft"/><text x="192" y="181" class="val mono">Colete balístico nível III-A</text>
+
+          <text x="182" y="204" class="lab">Quantidade</text>
+          <rect x="182" y="210" width="130" height="26" rx="5" class="region-soft"/><text x="192" y="227" class="val mono">40</text>
+          <text x="330" y="204" class="lab">Urgência</text>
+          <rect x="330" y="210" width="130" height="26" rx="5" class="region-soft"/><text x="340" y="227" class="val mono">Alta ▾</text>
+          <text x="478" y="204" class="lab">Prazo necessário</text>
+          <rect x="478" y="210" width="112" height="26" rx="5" class="region-soft"/><text x="486" y="227" class="val mono">30 dias</text>
+
+          <text x="182" y="252" class="lab">Justificativa</text>
+          <rect x="182" y="258" width="408" height="46" rx="5" class="region-soft"/>
+          <text x="192" y="274" class="val" style="font-size:10px">Reposição de itens vencidos identificados na</text>
+          <text x="192" y="288" class="val" style="font-size:10px">inspeção trimestral do efetivo operacional.</text>
+
+          <text x="182" y="322" class="lab">Local de entrega</text>
+          <rect x="182" y="328" width="196" height="26" rx="5" class="region-soft"/><text x="192" y="345" class="val mono">Sede — Almoxarifado</text>
+          <text x="394" y="322" class="lab">Fonte de recurso (se conhecida)</text>
+          <rect x="394" y="328" width="196" height="26" rx="5" class="region-soft"/><text x="404" y="345" class="val mono">Fundo de Segurança</text>
+
+          <text x="182" y="378" class="lab">Anexos</text>
+          <rect x="182" y="384" width="408" height="30" rx="5" class="region-soft" stroke-dasharray="3 3"/>
+          <text x="386" y="403" text-anchor="middle" class="lab">arrastar arquivo ou clicar para anexar</text>
+
+          <rect x="182" y="428" width="150" height="30" rx="7" class="btn"/>
+          <text x="257" y="448" text-anchor="middle" class="btn-txt">ENVIAR PARA APROVAÇÃO</text>
+          <rect x="344" y="428" width="90" height="30" rx="7" class="btn-ghost"/>
+          <text x="389" y="448" text-anchor="middle" class="btn-ghost-txt">Salvar rascunho</text>
+
+          <rect x="622" y="60" width="262" height="290" rx="8" class="region" stroke="var(--sev-info)"/>
+          <text x="638" y="84" class="val" style="font-weight:600;fill:var(--sev-info)">Verificação automática</text>
+          <line x1="638" y1="94" x2="868" y2="94" class="row-line"/>
+          <text x="638" y="116" class="lab">Estoque na unidade</text>
+          <text x="638" y="132" class="val">2 disponíveis (abaixo do pedido)</text>
+          <text x="638" y="158" class="lab">Estoque em outras unidades</text>
+          <text x="638" y="174" class="val">18 disponíveis — Delegacia Sul</text>
+          <text x="638" y="200" class="lab">Processos semelhantes em andamento</text>
+          <text x="638" y="216" class="val">nenhum encontrado</text>
+          <text x="638" y="242" class="lab">Contratos / atas vigentes</text>
+          <text x="638" y="258" class="val">1 ata registra este item — saldo 12un</text>
+          <rect x="638" y="280" width="226" height="50" rx="6" class="pill-info"/>
+          <text x="650" y="298" class="pill-info-txt" style="text-transform:none;font-size:10px">Sugestão: usar as 12un da ata vigente</text>
+          <text x="650" y="312" class="pill-info-txt" style="text-transform:none;font-size:10px">antes de abrir novo processo.</text>
+        </svg>
+        <figcaption>O painel de verificação é ao vivo: muda a cada campo preenchido, sem exigir que o usuário procure nada manualmente antes de enviar.</figcaption>
+      </figure>
+      <ul class="interactions">
+        <li><b>Digitar no campo Item</b> → autocompleta pelo catálogo e já dispara a verificação automática (RN-01)</li>
+        <li><b>Enviar para aprovação</b> → segue para a chefia; se houver sugestão de uso de ata/estoque, exige confirmação explícita para ignorá-la</li>
+      </ul>
+    </section>
+
+    <!-- 4 CENTRAL DE DEMANDAS -->
+    <section class="block" id="s4">
+      <div class="block-head"><span class="block-num">04</span><h2>Central de demandas</h2><span class="who">Acesso: <b>Planejamento, Compras, Demandante (só as suas)</b></span></div>
+      <p class="job">Ver todas as demandas registradas e em que pé cada uma está, sem precisar abrir uma por uma.</p>
+      <figure class="wf">
+        <svg viewBox="0 0 900 380" class="wf" role="img" aria-label="Tabela de demandas com filtros por unidade, categoria, status e período, e colunas número, unidade, item, quantidade, urgência, status e data.">
+          <rect x="0" y="0" width="900" height="44" class="chrome-bar"/>
+          <rect x="0" y="44" width="150" height="336" class="nav-bar"/>
+          <text x="16" y="76" class="nav-item active">Demandas</text>
+
+          <rect x="166" y="58" width="718" height="40" rx="6" class="region"/>
+          <text x="180" y="82" class="lab">Unidade ▾</text>
+          <text x="270" y="82" class="lab">Categoria ▾</text>
+          <text x="380" y="82" class="lab">Status ▾</text>
+          <text x="470" y="82" class="lab">Período ▾</text>
+          <rect x="800" y="66" width="70" height="24" rx="12" class="btn"/><text x="835" y="82" text-anchor="middle" class="btn-txt" style="font-size:9.5px">FILTRAR</text>
+
+          <rect x="166" y="110" width="718" height="252" rx="8" class="region"/>
+          <text x="180" y="130" class="lab">Nº</text><text x="230" y="130" class="lab">Unidade</text><text x="380" y="130" class="lab">Item</text><text x="560" y="130" class="lab">Qtd</text><text x="610" y="130" class="lab">Urgência</text><text x="700" y="130" class="lab">Status</text><text x="800" y="130" class="lab">Data</text>
+          <line x1="180" y1="138" x2="870" y2="138" class="row-line"/>
+
+          <text x="180" y="160" class="val mono">2026-0341</text><text x="230" y="160" class="val">Bat. de Choque</text><text x="380" y="160" class="val">Colete balístico III-A</text><text x="560" y="160" class="val">40</text><text x="610" y="160" class="val">Alta</text>
+          <rect x="700" y="148" width="82" height="18" rx="9" class="pill-crit"/><text x="741" y="161" text-anchor="middle" class="pill-crit-txt">DUPLICIDADE</text>
+          <text x="800" y="160" class="val mono">08/09</text>
+          <line x1="180" y1="176" x2="870" y2="176" class="row-line"/>
+
+          <text x="180" y="198" class="val mono">2026-0338</text><text x="230" y="198" class="val">Delegacia Norte</text><text x="380" y="198" class="val">Toner impressora laser</text><text x="560" y="198" class="val">6</text><text x="610" y="198" class="val">Média</text>
+          <rect x="700" y="186" width="82" height="18" rx="9" class="pill-info"/><text x="741" y="199" text-anchor="middle" class="pill-info-txt">EM ANÁLISE</text>
+          <text x="800" y="198" class="val mono">05/09</text>
+          <line x1="180" y1="214" x2="870" y2="214" class="row-line"/>
+
+          <text x="180" y="236" class="val mono">2026-0330</text><text x="230" y="236" class="val">Instituto de Criminalística</text><text x="380" y="236" class="val">Kit coleta de vestígios</text><text x="560" y="236" class="val">150</text><text x="610" y="236" class="val">Alta</text>
+          <rect x="700" y="224" width="82" height="18" rx="9" class="pill-ok"/><text x="741" y="237" text-anchor="middle" class="pill-ok-txt">APROVADA</text>
+          <text x="800" y="236" class="val mono">01/09</text>
+          <line x1="180" y1="252" x2="870" y2="252" class="row-line"/>
+
+          <text x="180" y="274" class="val mono">2026-0325</text><text x="230" y="274" class="val">Delegacia Sul</text><text x="380" y="274" class="val">Papel A4 (resma)</text><text x="560" y="274" class="val">80</text><text x="610" y="274" class="val">Média</text>
+          <rect x="700" y="262" width="82" height="18" rx="9" class="pill-warn"/><text x="741" y="275" text-anchor="middle" class="pill-warn-txt">CONSOLIDADA</text>
+          <text x="800" y="274" class="val mono">29/08</text>
+        </svg>
+        <figcaption>A pílula "Consolidada" indica que a IA agrupou essa demanda com outra igual antes de virar processo — ela some da lista de pendências, mas continua rastreável.</figcaption>
+      </figure>
+      <ul class="interactions">
+        <li><b>Clique em uma linha</b> → abre o detalhe da demanda (ou a Análise de Duplicidade, se for o caso)</li>
+        <li><b>DUPLICIDADE / EM ANÁLISE / APROVADA / CONSOLIDADA</b> são os quatro estados possíveis de status</li>
+      </ul>
+    </section>
+
+    <!-- 5 DUPLICIDADE -->
+    <section class="block" id="s5">
+      <div class="block-head"><span class="block-num">05</span><h2>Análise de possíveis duplicidades</h2><span class="who">Acesso: <b>Planejamento, Autoridade competente</b></span></div>
+      <p class="job">Mostrar por que o sistema suspeita de duplicidade e obrigar uma decisão humana explícita e justificada.</p>
+      <figure class="wf">
+        <svg viewBox="0 0 900 420" class="wf" role="img" aria-label="Tela comparando a nova demanda com dois registros semelhantes, com percentual de similaridade, campos que coincidiram, e botões para consolidar, confirmar ou descartar a duplicidade.">
+          <rect x="0" y="0" width="900" height="44" class="chrome-bar"/>
+          <rect x="0" y="44" width="150" height="376" class="nav-bar"/>
+          <text x="16" y="76" class="nav-item active">Demandas</text>
+
+          <rect x="166" y="58" width="718" height="60" rx="8" class="region" stroke="var(--sev-critical)"/>
+          <text x="182" y="80" class="lab" style="fill:var(--sev-critical)">Nova demanda em análise · 91% de similaridade encontrada</text>
+          <text x="182" y="100" class="val">2026-0341 — Colete balístico nível III-A · 40un · Batalhão de Choque</text>
+
+          <rect x="166" y="132" width="718" height="150" rx="8" class="region"/>
+          <text x="182" y="154" class="val" style="font-weight:600">Registros semelhantes encontrados</text>
+          <text x="182" y="176" class="lab">Origem</text><text x="330" y="176" class="lab">Item</text><text x="520" y="176" class="lab">Similaridade</text><text x="640" y="176" class="lab">Campos coincidentes</text>
+          <line x1="182" y1="184" x2="868" y2="184" class="row-line"/>
+          <text x="182" y="206" class="val">Demanda 2026-0339 (Academia)</text><text x="330" y="206" class="val">Colete à prova de balas III-A</text><text x="520" y="206" class="val" style="fill:var(--sev-critical);font-weight:600">91%</text><text x="640" y="206" class="val" style="font-size:10px">categoria, especificação, período</text>
+          <line x1="182" y1="216" x2="868" y2="216" class="row-line"/>
+          <text x="182" y="238" class="val">Ata SRP 014/2025 (vigente)</text><text x="330" y="238" class="val">Colete balístico III-A</text><text x="520" y="238" class="val" style="fill:var(--sev-warning);font-weight:600">78%</text><text x="640" y="238" class="val" style="font-size:10px">categoria, código padronizado</text>
+          <line x1="182" y1="248" x2="868" y2="248" class="row-line"/>
+          <text x="182" y="270" class="val">Processo SEI 202600011122233 (em andamento)</text><text x="640" y="270" class="val" style="font-size:10px">objeto, categoria</text><text x="520" y="270" class="val" style="fill:var(--sev-info);font-weight:600">70%</text>
+
+          <text x="182" y="304" class="lab">Justificativa da decisão (obrigatória)</text>
+          <rect x="182" y="310" width="702" height="34" rx="5" class="region-soft"/>
+
+          <rect x="182" y="358" width="180" height="32" rx="7" class="btn"/><text x="272" y="378" text-anchor="middle" class="btn-txt">CONSOLIDAR DEMANDAS</text>
+          <rect x="374" y="358" width="170" height="32" rx="7" class="btn-ghost"/><text x="459" y="378" text-anchor="middle" class="btn-ghost-txt">Confirmar duplicidade</text>
+          <rect x="556" y="358" width="150" height="32" rx="7" class="btn-ghost"/><text x="631" y="378" text-anchor="middle" class="btn-ghost-txt">Descartar alerta</text>
+        </svg>
+        <figcaption>As três opções nunca ficam ambíguas: consolidar une as demandas em uma só; confirmar mantém as duas separadas mas as marca como duplicidade sabida; descartar assume que a semelhança é coincidência.</figcaption>
+      </figure>
+      <ul class="interactions">
+        <li><b>Consolidar demandas</b> → une os pedidos em um único processo, somando quantidades</li>
+        <li><b>Confirmar / Descartar</b> → exigem a justificativa preenchida (RN-08); a decisão vai para a trilha de auditoria</li>
+      </ul>
+    </section>
+
+    <!-- 6 PLANEJAMENTO -->
+    <section class="block" id="s6">
+      <div class="block-head"><span class="block-num">06</span><h2>Planejamento anual</h2><span class="who">Acesso: <b>Unidade de planejamento, Autoridade competente</b></span></div>
+      <p class="job">Ver o ano inteiro de aquisições de uma vez, priorizado, e não apenas uma fila por ordem de chegada.</p>
+      <figure class="wf">
+        <svg viewBox="0 0 900 380" class="wf" role="img" aria-label="Quatro colunas de trimestres com cartões de itens priorizados, e um resumo comparando planejado e executado por fonte de recurso.">
+          <rect x="0" y="0" width="900" height="44" class="chrome-bar"/>
+          <rect x="0" y="44" width="150" height="336" class="nav-bar"/>
+          <text x="16" y="104" class="nav-item active">Planejamento</text>
+
+          <text x="182" y="70" class="val" style="font-weight:600">Plano anual 2027</text>
+          <text x="700" y="70" class="lab">Valor total estimado</text><text x="820" y="70" class="val mono" style="font-weight:700">R$ 4,2 mi</text>
+
+          <!-- 4 quarter columns -->
+          <rect x="166" y="86" width="168" height="220" rx="8" class="region-soft"/>
+          <text x="180" y="106" class="lab">1º TRIMESTRE</text>
+          <rect x="178" y="114" width="144" height="42" rx="6" class="region"/><text x="186" y="130" class="val" style="font-size:10px">Colete balístico III-A</text><text x="186" y="144" class="lab">score 92</text>
+          <rect x="178" y="162" width="144" height="42" rx="6" class="region"/><text x="186" y="178" class="val" style="font-size:10px">Kit coleta vestígios</text><text x="186" y="192" class="lab">score 88</text>
+
+          <rect x="342" y="86" width="168" height="220" rx="8" class="region-soft"/>
+          <text x="356" y="106" class="lab">2º TRIMESTRE</text>
+          <rect x="354" y="114" width="144" height="42" rx="6" class="region"/><text x="362" y="130" class="val" style="font-size:10px">Papel A4 (contrato)</text><text x="362" y="144" class="lab">score 74</text>
+
+          <rect x="518" y="86" width="168" height="220" rx="8" class="region-soft"/>
+          <text x="532" y="106" class="lab">3º TRIMESTRE</text>
+          <rect x="530" y="114" width="144" height="42" rx="6" class="region"/><text x="538" y="130" class="val" style="font-size:10px">Viaturas — revisão</text><text x="538" y="144" class="lab">score 69</text>
+
+          <rect x="694" y="86" width="168" height="220" rx="8" class="region-soft"/>
+          <text x="708" y="106" class="lab">4º TRIMESTRE</text>
+          <rect x="706" y="114" width="144" height="42" rx="6" class="region"/><text x="714" y="130" class="val" style="font-size:10px">Equip. de TI — reposição</text><text x="714" y="144" class="lab">score 61</text>
+
+          <rect x="166" y="320" width="696" height="46" rx="8" class="region"/>
+          <text x="182" y="338" class="lab">Planejado × executado (acumulado)</text>
+          <rect x="182" y="346" width="500" height="10" rx="5" fill="var(--line-soft)"/>
+          <rect x="182" y="346" width="310" height="10" rx="5" fill="var(--royal)"/>
+          <text x="700" y="355" class="val mono">62% executado</text>
+        </svg>
+        <figcaption>O número em cada cartão é o escore da matriz de priorização (Etapa 1, item 9) — arrastar um cartão entre trimestres é uma reprogramação, que pede justificativa (RN não numerada aqui, mas mesma lógica do RN-08).</figcaption>
+      </figure>
+      <ul class="interactions">
+        <li><b>Arrastar cartão entre trimestres</b> → reprograma a aquisição, com justificativa obrigatória</li>
+        <li><b>Clique no cartão</b> → abre o detalhe da demanda/itens agrupados que originaram aquele item do plano</li>
+      </ul>
+    </section>
+
+    <!-- 7 PROCESSO -->
+    <section class="block" id="s7">
+      <div class="block-head"><span class="block-num">07</span><h2>Processo de contratação</h2><span class="who">Acesso: <b>Compras, Jurídico, Financeiro, Autoridade</b></span></div>
+      <p class="job">Ver as 24 etapas de um processo específico sem precisar decorar em qual delas ele está.</p>
+      <figure class="wf">
+        <svg viewBox="0 0 900 420" class="wf" role="img" aria-label="Cabeçalho do processo com número, modalidade e fase atual, seguido de seis grupos de etapas em formato de checklist expansível, um deles expandido mostrando responsável, prazo e situação de cada etapa.">
+          <rect x="0" y="0" width="900" height="44" class="chrome-bar"/>
+          <rect x="0" y="44" width="150" height="376" class="nav-bar"/>
+          <text x="16" y="132" class="nav-item active">Processos</text>
+
+          <rect x="166" y="58" width="718" height="54" rx="8" class="region"/>
+          <text x="182" y="78" class="val" style="font-weight:600">Processo SEI 202600011122233</text>
+          <text x="182" y="96" class="lab">Pregão eletrônico · Coordenação de Licitações</text>
+          <rect x="700" y="72" width="168" height="24" rx="12" class="pill-crit"/><text x="784" y="88" text-anchor="middle" class="pill-crit-txt">FASE: PRAZO RECURSAL</text>
+
+          <rect x="166" y="126" width="718" height="26" rx="6" class="region-soft"/><text x="182" y="144" class="val">✓ 1. Demanda &amp; instrução (2/2)</text>
+          <rect x="166" y="156" width="718" height="26" rx="6" class="region-soft"/><text x="182" y="174" class="val">✓ 2. Pré-licitatório (4/4)</text>
+
+          <rect x="166" y="186" width="718" height="150" rx="6" class="region" stroke="var(--sev-critical)"/>
+          <text x="182" y="204" class="val" style="font-weight:600">▾ 3. Licitação (5/6 — em andamento)</text>
+          <line x1="182" y1="212" x2="868" y2="212" class="row-line"/>
+          <text x="200" y="232" class="val" style="font-size:10.5px">✓ Publicação do edital — Compras — concl. 10/08</text>
+          <text x="200" y="252" class="val" style="font-size:10.5px">✓ Recebimento de propostas — Compras — concl. 22/08</text>
+          <text x="200" y="272" class="val" style="font-size:10.5px">✓ Julgamento — Pregoeiro — concl. 25/08</text>
+          <text x="200" y="292" class="val" style="font-size:10.5px">✓ Habilitação — Pregoeiro — concl. 29/08</text>
+          <text x="200" y="312" class="val" style="font-size:10.5px;fill:var(--sev-critical);font-weight:600">● Prazo recursal — Pregoeiro — vence em 2 dias</text>
+
+          <rect x="166" y="344" width="718" height="26" rx="6" class="region-soft"/><text x="182" y="362" class="val">○ 4. Contratação (0/2)</text>
+        </svg>
+        <figcaption>Cada linha de etapa reflete um registro da entidade Etapa (Módulo 5) — o ícone ✓/●/○ é só a leitura visual do campo situacao.</figcaption>
+      </figure>
+      <ul class="interactions">
+        <li><b>Clique em um grupo de fase</b> → expande/recolhe as etapas daquela fase</li>
+        <li><b>Clique em uma etapa</b> → abre seus documentos e histórico de movimentação</li>
+        <li>Fase com pendência crítica <b>já abre expandida</b> por padrão</li>
+      </ul>
+    </section>
+
+    <!-- 8 LINHA DO TEMPO -->
+    <section class="block" id="s8">
+      <div class="block-head"><span class="block-num">08</span><h2>Linha do tempo da licitação</h2><span class="who">Acesso: <b>Compras, Jurídico, Autoridade</b></span></div>
+      <p class="job">Ver de forma visual, não tabular, onde o certame está atrasado em relação ao previsto.</p>
+      <figure class="wf">
+        <svg viewBox="0 0 900 220" class="wf" role="img" aria-label="Linha do tempo horizontal com seis marcos da fase de licitação, cada um com a data prevista e realizada, destacando o marco de prazo recursal como atrasado.">
+          <rect x="0" y="0" width="900" height="44" class="chrome-bar"/>
+          <line x1="60" y1="120" x2="840" y2="120" class="axis"/>
+          <g>
+            <circle cx="80" cy="120" r="7" class="pill-ok"/><text x="80" y="100" text-anchor="middle" class="lab">Edital</text><text x="80" y="146" text-anchor="middle" class="val mono" style="font-size:9px">10/08</text>
+            <circle cx="220" cy="120" r="7" class="pill-ok"/><text x="220" y="100" text-anchor="middle" class="lab">Propostas</text><text x="220" y="146" text-anchor="middle" class="val mono" style="font-size:9px">22/08</text>
+            <circle cx="360" cy="120" r="7" class="pill-ok"/><text x="360" y="100" text-anchor="middle" class="lab">Julgamento</text><text x="360" y="146" text-anchor="middle" class="val mono" style="font-size:9px">25/08</text>
+            <circle cx="500" cy="120" r="7" class="pill-ok"/><text x="500" y="100" text-anchor="middle" class="lab">Habilitação</text><text x="500" y="146" text-anchor="middle" class="val mono" style="font-size:9px">29/08</text>
+            <circle cx="640" cy="120" r="9" class="pill-crit"/><text x="640" y="95" text-anchor="middle" class="lab" style="fill:var(--sev-critical)">Prazo recursal</text><text x="640" y="146" text-anchor="middle" class="val mono" style="font-size:9px;fill:var(--sev-critical)">vence 14/09</text>
+            <circle cx="780" cy="120" r="7" fill="none" stroke="var(--line)"/><text x="780" y="100" text-anchor="middle" class="lab">Homologação</text><text x="780" y="146" text-anchor="middle" class="val mono" style="font-size:9px">prevista 20/09</text>
+          </g>
+        </svg>
+        <figcaption>O marco em vermelho é maior e pulsante na versão final — é o único elemento da tela que precisa de atenção imediata.</figcaption>
+      </figure>
+      <ul class="interactions">
+        <li><b>Clique em um marco</b> → mostra os documentos daquela etapa específica</li>
+      </ul>
+    </section>
+
+    <!-- 9 DOCUMENTOS -->
+    <section class="block" id="s9">
+      <div class="block-head"><span class="block-num">09</span><h2>Controle de documentos</h2><span class="who">Acesso: <b>Compras, Jurídico, Gestor/fiscal</b></span></div>
+      <p class="job">Saber o que falta anexar nesta etapa e não avançar sem isso.</p>
+      <figure class="wf">
+        <svg viewBox="0 0 900 340" class="wf" role="img" aria-label="Checklist de documentos obrigatórios à esquerda com status entregue ou pendente, e à direita o documento selecionado com histórico de versões e área de upload.">
+          <rect x="0" y="0" width="900" height="44" class="chrome-bar"/>
+          <rect x="0" y="44" width="150" height="296" class="nav-bar"/>
+
+          <rect x="166" y="58" width="270" height="270" rx="8" class="region"/>
+          <text x="182" y="80" class="val" style="font-weight:600">Checklist — Prazo recursal</text>
+          <text x="182" y="106" class="val">☑ Ata de julgamento</text>
+          <text x="182" y="130" class="val">☑ Termo de habilitação</text>
+          <text x="182" y="154" class="val" style="fill:var(--sev-critical)">☐ Manifestação de recurso</text>
+          <text x="182" y="178" class="val">☐ Parecer jurídico (opcional)</text>
+
+          <rect x="452" y="58" width="432" height="270" rx="8" class="region"/>
+          <text x="468" y="80" class="val" style="font-weight:600">Manifestação de recurso</text>
+          <text x="468" y="98" class="lab">Status: minuta — aguardando revisão</text>
+          <line x1="468" y1="108" x2="868" y2="108" class="row-line"/>
+          <text x="468" y="128" class="lab">Histórico de versões</text>
+          <text x="468" y="148" class="val" style="font-size:10.5px">v2 — gerada com apoio da IA — 12/09 14:02</text>
+          <text x="468" y="166" class="val" style="font-size:10.5px">v1 — rascunho manual — 11/09 09:40</text>
+          <rect x="468" y="200" width="400" height="60" rx="6" class="region-soft" stroke-dasharray="3 3"/>
+          <text x="668" y="234" text-anchor="middle" class="lab">arrastar arquivo ou clicar para anexar nova versão</text>
+          <rect x="468" y="276" width="130" height="30" rx="7" class="btn"/><text x="533" y="296" text-anchor="middle" class="btn-txt">APROVAR MINUTA</text>
+        </svg>
+        <figcaption>Documento gerado pela IA sempre chega como "minuta" (RN-09) — o botão Aprovar só existe para um usuário humano, nunca é automático.</figcaption>
+      </figure>
+      <ul class="interactions">
+        <li><b>Item da checklist</b> → abre o documento correspondente no painel direito</li>
+        <li><b>Aprovar minuta</b> → só disponível para Jurídico/Gestor competente; muda o status para "aprovado"</li>
+      </ul>
+    </section>
+
+    <!-- 10 ESTOQUE GERAL -->
+    <section class="block" id="s10">
+      <div class="block-head"><span class="block-num">10</span><h2>Estoque geral</h2><span class="who">Acesso: <b>Almoxarifado, Planejamento, consulta geral</b></span></div>
+      <p class="job">Ver o saldo somado de todas as unidades por item, e quais estão em situação crítica.</p>
+      <figure class="wf">
+        <svg viewBox="0 0 900 340" class="wf" role="img" aria-label="Tabela de estoque geral com item, categoria, saldo total, estoque mínimo e máximo e status, com destaque para itens críticos.">
+          <rect x="0" y="0" width="900" height="44" class="chrome-bar"/>
+          <rect x="0" y="44" width="150" height="296" class="nav-bar"/>
+          <text x="16" y="132" class="nav-item active">Estoque</text>
+
+          <rect x="166" y="58" width="718" height="34" rx="6" class="region"/>
+          <text x="180" y="79" class="lab">2 itens em situação crítica</text>
+          <text x="700" y="79" class="lab">Categoria ▾   Unidade ▾</text>
+
+          <rect x="166" y="102" width="718" height="212" rx="8" class="region"/>
+          <text x="180" y="122" class="lab">Item</text><text x="420" y="122" class="lab">Categoria</text><text x="540" y="122" class="lab">Saldo total</text><text x="650" y="122" class="lab">Mín / Máx</text><text x="760" y="122" class="lab">Status</text>
+          <line x1="180" y1="130" x2="868" y2="130" class="row-line"/>
+          <text x="180" y="152" class="val">Papel A4 (resma)</text><text x="420" y="152" class="val">Administrativo</text><text x="540" y="152" class="val mono">100</text><text x="650" y="152" class="val mono">150 / 1200</text>
+          <rect x="760" y="140" width="76" height="18" rx="9" class="pill-crit"/><text x="798" y="153" text-anchor="middle" class="pill-crit-txt">CRÍTICO</text>
+          <line x1="180" y1="168" x2="868" y2="168" class="row-line"/>
+          <text x="180" y="190" class="val">Colete balístico III-A</text><text x="420" y="190" class="val">Operacional</text><text x="540" y="190" class="val mono">22</text><text x="650" y="190" class="val mono">30 / 200</text>
+          <rect x="760" y="178" width="76" height="18" rx="9" class="pill-crit"/><text x="798" y="191" text-anchor="middle" class="pill-crit-txt">CRÍTICO</text>
+          <line x1="180" y1="206" x2="868" y2="206" class="row-line"/>
+          <text x="180" y="228" class="val">Toner impressora laser</text><text x="420" y="228" class="val">Tecnológico</text><text x="540" y="228" class="val mono">62</text><text x="650" y="228" class="val mono">20 / 80</text>
+          <rect x="760" y="216" width="76" height="18" rx="9" class="pill-ok"/><text x="798" y="229" text-anchor="middle" class="pill-ok-txt">NORMAL</text>
+          <line x1="180" y1="244" x2="868" y2="244" class="row-line"/>
+          <text x="180" y="266" class="val">Kit coleta de vestígios</text><text x="420" y="266" class="val">Médico-pericial</text><text x="540" y="266" class="val mono">340</text><text x="650" y="266" class="val mono">100 / 500</text>
+          <rect x="760" y="254" width="76" height="18" rx="9" class="pill-ok"/><text x="798" y="267" text-anchor="middle" class="pill-ok-txt">NORMAL</text>
+        </svg>
+        <figcaption>Clicar em qualquer linha abre a Tela 11 (Estoque por unidade) já filtrada para aquele item, mostrando onde exatamente o saldo está.</figcaption>
+      </figure>
+      <ul class="interactions">
+        <li><b>Clique na linha</b> → abre o detalhamento por unidade daquele item</li>
+        <li><b>Status</b> vem direto do Módulo 7 (comparação com estoque mínimo cadastrado no item)</li>
+      </ul>
+    </section>
+
+    <!-- 11 ESTOQUE POR UNIDADE -->
+    <section class="block" id="s11">
+      <div class="block-head"><span class="block-num">11</span><h2>Estoque por unidade</h2><span class="who">Acesso: <b>Almoxarifado da unidade</b></span></div>
+      <p class="job">Controlar o saldo físico local: o que entrou, o que está reservado e o que pode ser transferido.</p>
+      <figure class="wf">
+        <svg viewBox="0 0 900 320" class="wf" role="img" aria-label="Seletor de unidade, tabela com item, disponível, reservado, lote e validade, e botão para transferir saldo entre unidades." >
+          <rect x="0" y="0" width="900" height="44" class="chrome-bar"/>
+          <rect x="0" y="44" width="150" height="276" class="nav-bar"/>
+          <text x="16" y="132" class="nav-item active">Estoque</text>
+
+          <rect x="166" y="58" width="240" height="28" rx="6" class="region-soft"/><text x="180" y="77" class="val mono">Delegacia Sul ▾</text>
+          <rect x="700" y="58" width="184" height="28" rx="7" class="btn"/><text x="792" y="77" text-anchor="middle" class="btn-txt">+ TRANSFERIR SALDO</text>
+
+          <rect x="166" y="100" width="718" height="180" rx="8" class="region"/>
+          <text x="180" y="120" class="lab">Item</text><text x="420" y="120" class="lab">Disponível</text><text x="520" y="120" class="lab">Reservado</text><text x="620" y="120" class="lab">Lote</text><text x="740" y="120" class="lab">Validade</text>
+          <line x1="180" y1="128" x2="868" y2="128" class="row-line"/>
+          <text x="180" y="150" class="val">Toner impressora laser</text><text x="420" y="150" class="val mono">18</text><text x="520" y="150" class="val mono">0</text><text x="620" y="150" class="val mono">L2603</text><text x="740" y="150" class="val mono">—</text>
+          <line x1="180" y1="166" x2="868" y2="166" class="row-line"/>
+          <text x="180" y="188" class="val">Kit coleta de vestígios</text><text x="420" y="188" class="val mono">40</text><text x="520" y="188" class="val mono">12</text><text x="620" y="188" class="val mono">L2588</text><text x="740" y="188" class="val mono" style="fill:var(--sev-warning)">02/2027</text>
+          <line x1="180" y1="204" x2="868" y2="204" class="row-line"/>
+          <text x="180" y="226" class="val">Papel A4 (resma)</text><text x="420" y="226" class="val mono">14</text><text x="520" y="226" class="val mono">0</text><text x="620" y="226" class="val mono">—</text><text x="740" y="226" class="val mono">—</text>
+        </svg>
+        <figcaption>"Reservado" é o saldo já comprometido com uma demanda aprovada (RN-05) — não aparece como disponível para outra unidade solicitar.</figcaption>
+      </figure>
+      <ul class="interactions">
+        <li><b>+ Transferir saldo</b> → abre formulário de transferência (unidade destino, item, quantidade) já sugerido pela IA quando aplicável</li>
+      </ul>
+    </section>
+
+    <!-- 12 PREVISÃO DE CONSUMO -->
+    <section class="block" id="s12">
+      <div class="block-head"><span class="block-num">12</span><h2>Previsão de consumo</h2><span class="who">Acesso: <b>Planejamento, Almoxarifado</b></span></div>
+      <p class="job">Mostrar quando cada item vai esgotar no ritmo atual, e não só quanto tem hoje.</p>
+      <figure class="wf">
+        <svg viewBox="0 0 900 360" class="wf" role="img" aria-label="Gráfico de consumo histórico e previsão para um item, seguido de tabela com consumo médio diário, data prevista de esgotamento e nível de risco por item, com um item marcado como consumo extraordinário." >
+          <rect x="0" y="0" width="900" height="44" class="chrome-bar"/>
+          <rect x="0" y="44" width="150" height="316" class="nav-bar"/>
+
+          <rect x="166" y="58" width="718" height="140" rx="8" class="region"/>
+          <text x="182" y="78" class="val" style="font-weight:600">Papel A4 — consumo histórico e previsão</text>
+          <line x1="200" y1="180" x2="850" y2="180" class="axis"/>
+          <line x1="200" y1="80" x2="200" y2="180" class="axis"/>
+          <polyline class="plot-hist" points="200,160 260,150 320,158 380,140 440,132 500,120"/>
+          <polyline class="plot-fore" points="500,120 580,100 660,74 740,50"/>
+          <text x="500" y="112" class="lab" style="fill:var(--honey)">↑ pico extraordinário desconsiderado da taxa-base</text>
+          <text x="740" y="42" class="lab" style="fill:var(--honey)">esgota 10/10</text>
+
+          <rect x="166" y="208" width="718" height="130" rx="8" class="region"/>
+          <text x="182" y="228" class="lab">Item</text><text x="420" y="228" class="lab">Consumo médio/dia</text><text x="580" y="228" class="lab">Esgota em</text><text x="700" y="228" class="lab">Risco</text>
+          <line x1="182" y1="236" x2="868" y2="236" class="row-line"/>
+          <text x="182" y="258" class="val">Papel A4 (resma)</text><text x="420" y="258" class="val mono">3,5/dia</text><text x="580" y="258" class="val mono">28 dias</text>
+          <rect x="700" y="246" width="66" height="18" rx="9" class="pill-crit"/><text x="733" y="259" text-anchor="middle" class="pill-crit-txt">ALTO</text>
+          <line x1="182" y1="274" x2="868" y2="274" class="row-line"/>
+          <text x="182" y="296" class="val">Toner impressora laser</text><text x="420" y="296" class="val mono">0,08/dia</text><text x="580" y="296" class="val mono">551 dias</text>
+          <rect x="700" y="284" width="66" height="18" rx="9" class="pill-ok"/><text x="733" y="297" text-anchor="middle" class="pill-ok-txt">BAIXO</text>
+        </svg>
+        <figcaption>O pico marcado em honey no gráfico é uma requisição sinalizada como extraordinária (RN-11) — entra no histórico visível, mas não distorce a taxa usada para prever o esgotamento.</figcaption>
+      </figure>
+      <ul class="interactions">
+        <li><b>Clique no item da tabela</b> → troca o gráfico acima para aquele item</li>
+        <li><b>Risco ALTO</b> → aparece automaticamente no Painel geral e nas Providências recomendadas</li>
+      </ul>
+    </section>
+
+    <!-- 13 CONTRATOS -->
+    <section class="block" id="s13">
+      <div class="block-head"><span class="block-num">13</span><h2>Contratos e atas</h2><span class="who">Acesso: <b>Compras, Gestor/fiscal, Financeiro</b></span></div>
+      <p class="job">Ver de forma consolidada tudo o que está formalizado e quando cada coisa vence.</p>
+      <figure class="wf">
+        <svg viewBox="0 0 900 300" class="wf" role="img" aria-label="Tabela de contratos e atas com número, fornecedor, objeto, vigência, próximo reajuste, valor e status, com chips de filtro por vigente, vencendo e vencido.">
+          <rect x="0" y="0" width="900" height="44" class="chrome-bar"/>
+          <rect x="0" y="44" width="150" height="256" class="nav-bar"/>
+          <text x="16" y="132" class="nav-item active">Contratos e atas</text>
+
+          <rect x="166" y="58" width="90" height="24" rx="12" class="pill-ok"/><text x="211" y="74" text-anchor="middle" class="pill-ok-txt">VIGENTE (14)</text>
+          <rect x="264" y="58" width="100" height="24" rx="12" class="pill-warn"/><text x="314" y="74" text-anchor="middle" class="pill-warn-txt">VENCENDO (5)</text>
+          <rect x="372" y="58" width="90" height="24" rx="12" class="pill-crit"/><text x="417" y="74" text-anchor="middle" class="pill-crit-txt">VENCIDO (1)</text>
+
+          <rect x="166" y="94" width="718" height="196" rx="8" class="region"/>
+          <text x="180" y="114" class="lab">Nº</text><text x="250" y="114" class="lab">Fornecedor</text><text x="420" y="114" class="lab">Vigência fim</text><text x="530" y="114" class="lab">Próx. reajuste</text><text x="650" y="114" class="lab">Valor</text><text x="760" y="114" class="lab">Status</text>
+          <line x1="180" y1="122" x2="868" y2="122" class="row-line"/>
+          <text x="180" y="144" class="val mono">CT-2026-014</text><text x="250" y="144" class="val">Papelaria Central Ltda.</text><text x="420" y="144" class="val mono">16/11/2026</text><text x="530" y="144" class="val mono">14/01/2027</text><text x="650" y="144" class="val mono">R$ 185k</text>
+          <rect x="760" y="132" width="76" height="18" rx="9" class="pill-warn"/><text x="798" y="145" text-anchor="middle" class="pill-warn-txt">VENCENDO</text>
+          <line x1="180" y1="160" x2="868" y2="160" class="row-line"/>
+          <text x="180" y="182" class="val mono">CT-2026-027</text><text x="250" y="182" class="val">AutoManutenção Goiás S.A.</text><text x="420" y="182" class="val mono">14/07/2027</text><text x="530" y="182" class="val mono">14/07/2027</text><text x="650" y="182" class="val mono">R$ 940k</text>
+          <rect x="760" y="170" width="76" height="18" rx="9" class="pill-ok"/><text x="798" y="183" text-anchor="middle" class="pill-ok-txt">VIGENTE</text>
+        </svg>
+        <figcaption>Clicar em "VENCENDO" filtra a tabela e é o mesmo conjunto de dados usado no cartão do Painel geral — uma única fonte de verdade.</figcaption>
+      </figure>
+      <ul class="interactions">
+        <li><b>Chips de status</b> → filtram a tabela</li>
+        <li><b>Clique na linha</b> → abre o processo de origem (Tela 7) e o histórico de aditivos</li>
+      </ul>
+    </section>
+
+    <!-- 14 ALERTAS -->
+    <section class="block" id="s14">
+      <div class="block-head"><span class="block-num">14</span><h2>Central de alertas</h2><span class="who">Acesso: <b>todos os perfis</b>, escopo por permissão</span></div>
+      <p class="job">Reunir num só lugar todo alerta gerado por qualquer módulo, para não depender de lembrar onde cada um mora.</p>
+      <figure class="wf">
+        <svg viewBox="0 0 900 320" class="wf" role="img" aria-label="Filtro lateral por severidade, tipo e módulo de origem, e uma lista de alertas com faixa de cor indicando a severidade e botão para tratar cada um." >
+          <rect x="0" y="0" width="900" height="44" class="chrome-bar"/>
+          <rect x="0" y="44" width="150" height="276" class="nav-bar"/>
+          <text x="16" y="244" class="nav-item active">Alertas</text>
+
+          <rect x="166" y="58" width="150" height="262" rx="8" class="region"/>
+          <text x="180" y="80" class="lab">Severidade</text>
+          <text x="180" y="100" class="val" style="font-size:10.5px">☑ Crítico (4)</text>
+          <text x="180" y="118" class="val" style="font-size:10.5px">☑ Atenção (7)</text>
+          <text x="180" y="136" class="val" style="font-size:10.5px">☐ Informativo (12)</text>
+          <text x="180" y="168" class="lab">Módulo de origem</text>
+          <text x="180" y="188" class="val" style="font-size:10.5px">☑ Prazos</text>
+          <text x="180" y="206" class="val" style="font-size:10.5px">☑ Estoque</text>
+          <text x="180" y="224" class="val" style="font-size:10.5px">☑ Duplicidade</text>
+
+          <rect x="332" y="58" width="552" height="60" rx="8" class="region"/>
+          <rect x="332" y="58" width="5" height="60" fill="var(--sev-critical)"/>
+          <text x="348" y="78" class="val">Prazo recursal vence em 2 dias — Processo SEI ...122233</text>
+          <text x="348" y="96" class="lab">Gerado pelo Módulo 6 · 12/09 08:00</text>
+          <rect x="784" y="76" width="82" height="26" rx="7" class="btn"/><text x="825" y="93" text-anchor="middle" class="btn-txt">TRATAR</text>
+
+          <rect x="332" y="126" width="552" height="60" rx="8" class="region"/>
+          <rect x="332" y="126" width="5" height="60" fill="var(--sev-critical)"/>
+          <text x="348" y="146" class="val">Duplicidade 91% — Colete balístico III-A</text>
+          <text x="348" y="164" class="lab">Gerado pelo Módulo 3 · 08/09 11:20</text>
+          <rect x="784" y="144" width="82" height="26" rx="7" class="btn"/><text x="825" y="161" text-anchor="middle" class="btn-txt">TRATAR</text>
+
+          <rect x="332" y="194" width="552" height="60" rx="8" class="region"/>
+          <rect x="332" y="194" width="5" height="60" fill="var(--sev-warning)"/>
+          <text x="348" y="214" class="val">Papel A4 com previsão de esgotamento em 28 dias</text>
+          <text x="348" y="232" class="lab">Gerado pelo Módulo 8 (IA) · 07/09 06:00</text>
+          <rect x="784" y="212" width="82" height="26" rx="7" class="btn-ghost"/><text x="825" y="229" text-anchor="middle" class="btn-ghost-txt">TRATAR</text>
+        </svg>
+        <figcaption>"Tratar" leva direto à tela onde o alerta se resolve (processo, duplicidade ou estoque) — a Central de Alertas nunca resolve nada, só organiza.</figcaption>
+      </figure>
+      <ul class="interactions">
+        <li><b>Tratar</b> → navega para a tela de origem do alerta</li>
+        <li>Alertas tratados saem da lista, mas continuam consultáveis na Auditoria</li>
+      </ul>
+    </section>
+
+    <!-- 15 IA -->
+    <section class="block" id="s15">
+      <div class="block-head"><span class="block-num">15</span><h2>Assistente de inteligência artificial</h2><span class="who">Acesso: <b>todos os perfis</b>, respostas por permissão</span></div>
+      <p class="job">Responder perguntas em linguagem natural sempre mostrando de onde veio a resposta.</p>
+      <figure class="wf">
+        <svg viewBox="0 0 900 400" class="wf" role="img" aria-label="Interface de chat com perguntas sugeridas, uma pergunta do usuário, uma resposta da IA estruturada em dados usados, critérios, confiança, risco e providência sugerida, e campo de entrada de texto." >
+          <rect x="0" y="0" width="900" height="44" class="chrome-bar"/>
+          <rect x="0" y="44" width="150" height="356" class="nav-bar"/>
+          <text x="16" y="272" class="nav-item active">Assistente IA</text>
+
+          <rect x="166" y="58" width="718" height="26" rx="13" class="btn-ghost"/><text x="200" y="75" class="btn-ghost-txt">"Temos material suficiente para 6 meses?"</text>
+          <rect x="166" y="58" width="718" height="26" rx="13" class="btn-ghost" opacity="0"/>
+
+          <rect x="166" y="92" width="718" height="240" rx="8" class="region"/>
+          <text x="182" y="114" class="val" style="font-weight:600">Você</text>
+          <text x="182" y="132" class="val">Existe processo em andamento para Colete balístico III-A?</text>
+
+          <rect x="182" y="146" width="670" height="170" rx="8" class="region-soft"/>
+          <text x="196" y="164" class="val" style="font-weight:600;fill:var(--royal-ink)">SICOMP-IA</text>
+          <text x="196" y="182" class="val" style="font-size:10.5px">Sim — Processo SEI 202600011122233, fase "Prazo recursal", 2 dias restantes.</text>
+          <line x1="196" y1="192" x2="838" y2="192" class="row-line"/>
+          <text x="196" y="208" class="lab">Dados usados</text><text x="300" y="208" class="val" style="font-size:9.5px">Processo, Etapa, Alerta</text>
+          <text x="196" y="224" class="lab">Confiança</text><text x="300" y="224" class="val" style="font-size:9.5px">Alta (dado direto, sem inferência)</text>
+          <text x="196" y="240" class="lab">Risco identificado</text><text x="300" y="240" class="val" style="font-size:9.5px">Perda de prazo recursal</text>
+          <text x="196" y="256" class="lab">Providência sugerida</text><text x="300" y="256" class="val" style="font-size:9.5px">Acompanhar interposição de recurso até 14/09</text>
+          <text x="196" y="272" class="lab">Validação humana</text><text x="300" y="272" class="val" style="font-size:9.5px;fill:var(--sev-warning)">Necessária — apenas informativo</text>
+          <text x="196" y="296" class="lab" style="font-style:italic;text-transform:none">Por que recebi esta resposta? ▾</text>
+
+          <rect x="166" y="350" width="600" height="34" rx="17" class="region-soft"/>
+          <text x="182" y="371" class="lab" style="text-transform:none">Pergunte algo sobre um contrato, item ou processo…</text>
+          <rect x="778" y="350" width="106" height="34" rx="17" class="btn"/><text x="831" y="371" text-anchor="middle" class="btn-txt">PERGUNTAR</text>
+        </svg>
+        <figcaption>O bloco de seis campos (Etapa 1, item 9) aparece em toda resposta — nunca só o texto solto, mesmo quando a resposta parece óbvia.</figcaption>
+      </figure>
+      <ul class="interactions">
+        <li><b>Chips de sugestão</b> → perguntas prontas para quem não sabe por onde começar</li>
+        <li><b>"Por que recebi esta resposta?"</b> → expande e mostra os registros exatos do banco usados</li>
+      </ul>
+    </section>
+
+    <!-- 16 RELATÓRIOS -->
+    <section class="block" id="s16">
+      <div class="block-head"><span class="block-num">16</span><h2>Relatórios e indicadores</h2><span class="who">Acesso: <b>Autoridade, Planejamento, Auditoria, Consulta</b></span></div>
+      <p class="job">Dar à liderança uma visão executiva sem precisar pedir relatório para ninguém.</p>
+      <figure class="wf">
+        <svg viewBox="0 0 900 360" class="wf" role="img" aria-label="Filtros por período, unidade, categoria e fonte de recurso, indicadores executivos e dois gráficos: consumo por categoria e execução mensal do planejamento." >
+          <rect x="0" y="0" width="900" height="44" class="chrome-bar"/>
+          <rect x="0" y="44" width="150" height="316" class="nav-bar"/>
+          <text x="16" y="272" class="nav-item active">Relatórios</text>
+
+          <rect x="166" y="58" width="718" height="30" rx="6" class="region"/>
+          <text x="180" y="78" class="lab">Período ▾   Unidade ▾   Categoria ▾   Fonte de recurso ▾</text>
+          <rect x="800" y="64" width="72" height="20" rx="10" class="btn-ghost"/><text x="836" y="78" text-anchor="middle" class="btn-ghost-txt" style="font-size:9px">EXPORTAR</text>
+
+          <rect x="166" y="100" width="172" height="58" rx="8" class="region"/><text x="180" y="120" class="lab">Economia obtida</text><text x="180" y="144" class="big" style="fill:var(--sev-ok)">R$ 380k</text>
+          <rect x="350" y="100" width="172" height="58" rx="8" class="region"/><text x="364" y="120" class="lab">Prazo médio</text><text x="364" y="144" class="big">96 dias</text>
+          <rect x="534" y="100" width="172" height="58" rx="8" class="region"/><text x="548" y="120" class="lab">Valor contratado</text><text x="548" y="144" class="big">R$ 2,6 mi</text>
+          <rect x="718" y="100" width="166" height="58" rx="8" class="region"/><text x="732" y="120" class="lab">Processos concluídos</text><text x="732" y="144" class="big">31</text>
+
+          <rect x="166" y="172" width="345" height="150" rx="8" class="region"/>
+          <text x="182" y="192" class="val" style="font-weight:600">Consumo por categoria</text>
+          <rect x="196" y="270" width="30" height="30" fill="var(--royal)"/><rect x="246" y="240" width="30" height="60" fill="var(--royal)"/><rect x="296" y="220" width="30" height="80" fill="var(--royal)"/><rect x="346" y="255" width="30" height="45" fill="var(--royal)"/><rect x="396" y="280" width="30" height="20" fill="var(--royal)"/>
+          <line x1="190" y1="300" x2="450" y2="300" class="axis"/>
+
+          <rect x="521" y="172" width="363" height="150" rx="8" class="region"/>
+          <text x="537" y="192" class="val" style="font-weight:600">Execução mensal do plano</text>
+          <line x1="540" y1="290" x2="860" y2="290" class="axis"/>
+          <polyline class="plot-hist" points="540,270 580,255 620,260 660,235 700,220 740,225 780,200 820,190"/>
+        </svg>
+        <figcaption>Os mesmos quatro indicadores do topo aparecem no Painel geral em versão resumida — aqui ganham filtros completos e exportação.</figcaption>
+      </figure>
+      <ul class="interactions">
+        <li><b>Exportar</b> → gera planilha/PDF do recorte filtrado</li>
+        <li>Filtros combinam entre si (ex.: uma categoria dentro de uma unidade em um trimestre)</li>
+      </ul>
+    </section>
+
+    <!-- 17 ADMIN -->
+    <section class="block" id="s17">
+      <div class="block-head"><span class="block-num">17</span><h2>Administração de usuários e permissões</h2><span class="who">Acesso: <b>Administrador geral</b></span></div>
+      <p class="job">Cadastrar servidores, definir perfil e unidade, e conferir rapidamente o que cada perfil pode fazer.</p>
+      <figure class="wf">
+        <svg viewBox="0 0 900 320" class="wf" role="img" aria-label="Tabela de usuários com nome, matrícula, perfil, unidade e status, botão para novo usuário, e um painel lateral com prévia da matriz de permissões do perfil selecionado." >
+          <rect x="0" y="0" width="900" height="44" class="chrome-bar"/>
+          <rect x="0" y="44" width="150" height="276" class="nav-bar"/>
+          <text x="16" y="300" class="nav-item active">Administração</text>
+
+          <rect x="166" y="58" width="140" height="28" rx="7" class="btn"/><text x="236" y="77" text-anchor="middle" class="btn-txt">+ NOVO USUÁRIO</text>
+
+          <rect x="166" y="96" width="440" height="212" rx="8" class="region"/>
+          <text x="182" y="116" class="lab">Nome</text><text x="330" y="116" class="lab">Perfil</text><text x="440" y="116" class="lab">Unidade</text><text x="560" y="116" class="lab">Status</text>
+          <line x1="182" y1="124" x2="592" y2="124" class="row-line"/>
+          <text x="182" y="146" class="val">Ana Ferreira</text><text x="330" y="146" class="val" style="font-size:10px">Gestor de contrato</text><text x="440" y="146" class="val" style="font-size:10px">Sede</text>
+          <rect x="560" y="134" width="52" height="18" rx="9" class="pill-ok"/><text x="586" y="147" text-anchor="middle" class="pill-ok-txt">ATIVO</text>
+          <line x1="182" y1="162" x2="592" y2="162" class="row-line"/>
+          <text x="182" y="184" class="val">Carlos Souza</text><text x="330" y="184" class="val" style="font-size:10px">Fiscal de contrato</text><text x="440" y="184" class="val" style="font-size:10px">Sede</text>
+          <rect x="560" y="172" width="52" height="18" rx="9" class="pill-ok"/><text x="586" y="185" text-anchor="middle" class="pill-ok-txt">ATIVO</text>
+          <line x1="182" y1="200" x2="592" y2="200" class="row-line"/>
+          <text x="182" y="222" class="val">Bruno Lima</text><text x="330" y="222" class="val" style="font-size:10px">Setor de compras</text><text x="440" y="222" class="val" style="font-size:10px">Coord. Licitações</text>
+          <rect x="560" y="210" width="52" height="18" rx="9" class="pill-warn"/><text x="586" y="223" text-anchor="middle" class="pill-warn-txt">INATIVO</text>
+
+          <rect x="622" y="96" width="262" height="212" rx="8" class="region"/>
+          <text x="638" y="118" class="val" style="font-weight:600">Perfil: Fiscal de contrato</text>
+          <line x1="638" y1="128" x2="868" y2="128" class="row-line"/>
+          <text x="638" y="150" class="val" style="font-size:10px">Fluxo do processo (M5): editar</text>
+          <text x="638" y="170" class="val" style="font-size:10px">Prazos (M6): editar</text>
+          <text x="638" y="190" class="val" style="font-size:10px">Documentos (M9): editar</text>
+          <text x="638" y="210" class="val" style="font-size:10px">Estoque (M7): visualizar</text>
+          <text x="638" y="238" class="lab" style="font-style:italic;text-transform:none">ver matriz completa (Etapa 1) →</text>
+        </svg>
+        <figcaption>O painel de permissões é somente leitura aqui — é a mesma matriz definida na Etapa 1; qualquer mudança de regra volta para aquele documento, não é editada tela a tela.</figcaption>
+      </figure>
+      <ul class="interactions">
+        <li><b>+ Novo usuário</b> → formulário de cadastro com matrícula, perfil e unidade</li>
+        <li><b>Clique em um usuário</b> → mostra o resumo de permissões do perfil dele</li>
+      </ul>
+    </section>
+
+  </main>
+
+  <footer class="doc-foot">
+    SICOMP-IA — Documento técnico da Etapa 2 · próxima entrega: protótipo funcional navegável com dados fictícios (Etapa 3), mediante aprovação deste conteúdo.
+  </footer>
+</div>

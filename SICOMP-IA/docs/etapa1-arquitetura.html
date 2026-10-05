@@ -1,0 +1,1135 @@
+<title>SICOMP-IA — Etapa 1</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700;800&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+  :root {
+    --royal: #1E3A8A;
+    --royal-ink: #142868;
+    --royal-soft: #E7ECFA;
+    --honey: #C98A22;
+    --honey-soft: #F7ECD8;
+    --paper: #F5F6FA;
+    --surface: #FFFFFF;
+    --surface-2: #FBFBFD;
+    --ink: #1B2233;
+    --ink-soft: #545F78;
+    --ink-faint: #7C87A0;
+    --line: #DBE0EC;
+    --line-soft: #E9ECF4;
+    --sev-critical: #B23A2E;
+    --sev-critical-soft: #F7E3E0;
+    --sev-warning: #B4791A;
+    --sev-warning-soft: #F6E8D2;
+    --sev-info: #2C6C9C;
+    --sev-info-soft: #DEEAF4;
+    --sev-ok: #2E7D5B;
+    --sev-ok-soft: #DFEEE6;
+    --shadow: 0 1px 2px rgba(20, 40, 104, 0.06), 0 8px 24px -12px rgba(20, 40, 104, 0.18);
+    color-scheme: light;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --royal: #8EA9EC;
+      --royal-ink: #C6D4F7;
+      --royal-soft: #1B2748;
+      --honey: #E7B155;
+      --honey-soft: #3A2E17;
+      --paper: #0D1220;
+      --surface: #141A2C;
+      --surface-2: #10152400;
+      --surface-2: #101524;
+      --ink: #E7EAF5;
+      --ink-soft: #AEB7D0;
+      --ink-faint: #7C87A0;
+      --line: #2A3252;
+      --line-soft: #212944;
+      --sev-critical: #E28578;
+      --sev-critical-soft: #3A2220;
+      --sev-warning: #E0AA5C;
+      --sev-warning-soft: #382C18;
+      --sev-info: #7FB2DD;
+      --sev-info-soft: #1B2E3E;
+      --sev-ok: #7FC3A3;
+      --sev-ok-soft: #172E24;
+      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px -12px rgba(0,0,0,0.5);
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --royal: #8EA9EC;
+    --royal-ink: #C6D4F7;
+    --royal-soft: #1B2748;
+    --honey: #E7B155;
+    --honey-soft: #3A2E17;
+    --paper: #0D1220;
+    --surface: #141A2C;
+    --surface-2: #101524;
+    --ink: #E7EAF5;
+    --ink-soft: #AEB7D0;
+    --ink-faint: #7C87A0;
+    --line: #2A3252;
+    --line-soft: #212944;
+    --sev-critical: #E28578;
+    --sev-critical-soft: #3A2220;
+    --sev-warning: #E0AA5C;
+    --sev-warning-soft: #382C18;
+    --sev-info: #7FB2DD;
+    --sev-info-soft: #1B2E3E;
+    --sev-ok: #7FC3A3;
+    --sev-ok-soft: #172E24;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px -12px rgba(0,0,0,0.5);
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Source Serif 4', Georgia, 'Times New Roman', serif;
+    font-size: 16px;
+    line-height: 1.65;
+  }
+
+  .doc-shell {
+    display: grid;
+    grid-template-columns: 272px minmax(0, 1fr);
+    max-width: 1280px;
+    margin: 0 auto;
+    align-items: start;
+  }
+
+  /* ---------- Cabeçalho do dossiê ---------- */
+  .cover {
+    grid-column: 1 / -1;
+    background: linear-gradient(155deg, var(--royal-ink) 0%, var(--royal) 62%, var(--royal) 100%);
+    color: #F3F6FF;
+    padding: 40px clamp(20px, 4vw, 56px) 34px;
+    position: relative;
+    overflow: hidden;
+  }
+  .cover::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: repeating-linear-gradient(115deg, rgba(255,255,255,0.05) 0 1px, transparent 1px 64px);
+    pointer-events: none;
+  }
+  .cover-kicker {
+    font-family: 'Public Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--honey);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .cover-kicker::before {
+    content: "";
+    width: 22px; height: 2px;
+    background: var(--honey);
+    display: inline-block;
+  }
+  .cover h1 {
+    font-family: 'Public Sans', sans-serif;
+    font-weight: 800;
+    font-size: clamp(28px, 4vw, 42px);
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    margin: 14px 0 8px;
+    text-wrap: balance;
+    max-width: 20ch;
+  }
+  .cover p.lede {
+    font-family: 'Source Serif 4', serif;
+    font-size: 17px;
+    color: #D8E1FA;
+    max-width: 62ch;
+    margin: 0 0 22px;
+  }
+  .cover-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 28px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12.5px;
+    color: #C7D3F2;
+    border-top: 1px solid rgba(255,255,255,0.18);
+    padding-top: 16px;
+  }
+  .cover-meta strong { color: #FFFFFF; font-weight: 500; }
+  .stage-track {
+    grid-column: 1 / -1;
+    background: var(--surface);
+    border-bottom: 1px solid var(--line);
+    padding: 14px clamp(20px, 4vw, 56px);
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    font-family: 'Public Sans', sans-serif;
+  }
+  .stage {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 12.5px; color: var(--ink-faint);
+    padding: 5px 10px 5px 6px;
+    border-radius: 999px;
+  }
+  .stage .dot {
+    width: 20px; height: 20px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700;
+    border: 1.5px solid var(--line);
+    color: var(--ink-faint);
+  }
+  .stage.current { background: var(--royal-soft); color: var(--royal-ink); font-weight: 600; }
+  .stage.current .dot { background: var(--royal); border-color: var(--royal); color: #fff; }
+  .stage.done .dot { background: var(--sev-ok); border-color: var(--sev-ok); color: #fff; }
+
+  /* ---------- TOC lateral ---------- */
+  nav.toc {
+    position: sticky;
+    top: 0;
+    align-self: start;
+    height: 100vh;
+    overflow-y: auto;
+    padding: 28px 18px 40px 24px;
+    border-right: 1px solid var(--line);
+    font-family: 'Public Sans', sans-serif;
+  }
+  nav.toc h2 {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--ink-faint);
+    margin: 0 0 12px;
+  }
+  nav.toc ol { list-style: none; margin: 0; padding: 0; counter-reset: toc; }
+  nav.toc li { counter-increment: toc; margin: 0; }
+  nav.toc a {
+    display: flex; gap: 10px;
+    padding: 8px 6px;
+    border-radius: 8px;
+    color: var(--ink-soft);
+    text-decoration: none;
+    font-size: 13.5px;
+    line-height: 1.35;
+  }
+  nav.toc a::before {
+    content: counter(toc, decimal-leading-zero);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11.5px;
+    color: var(--honey);
+    flex: none;
+    padding-top: 1px;
+  }
+  nav.toc a:hover { background: var(--surface-2); color: var(--ink); }
+  nav.toc .toc-note {
+    margin-top: 22px;
+    padding: 12px 14px;
+    background: var(--honey-soft);
+    border: 1px solid color-mix(in srgb, var(--honey) 35%, transparent);
+    border-radius: 10px;
+    font-family: 'Source Serif 4', serif;
+    font-size: 13px;
+    color: var(--ink-soft);
+  }
+
+  /* ---------- Conteúdo ---------- */
+  main {
+    padding: 40px clamp(20px, 4vw, 56px) 100px;
+    min-width: 0;
+  }
+  section.block {
+    padding: 44px 0;
+    border-bottom: 1px solid var(--line-soft);
+  }
+  section.block:last-child { border-bottom: none; }
+
+  .block-head { display: flex; gap: 18px; align-items: baseline; margin-bottom: 18px; }
+  .block-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 15px;
+    color: var(--honey);
+    font-weight: 500;
+    flex: none;
+    padding-top: 3px;
+  }
+  h2 {
+    font-family: 'Public Sans', sans-serif;
+    font-weight: 700;
+    font-size: clamp(21px, 2.4vw, 27px);
+    color: var(--royal-ink);
+    margin: 0;
+    text-wrap: balance;
+  }
+  h3 {
+    font-family: 'Public Sans', sans-serif;
+    font-weight: 600;
+    font-size: 16.5px;
+    color: var(--ink);
+    margin: 30px 0 10px;
+  }
+  p { max-width: 72ch; margin: 0 0 14px; color: var(--ink); }
+  p.lead { font-size: 17.5px; color: var(--ink-soft); max-width: 68ch; }
+  ul.plain, ol.plain { max-width: 72ch; padding-left: 22px; margin: 0 0 16px; }
+  ul.plain li, ol.plain li { margin-bottom: 6px; }
+  strong { color: var(--royal-ink); font-weight: 600; }
+  a.inline { color: var(--royal); }
+  code, .mono { font-family: 'IBM Plex Mono', monospace; font-size: 0.92em; }
+
+  .why-box {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    overflow: hidden;
+    margin: 20px 0 8px;
+  }
+  .why-box > div { background: var(--surface); padding: 16px 18px; }
+  .why-box h4 {
+    font-family: 'Public Sans', sans-serif;
+    font-size: 11.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink-faint);
+    margin: 0 0 8px;
+  }
+  .why-box p { font-size: 14px; margin: 0; max-width: none; }
+  .why-box .tag-good h4 { color: var(--sev-ok); }
+  .why-box .tag-risk h4 { color: var(--sev-warning); }
+  .why-box .tag-need h4 { color: var(--sev-info); }
+
+  figure.diagram {
+    background: #FCFCFE;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 22px clamp(10px, 3vw, 28px) 16px;
+    margin: 22px 0;
+    box-shadow: var(--shadow);
+  }
+  figure.diagram svg { width: 100%; height: auto; display: block; color: #1B2233; }
+  figure.diagram figcaption {
+    font-family: 'Public Sans', sans-serif;
+    font-size: 12.5px;
+    color: #6B7488;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px dashed #E2E5EE;
+  }
+  .diagram-scroll { overflow-x: auto; }
+
+  .mermaid-card {
+    background: #FCFCFE;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 18px clamp(8px, 3vw, 24px);
+    margin: 22px 0;
+    box-shadow: var(--shadow);
+    overflow-x: auto;
+  }
+  .mermaid-card .cap {
+    font-family: 'Public Sans', sans-serif;
+    font-size: 12.5px;
+    color: #6B7488;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px dashed #E2E5EE;
+  }
+
+  table.data {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'Public Sans', sans-serif;
+    font-size: 13.5px;
+    background: var(--surface);
+  }
+  table.data caption { display: none; }
+  table.data th, table.data td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--line-soft);
+    text-align: left;
+    vertical-align: top;
+  }
+  table.data thead th {
+    background: var(--royal-soft);
+    color: var(--royal-ink);
+    font-weight: 600;
+    font-size: 11.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    position: sticky; top: 0;
+  }
+  table.data tbody tr:hover { background: var(--surface-2); }
+  .table-wrap {
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    overflow: auto;
+    margin: 18px 0;
+    max-height: 560px;
+  }
+  .table-wrap.short { max-height: none; }
+
+  .pill {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-family: 'Public Sans', sans-serif;
+    font-size: 11px; font-weight: 600;
+    padding: 3px 9px; border-radius: 999px;
+    white-space: nowrap;
+  }
+  .pill.critical { background: var(--sev-critical-soft); color: var(--sev-critical); }
+  .pill.warning { background: var(--sev-warning-soft); color: var(--sev-warning); }
+  .pill.info { background: var(--sev-info-soft); color: var(--sev-info); }
+  .pill.ok { background: var(--sev-ok-soft); color: var(--sev-ok); }
+  .perm { font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; text-align: center; display:block; }
+  .perm.c { color: var(--sev-ok); } .perm.e { color: var(--sev-info); }
+  .perm.a { color: var(--royal); font-weight: 700; } .perm.v { color: var(--ink-faint); }
+  .perm.n { color: var(--line); }
+
+  .rn-list { display: flex; flex-direction: column; gap: 10px; margin: 18px 0; }
+  .rn {
+    display: grid; grid-template-columns: 74px 1fr; gap: 16px;
+    padding: 12px 16px; background: var(--surface); border: 1px solid var(--line-soft); border-radius: 10px;
+  }
+  .rn .rn-id { font-family: 'IBM Plex Mono', monospace; color: var(--honey); font-size: 13px; font-weight: 500; padding-top: 2px; }
+  .rn p { margin: 0; font-size: 14.5px; max-width: none; }
+
+  .kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px,1fr)); gap: 12px; margin: 20px 0; }
+  .kpi { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; }
+  .kpi .n { font-family: 'Public Sans', sans-serif; font-weight: 800; font-size: 24px; color: var(--royal-ink); font-variant-numeric: tabular-nums; }
+  .kpi .l { font-family: 'Public Sans', sans-serif; font-size: 12px; color: var(--ink-faint); margin-top: 2px; }
+
+  .phase-legend { display:flex; flex-wrap:wrap; gap: 14px 22px; margin: 4px 0 18px; font-family:'Public Sans',sans-serif; font-size: 12.5px; color: var(--ink-soft); }
+  .phase-legend span { display:inline-flex; align-items:center; gap:6px; }
+  .phase-legend i { width:10px; height:10px; border-radius:3px; display:inline-block; }
+
+  footer.doc-foot {
+    grid-column: 1 / -1;
+    padding: 30px clamp(20px, 4vw, 56px) 50px;
+    font-family: 'Public Sans', sans-serif;
+    font-size: 12.5px;
+    color: var(--ink-faint);
+    border-top: 1px solid var(--line);
+  }
+
+  @media (max-width: 880px) {
+    .doc-shell { grid-template-columns: 1fr; }
+    nav.toc { position: relative; height: auto; border-right: none; border-bottom: 1px solid var(--line); }
+  }
+</style>
+
+<div class="doc-shell">
+
+  <div class="cover">
+    <div class="cover-kicker">Documento técnico de arquitetura</div>
+    <h1>SICOMP-IA<br>Sistema Inteligente de Compras, Contratações e Materiais</h1>
+    <p class="lede">Proposta de plataforma para a gestão integrada do planejamento, das demandas, do estoque e dos processos de contratação da Secretaria de Segurança Pública do Estado de Goiás — com um assistente de IA que orienta, nunca decide.</p>
+    <div class="cover-meta">
+      <span>Etapa <strong>1 de 5</strong> — Arquitetura, dados e regras de negócio</span>
+      <span>Versão <strong>1.0</strong></span>
+      <span><strong>13/09/2026</strong></span>
+      <span>Classificação: <strong>uso interno — minuta para validação</strong></span>
+    </div>
+  </div>
+
+  <div class="stage-track">
+    <div class="stage current"><span class="dot">1</span> Arquitetura &amp; dados</div>
+    <div class="stage"><span class="dot">2</span> Telas &amp; wireframes</div>
+    <div class="stage"><span class="dot">3</span> Protótipo funcional</div>
+    <div class="stage"><span class="dot">4</span> Testes de fluxo</div>
+    <div class="stage"><span class="dot">5</span> Plano de evolução</div>
+  </div>
+
+  <nav class="toc">
+    <h2>Neste documento</h2>
+    <ol>
+      <li><a href="#arquitetura">Arquitetura geral</a></li>
+      <li><a href="#modulos">Mapa dos módulos</a></li>
+      <li><a href="#fluxo">Fluxo de uma aquisição</a></li>
+      <li><a href="#perfis">Perfis de usuários</a></li>
+      <li><a href="#dados">Modelo de dados</a></li>
+      <li><a href="#entidades">Entidades do banco</a></li>
+      <li><a href="#regras">Regras de negócio</a></li>
+      <li><a href="#permissoes">Matriz de permissões</a></li>
+      <li><a href="#ia">Critérios da IA</a></li>
+      <li><a href="#implantacao">Plano de implantação</a></li>
+    </ol>
+    <div class="toc-note">Este é o entregável da <strong>Etapa 1</strong>. Nenhuma tela ou protótipo é desenvolvida ainda — o objetivo aqui é fechar a base técnica antes de desenhar a interface.</div>
+  </nav>
+
+  <main>
+
+    <!-- 1. ARQUITETURA -->
+    <section class="block" id="arquitetura">
+      <div class="block-head"><span class="block-num">01</span><h2>Arquitetura geral da solução</h2></div>
+      <p class="lead">O SICOMP-IA é proposto como uma aplicação web em três camadas — apresentação, aplicação e dados — com a inteligência artificial isolada em um serviço próprio que <strong>só lê dados e propõe recomendações</strong>. Quem grava no banco é sempre a camada de regras de negócio, acionada por uma pessoa autorizada.</p>
+
+      <figure class="diagram diagram-scroll">
+        <svg viewBox="0 0 920 460" role="img" aria-label="Diagrama de arquitetura em camadas: apresentação web, API e módulos de negócio, serviço de IA que apenas lê o banco e propõe recomendações, banco de dados e trilha de auditoria, com integrações futuras conectadas por linhas tracejadas.">
+          <defs>
+            <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="currentColor"/>
+            </marker>
+          </defs>
+          <style>
+            .lbl{font-family:'Public Sans',sans-serif;font-size:12.5px;fill:currentColor;}
+            .lbl-sm{font-family:'Public Sans',sans-serif;font-size:11px;fill:currentColor;}
+            .lyr{font-family:'Public Sans',sans-serif;font-size:10.5px;letter-spacing:.08em;fill:currentColor;opacity:.55;text-transform:uppercase;}
+            .box{fill:none;stroke:currentColor;stroke-width:1.4;rx:10;}
+            .box-strong{fill:none;stroke:currentColor;stroke-width:2;rx:10;}
+            .edge{fill:none;stroke:currentColor;stroke-width:1.3;marker-end:url(#arrow);}
+            .edge-dash{fill:none;stroke:currentColor;stroke-width:1.2;stroke-dasharray:4 4;marker-end:url(#arrow);opacity:.6;}
+          </style>
+
+          <text x="20" y="26" class="lyr">Apresentação</text>
+          <rect x="330" y="10" width="260" height="46" class="box"/>
+          <text x="460" y="38" text-anchor="middle" class="lbl">Aplicação web responsiva</text>
+
+          <text x="20" y="96" class="lyr">Aplicação</text>
+          <rect x="230" y="80" width="150" height="46" class="box"/>
+          <text x="305" y="103" text-anchor="middle" class="lbl-sm">API + Autenticação</text>
+          <text x="305" y="117" text-anchor="middle" class="lbl-sm">e perfis</text>
+
+          <rect x="410" y="150" width="220" height="52" class="box-strong"/>
+          <text x="520" y="172" text-anchor="middle" class="lbl">Módulos de negócio</text>
+          <text x="520" y="188" text-anchor="middle" class="lbl-sm">(único ponto que grava dados)</text>
+
+          <rect x="660" y="150" width="200" height="52" class="box"/>
+          <text x="760" y="172" text-anchor="middle" class="lbl">Serviço de IA</text>
+          <text x="760" y="188" text-anchor="middle" class="lbl-sm">lê e recomenda — não grava</text>
+
+          <text x="20" y="290" class="lyr">Dados</text>
+          <rect x="330" y="270" width="200" height="52" class="box"/>
+          <text x="430" y="292" text-anchor="middle" class="lbl">Banco de dados</text>
+          <text x="430" y="308" text-anchor="middle" class="lbl-sm">relacional</text>
+
+          <rect x="560" y="270" width="200" height="52" class="box"/>
+          <text x="660" y="292" text-anchor="middle" class="lbl">Trilha de auditoria</text>
+          <text x="660" y="308" text-anchor="middle" class="lbl-sm">imutável</text>
+
+          <rect x="20" y="360" width="880" height="86" class="box" stroke-dasharray="3 5"/>
+          <text x="36" y="380" class="lyr">Integrações futuras (fase 5)</text>
+          <rect x="36" y="392" width="150" height="38" class="box"/>
+          <text x="111" y="416" text-anchor="middle" class="lbl-sm">SEI / processo eletrônico</text>
+          <rect x="206" y="392" width="180" height="38" class="box"/>
+          <text x="296" y="416" text-anchor="middle" class="lbl-sm">Orçamento e finanças</text>
+          <rect x="406" y="392" width="170" height="38" class="box"/>
+          <text x="491" y="416" text-anchor="middle" class="lbl-sm">Portais de compras</text>
+          <rect x="596" y="392" width="140" height="38" class="box"/>
+          <text x="666" y="416" text-anchor="middle" class="lbl-sm">BI / relatórios</text>
+          <rect x="756" y="392" width="124" height="38" class="box"/>
+          <text x="818" y="416" text-anchor="middle" class="lbl-sm">E-mail / avisos</text>
+
+          <path class="edge" d="M460,56 L460,80 L370,80"/>
+          <path class="edge" d="M305,126 L305,150 L410,150"/>
+          <text x="330" y="140" class="lbl-sm">aciona regra de negócio</text>
+
+          <path class="edge" d="M470,202 L470,270"/>
+          <text x="480" y="240" class="lbl-sm">grava</text>
+          <path class="edge" d="M410,296 L400,296 L400,202 L410,180" />
+          <text x="330" y="240" class="lbl-sm">consulta</text>
+
+          <path class="edge" d="M520,202 L560,296 L560,296"/>
+          <path class="edge" d="M530,296 L610,240 L620,202" />
+          <text x="600" y="230" class="lbl-sm">registra evento</text>
+
+          <path class="edge" d="M530,270 L530,230 L660,202"/>
+          <text x="614" y="222" class="lbl-sm" opacity="0">.</text>
+
+          <path class="edge" d="M660,202 L560,296"/>
+
+          <path class="edge" d="M530,296 L560,296"/>
+
+          <path class="edge-dash" d="M430,270 L760,202"/>
+          <text x="590" y="250" class="lbl-sm">dados para análise</text>
+
+          <path class="edge" d="M660,176 L630,176"/>
+          <text x="602" y="168" class="lbl-sm">propõe recomendação</text>
+
+          <path class="edge-dash" d="M520,126 L520,150"/>
+
+          <path class="edge-dash" d="M120,80 L120,392"/>
+          <path class="edge-dash" d="M305,126 L120,360"/>
+        </svg>
+        <figcaption>A IA só recebe dados do banco (seta tracejada) e devolve uma recomendação aos módulos de negócio — nunca grava diretamente. Quem grava, sempre, é a camada de regras de negócio, acionada por uma pessoa autenticada.</figcaption>
+      </figure>
+
+      <h3>Por que essa arquitetura</h3>
+      <div class="why-box">
+        <div class="tag-good"><h4>Vantagens</h4><p>Um único caminho de escrita facilita auditoria: toda alteração relevante passa pelo mesmo ponto e pode ser rastreada. A equipe de TI da SSP-GO não precisa operar múltiplos serviços distribuídos desde o primeiro dia.</p></div>
+        <div class="tag-risk"><h4>Limitações</h4><p>Um monólito modular concentra carga em um único processo. Se o volume de unidades usando o sistema crescer muito (ex.: adoção por outras secretarias), módulos como estoque ou IA podem precisar ser destacados em serviços próprios — a divisão em módulos desde já deixa esse caminho aberto.</p></div>
+        <div class="tag-need"><h4>Para implantar de verdade</h4><p>Um ambiente de hospedagem (datacenter estadual ou nuvem), integração com o provedor de identidade already usado pela SSP-GO (se houver SSO estadual), e um parecer da equipe de proteção de dados sobre retenção de dados pessoais (LGPD), já que o sistema guarda nomes de servidores e histórico de decisões.</p></div>
+      </div>
+
+      <h3>Por que a IA fica isolada em um serviço à parte</h3>
+      <p>É a decisão arquitetural mais importante deste documento. Se o serviço de IA tivesse permissão de gravação direta no banco, uma recomendação equivocada — ou uma falha do modelo — poderia alterar estoque, prazos ou processos sem qualquer revisão humana. Ao obrigar toda sugestão da IA a passar pelos <strong>Módulos de Negócio</strong> como uma proposta pendente de aceite, o sistema garante, por construção, que <strong>nenhuma decisão administrativa é tomada sem uma pessoa responsável</strong> — o mesmo princípio de supervisão humana que orienta o restante deste projeto.</p>
+    </section>
+
+    <!-- 2. MÓDULOS -->
+    <section class="block" id="modulos">
+      <div class="block-head"><span class="block-num">02</span><h2>Mapa dos módulos</h2></div>
+      <p class="lead">Os onze módulos solicitados foram organizados em quatro núcleos funcionais. Essa organização não é apenas visual: ela define quais módulos podem evoluir de forma independente e quais dependem uns dos outros para funcionar.</p>
+
+      <div class="table-wrap short">
+        <table class="data">
+          <thead><tr><th>Núcleo</th><th>Módulo</th><th>Função em uma frase</th></tr></thead>
+          <tbody>
+            <tr><td rowspan="1">Cadastro</td><td>1 · Itens e padronização</td><td>Catálogo único de materiais e serviços, com equivalência entre descrições diferentes do mesmo item.</td></tr>
+            <tr><td rowspan="3">Demanda &amp; planejamento</td><td>2 · Gestão das demandas</td><td>Recebe o que cada unidade precisa e verifica automaticamente se já existe solução disponível.</td></tr>
+            <tr><td>3 · Prevenção de duplicidades</td><td>Compara toda nova demanda com o que já está em andamento, em estoque ou contratado.</td></tr>
+            <tr><td>4 · Planejamento das aquisições</td><td>Consolida as demandas aprovadas em um plano anual priorizado.</td></tr>
+            <tr><td rowspan="4">Execução &amp; controle</td><td>5 · Fluxo do processo de contratação</td><td>Acompanha as 24 etapas, do registro da necessidade ao encerramento.</td></tr>
+            <tr><td>6 · Gestão de prazos</td><td>Motor de alertas para toda data relevante do processo, do contrato e do estoque.</td></tr>
+            <tr><td>7 · Gestão de estoques</td><td>Entradas, saídas, saldos, validade e previsão de consumo por unidade.</td></tr>
+            <tr><td>9 · Gestão documental</td><td>Checklist, versões e apoio à redação dos documentos de cada etapa.</td></tr>
+            <tr><td rowspan="3">Inteligência &amp; governança</td><td>8 · Inteligência artificial</td><td>Lê os demais módulos e devolve recomendações explicáveis — nunca decide sozinha.</td></tr>
+            <tr><td>10 · Painéis e indicadores</td><td>Visão executiva do planejado, do executado e dos riscos.</td></tr>
+            <tr><td>11 · Segurança, controle e auditoria</td><td>Perfis de acesso e trilha imutável de tudo o que foi decidido e por quem.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <figure class="diagram diagram-scroll">
+        <svg viewBox="0 0 940 480" role="img" aria-label="Mapa de dependências entre os módulos: itens alimenta demandas e estoque; demandas passa pela checagem de duplicidade antes de virar planejamento; planejamento abre o fluxo de contratação; fluxo é monitorado por prazos e exige documentos; estoque alimenta a checagem de duplicidade e a previsão da IA; a IA recomenda de volta para demandas e prazos; toda ação é registrada na auditoria.">
+          <defs>
+            <marker id="arrow2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="currentColor"/>
+            </marker>
+          </defs>
+          <style>
+            .n{font-family:'Public Sans',sans-serif;font-size:12.5px;fill:currentColor;font-weight:600;}
+            .sub{font-family:'IBM Plex Mono',monospace;font-size:10px;fill:currentColor;opacity:.6;}
+            .e{font-family:'Public Sans',sans-serif;font-size:10.5px;fill:currentColor;opacity:.75;}
+            .box{fill:none;stroke:currentColor;stroke-width:1.4;}
+            .edge{fill:none;stroke:currentColor;stroke-width:1.2;marker-end:url(#arrow2);}
+            .edge-hl{fill:none;stroke:#C98A22;stroke-width:1.6;marker-end:url(#arrow2);}
+          </style>
+
+          <rect x="30" y="30" width="150" height="44" rx="8" class="box"/>
+          <text x="105" y="48" text-anchor="middle" class="n">M1 Itens</text>
+          <text x="105" y="63" text-anchor="middle" class="sub">catálogo</text>
+
+          <rect x="30" y="160" width="150" height="44" rx="8" class="box"/>
+          <text x="105" y="178" text-anchor="middle" class="n">M2 Demandas</text>
+
+          <rect x="260" y="160" width="170" height="44" rx="8" class="box"/>
+          <text x="345" y="178" text-anchor="middle" class="n">M3 Duplicidade</text>
+
+          <rect x="30" y="290" width="150" height="44" rx="8" class="box"/>
+          <text x="105" y="308" text-anchor="middle" class="n">M4 Planejamento</text>
+
+          <rect x="260" y="290" width="170" height="44" rx="8" class="box"/>
+          <text x="345" y="308" text-anchor="middle" class="n">M5 Fluxo do processo</text>
+
+          <rect x="520" y="230" width="150" height="44" rx="8" class="box"/>
+          <text x="595" y="248" text-anchor="middle" class="n">M6 Prazos</text>
+
+          <rect x="520" y="350" width="150" height="44" rx="8" class="box"/>
+          <text x="595" y="368" text-anchor="middle" class="n">M9 Documental</text>
+
+          <rect x="260" y="30" width="170" height="44" rx="8" class="box"/>
+          <text x="345" y="48" text-anchor="middle" class="n">M7 Estoques</text>
+
+          <rect x="750" y="130" width="160" height="44" rx="8" class="box" stroke="#C98A22" stroke-width="1.8"/>
+          <text x="830" y="148" text-anchor="middle" class="n">M8 IA</text>
+          <text x="830" y="163" text-anchor="middle" class="sub">lê tudo, decide nada</text>
+
+          <rect x="750" y="290" width="160" height="44" rx="8" class="box"/>
+          <text x="830" y="308" text-anchor="middle" class="n">M10 Painéis</text>
+
+          <rect x="360" y="420" width="220" height="44" rx="8" class="box"/>
+          <text x="470" y="443" text-anchor="middle" class="n">M11 Auditoria</text>
+
+          <path class="edge" d="M105,74 L105,160"/>
+          <text x="112" y="120" class="e">controla item</text>
+          <path class="edge" d="M180,52 L260,52"/>
+          <text x="192" y="44" class="e">define item de estoque</text>
+
+          <path class="edge" d="M180,182 L260,182"/>
+          <text x="188" y="174" class="e">toda demanda é checada</text>
+          <path class="edge" d="M260,192 L180,192"/>
+          <text x="188" y="210" class="e">libera ou bloqueia</text>
+
+          <path class="edge" d="M105,204 L105,290"/>
+          <text x="112" y="255" class="e">consolida no plano anual</text>
+
+          <path class="edge" d="M180,312 L260,312"/>
+          <text x="185" y="300" class="e">abre processo</text>
+
+          <path class="edge" d="M345,74 L345,160"/>
+          <text x="352" y="120" class="e">saldo consultado</text>
+
+          <path class="edge" d="M430,300 L520,255"/>
+          <text x="435" y="270" class="e">cada etapa tem prazo</text>
+          <path class="edge" d="M430,320 L520,365"/>
+          <text x="435" y="350" class="e">cada etapa exige documento</text>
+
+          <path class="edge-hl" d="M180,52 L260,150 L750,150"/>
+          <text x="470" y="140" class="e" fill="#C98A22">histórico alimenta previsão</text>
+
+          <path class="edge-hl" d="M750,165 L440,182 L430,182"/>
+          <text x="560" y="205" class="e" fill="#C98A22">recomenda transferência / consolidação</text>
+
+          <path class="edge-hl" d="M750,152 L595,230"/>
+          <text x="655" y="205" class="e" fill="#C98A22">prioriza alertas</text>
+
+          <path class="edge" d="M670,255 L750,290"/>
+
+          <path class="edge" d="M470,334 L470,420"/>
+          <path class="edge" d="M180,340 L360,440" />
+          <path class="edge" d="M595,394 L500,432"/>
+          <path class="edge" d="M830,334 L560,435"/>
+          <text x="700" y="410" class="e">toda ação relevante é registrada</text>
+        </svg>
+        <figcaption>Setas em honey mostram o único caminho em que a IA participa: lê o histórico de estoque e demandas, e devolve recomendações para M2 (demandas) e M6 (prazos) — nunca altera M1, M4, M5 ou M7 diretamente.</figcaption>
+      </figure>
+    </section>
+
+    <!-- 3. FLUXO -->
+    <section class="block" id="fluxo">
+      <div class="block-head"><span class="block-num">03</span><h2>Fluxo completo de uma aquisição</h2></div>
+      <p class="lead">As 24 etapas solicitadas foram agrupadas em seis fases. O ponto central deste desenho não é a lista de etapas — é que o processo <strong>não termina no recebimento definitivo</strong>: o consumo registrado no estoque realimenta o planejamento, fechando um ciclo contínuo em vez de um fluxo que morre no final.</p>
+
+      <div class="phase-legend">
+        <span><i style="background:var(--sev-info)"></i>Checagem automática do sistema</span>
+        <span><i style="background:#C98A22"></i>Ponto em que a IA participa</span>
+        <span><i style="background:var(--sev-critical)"></i>Bloqueio até decisão humana</span>
+      </div>
+
+      <figure class="diagram diagram-scroll">
+        <svg viewBox="0 0 980 300" role="img" aria-label="Seis fases da aquisição em sequência: demanda, instrução técnica, pré-licitatório, licitação, contratação, execução e encerramento. Entre demanda e instrução técnica há uma checagem de duplicidade e estoque que pode bloquear o avanço. Do encerramento, uma seta de previsão de consumo volta para a fase de demanda, fechando o ciclo.">
+          <defs>
+            <marker id="arrow3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="currentColor"/>
+            </marker>
+          </defs>
+          <style>
+            .ph{font-family:'Public Sans',sans-serif;font-size:12.5px;font-weight:600;fill:currentColor;}
+            .st{font-family:'IBM Plex Mono',monospace;font-size:10px;fill:currentColor;opacity:.6;}
+            .lb{font-family:'Public Sans',sans-serif;font-size:10.5px;fill:currentColor;opacity:.8;}
+            .box{fill:none;stroke:currentColor;stroke-width:1.4;}
+            .edge{fill:none;stroke:currentColor;stroke-width:1.3;marker-end:url(#arrow3);}
+          </style>
+
+          <rect x="20" y="40" width="130" height="60" rx="8" class="box"/>
+          <text x="85" y="64" text-anchor="middle" class="ph">Demanda</text>
+          <text x="85" y="80" text-anchor="middle" class="st">etapas 1–2</text>
+
+          <polygon points="195,45 245,70 195,95 145,70" class="box" stroke="#2C6C9C"/>
+          <text x="195" y="66" text-anchor="middle" class="lb" fill="#2C6C9C">estoque /</text>
+          <text x="195" y="78" text-anchor="middle" class="lb" fill="#2C6C9C">duplicidade?</text>
+
+          <rect x="290" y="40" width="130" height="60" rx="8" class="box"/>
+          <text x="355" y="60" text-anchor="middle" class="ph">Instrução</text>
+          <text x="355" y="75" text-anchor="middle" class="ph">técnica</text>
+          <text x="355" y="90" text-anchor="middle" class="st">etapas 3–6</text>
+
+          <rect x="450" y="40" width="130" height="60" rx="8" class="box"/>
+          <text x="515" y="60" text-anchor="middle" class="ph">Pré-</text>
+          <text x="515" y="75" text-anchor="middle" class="ph">licitatório</text>
+          <text x="515" y="90" text-anchor="middle" class="st">etapas 7–10</text>
+
+          <rect x="610" y="40" width="130" height="60" rx="8" class="box"/>
+          <text x="675" y="64" text-anchor="middle" class="ph">Licitação</text>
+          <text x="675" y="80" text-anchor="middle" class="st">etapas 11–16</text>
+
+          <rect x="770" y="40" width="130" height="60" rx="8" class="box"/>
+          <text x="835" y="60" text-anchor="middle" class="ph">Contra-</text>
+          <text x="835" y="75" text-anchor="middle" class="ph">tação</text>
+          <text x="835" y="90" text-anchor="middle" class="st">etapas 17–18</text>
+
+          <rect x="610" y="190" width="290" height="60" rx="8" class="box"/>
+          <text x="755" y="214" text-anchor="middle" class="ph">Execução, entrega e encerramento</text>
+          <text x="755" y="230" text-anchor="middle" class="st">etapas 19–24</text>
+
+          <path class="edge" d="M150,70 L145,70"/>
+          <path class="edge" d="M245,70 L290,70"/>
+          <path class="edge" d="M420,70 L450,70"/>
+          <path class="edge" d="M580,70 L610,70"/>
+          <path class="edge" d="M740,70 L770,70"/>
+          <path class="edge" d="M835,100 L835,140 L755,140 L755,190"/>
+
+          <path class="edge" stroke="#B23A2E" d="M195,95 L195,150 L85,150 L85,100"/>
+          <text x="100" y="145" class="lb" fill="#B23A2E">bloqueia — exige decisão</text>
+
+          <path class="edge" stroke="#C98A22" d="M610,230 Q 350,270 85,230 L85,100"/>
+          <text x="330" y="285" class="lb" fill="#C98A22">consumo registrado → prevê próxima aquisição</text>
+        </svg>
+        <figcaption>O losango entre as fases 1 e 2 é onde os Módulos 3 (duplicidade) e 7 (estoque) atuam antes de qualquer nova compra prosseguir. A seta honey na base é o ciclo de aprendizagem de consumo: o encerramento de uma aquisição já entra como dado para prever a próxima.</figcaption>
+      </figure>
+
+      <h3>As 24 etapas, com quem responde por cada uma</h3>
+      <div class="table-wrap">
+        <table class="data">
+          <thead><tr><th style="width:34px">#</th><th>Etapa</th><th>Responsável principal</th><th>O que o sistema verifica ou exige</th></tr></thead>
+          <tbody>
+            <tr><td class="mono">1</td><td>Registro da necessidade</td><td>Unidade demandante</td><td>Formulário completo do Módulo 2</td></tr>
+            <tr><td class="mono">2</td><td>Aprovação da demanda</td><td>Chefia da unidade</td><td>Checagem de estoque, duplicidade e alternativas (M3)</td></tr>
+            <tr><td class="mono">3</td><td>Documento de formalização da demanda</td><td>Unidade de planejamento</td><td>Minuta assistida pela IA (M9)</td></tr>
+            <tr><td class="mono">4</td><td>Estudo técnico preliminar</td><td>Unidade de planejamento</td><td>Modelo padronizado + histórico de preços do item</td></tr>
+            <tr><td class="mono">5</td><td>Análise de riscos</td><td>Unidade de planejamento</td><td>Mapa de riscos com base em ocorrências anteriores</td></tr>
+            <tr><td class="mono">6</td><td>Termo de referência / projeto básico</td><td>Unidade de planejamento</td><td>Especificação técnica vinda do catálogo (M1)</td></tr>
+            <tr><td class="mono">7</td><td>Pesquisa de preços</td><td>Setor de compras</td><td>Histórico de preços pagos anteriormente</td></tr>
+            <tr><td class="mono">8</td><td>Verificação orçamentária</td><td>Setor financeiro</td><td>Disponibilidade de fonte de recurso informada</td></tr>
+            <tr><td class="mono">9</td><td>Análise jurídica</td><td>Assessoria jurídica</td><td>Checklist documental por modalidade (M9)</td></tr>
+            <tr><td class="mono">10</td><td>Autorização</td><td>Autoridade competente</td><td>Consolidação de todos os documentos exigidos</td></tr>
+            <tr><td class="mono">11</td><td>Elaboração e publicação do edital</td><td>Setor de compras</td><td>Prazo mínimo de publicidade (M6)</td></tr>
+            <tr><td class="mono">12</td><td>Recebimento de propostas</td><td>Setor de compras</td><td>Prazo da sessão (M6)</td></tr>
+            <tr><td class="mono">13</td><td>Julgamento</td><td>Pregoeiro / comissão</td><td>Registro de atas e decisões</td></tr>
+            <tr><td class="mono">14</td><td>Habilitação</td><td>Pregoeiro / comissão</td><td>Documentos de habilitação do fornecedor</td></tr>
+            <tr><td class="mono">15</td><td>Adjudicação</td><td>Pregoeiro / comissão</td><td>Prazo recursal (M6)</td></tr>
+            <tr><td class="mono">16</td><td>Homologação</td><td>Autoridade competente</td><td>Conferência final antes do empenho</td></tr>
+            <tr><td class="mono">17</td><td>Emissão de empenho</td><td>Setor financeiro</td><td>Vínculo com a fonte orçamentária aprovada</td></tr>
+            <tr><td class="mono">18</td><td>Formalização do contrato / instrumento equivalente</td><td>Setor de compras</td><td>Geração do registro em Contrato/Ata (M5)</td></tr>
+            <tr><td class="mono">19</td><td>Entrega</td><td>Fornecedor / almoxarifado</td><td>Prazo de entrega (M6)</td></tr>
+            <tr><td class="mono">20</td><td>Recebimento provisório</td><td>Fiscal do contrato</td><td>Termo de recebimento provisório (M9)</td></tr>
+            <tr><td class="mono">21</td><td>Recebimento definitivo</td><td>Gestor do contrato</td><td>Conferência de especificação técnica (M1)</td></tr>
+            <tr><td class="mono">22</td><td>Entrada no estoque</td><td>Almoxarifado</td><td>Lote, validade e localização (M7)</td></tr>
+            <tr><td class="mono">23</td><td>Distribuição</td><td>Almoxarifado</td><td>Baixa por unidade de destino (M7)</td></tr>
+            <tr><td class="mono">24</td><td>Encerramento e avaliação</td><td>Unidade de planejamento</td><td>Comparação planejado × executado (M4, M10)</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 4. PERFIS -->
+    <section class="block" id="perfis">
+      <div class="block-head"><span class="block-num">04</span><h2>Perfis de usuários</h2></div>
+      <p class="lead">Onze perfis, cada um com uma pergunta que resume o que ele precisa do sistema no dia a dia.</p>
+      <div class="table-wrap">
+        <table class="data">
+          <thead><tr><th>Perfil</th><th>Pergunta que o perfil faz ao sistema</th><th>Módulos principais</th></tr></thead>
+          <tbody>
+            <tr><td>Administrador geral</td><td>Como configuro usuários, itens e parâmetros?</td><td>Todos (configuração)</td></tr>
+            <tr><td>Autoridade competente</td><td>O que está pronto para minha autorização ou homologação?</td><td>M4, M5, M6</td></tr>
+            <tr><td>Unidade de planejamento</td><td>Como fica o plano anual com as demandas que chegaram?</td><td>M4, M10</td></tr>
+            <tr><td>Setor de compras e licitações</td><td>Em que etapa está cada processo sob minha condução?</td><td>M5, M9, M6</td></tr>
+            <tr><td>Unidade demandante</td><td>Como registro o que minha unidade precisa e acompanho o pedido?</td><td>M2</td></tr>
+            <tr><td>Gestor e fiscal de contrato</td><td>O que preciso verificar ou entregar nesta fase de execução?</td><td>M5 (execução), M6, M9</td></tr>
+            <tr><td>Almoxarifado</td><td>O que entrou, o que saiu e o que está acabando?</td><td>M7</td></tr>
+            <tr><td>Setor financeiro e orçamentário</td><td>Há recurso disponível e o empenho já foi emitido?</td><td>M4, M5</td></tr>
+            <tr><td>Assessoria jurídica</td><td>Os documentos exigidos por esta modalidade estão completos?</td><td>M5, M9</td></tr>
+            <tr><td>Auditoria e controle interno</td><td>Quem decidiu o quê, quando, e com qual justificativa?</td><td>M11</td></tr>
+            <tr><td>Usuário de consulta</td><td>Como está o panorama geral, sem poder alterar nada?</td><td>M10</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 5. MODELO DE DADOS -->
+    <section class="block" id="dados">
+      <div class="block-head"><span class="block-num">05</span><h2>Modelo de dados</h2></div>
+      <p class="lead">O modelo foi dividido em três blocos para ficar legível: <strong>catálogo e estoque</strong>, <strong>demanda e planejamento</strong>, e <strong>contratação e governança</strong>. As chaves em negrito nos diagramas abaixo são o que liga um bloco ao outro.</p>
+
+      <h3>Bloco 1 — Catálogo, fornecedores e estoque</h3>
+      <div class="mermaid-card">
+        <pre class="mermaid">
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#E7ECFA','primaryTextColor':'#142868','primaryBorderColor':'#1E3A8A','lineColor':'#545F78','tertiaryColor':'#FBFBFD','fontFamily':'Public Sans'}}}%%
+erDiagram
+  UNIDADE ||--o{ ESTOQUE : mantém
+  ITEM ||--o{ ESTOQUE : é_controlado_em
+  ITEM ||--o{ HISTORICO_PRECO : possui
+  FORNECEDOR ||--o{ HISTORICO_PRECO : praticou
+  ITEM ||--o{ MOVIMENTACAO_ESTOQUE : movimenta
+  ESTOQUE ||--o{ MOVIMENTACAO_ESTOQUE : registra
+  UNIDADE ||--o{ MOVIMENTACAO_ESTOQUE : origem_ou_destino
+  ITEM ||--o{ PREVISAO_CONSUMO : gera
+  ITEM }o--o{ ITEM : equivalência_sugerida_por_IA
+
+  ITEM {
+    string codigo_padronizado PK
+    string descricao
+    string categoria
+    string unidade_medida
+    float estoque_minimo
+    float estoque_maximo
+    int grau_criticidade
+  }
+  ESTOQUE {
+    string id PK
+    string item_id FK
+    string unidade_id FK
+    float quantidade_disponivel
+    float quantidade_reservada
+  }
+  MOVIMENTACAO_ESTOQUE {
+    string id PK
+    string tipo
+    float quantidade
+    date data_movimentacao
+    string lote
+    date validade
+  }
+  PREVISAO_CONSUMO {
+    string id PK
+    string item_id FK
+    float consumo_medio_diario
+    date data_prevista_esgotamento
+    string classificacao
+  }
+        </pre>
+        <div class="cap">Leitura: um ITEM tem um único código padronizado; a IA sugere equivalência entre itens diferentes (ex.: "notebook" e "microcomputador móvel"), mas quem confirma a fusão é uma pessoa — por isso a relação está marcada como "sugerida por IA", não automática.</div>
+      </div>
+
+      <h3>Bloco 2 — Demanda, planejamento e processo</h3>
+      <div class="mermaid-card">
+        <pre class="mermaid">
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#E7ECFA','primaryTextColor':'#142868','primaryBorderColor':'#1E3A8A','lineColor':'#545F78','tertiaryColor':'#FBFBFD','fontFamily':'Public Sans'}}}%%
+erDiagram
+  UNIDADE ||--o{ DEMANDA : registra
+  USUARIO ||--o{ DEMANDA : solicita
+  ITEM ||--o{ DEMANDA : refere_se_a
+  DEMANDA ||--o{ APROVACAO : passa_por
+  DEMANDA }o--|| PLANEJAMENTO_ANUAL : é_consolidada_em
+  PLANEJAMENTO_ANUAL ||--o{ PROCESSO : origina
+  PROCESSO ||--o{ ETAPA : contém
+  ETAPA ||--o{ DOCUMENTO : exige
+  USUARIO ||--o{ ETAPA : é_responsável_por
+  DEMANDA ||--o{ RECOMENDACAO : recebe
+
+  DEMANDA {
+    string id PK
+    string unidade_id FK
+    string item_id FK
+    float quantidade
+    string justificativa
+    string urgencia
+    string status
+  }
+  PROCESSO {
+    string id PK
+    string modalidade
+    string planejamento_id FK
+    string fase_atual
+    string status
+  }
+  ETAPA {
+    string id PK
+    string processo_id FK
+    string nome
+    date prazo
+    string responsavel_id FK
+    string situacao
+  }
+  RECOMENDACAO {
+    string id PK
+    string origem_demanda_id FK
+    string tipo
+    float nivel_confianca
+    string status_aceite
+  }
+        </pre>
+        <div class="cap">Leitura: uma RECOMENDACAO nasce ligada a uma DEMANDA (ex.: "transferir da unidade X"), mas só altera algo quando um USUARIO muda seu status_aceite — é essa tabela que faz a explicabilidade da IA existir de fato no banco, e não só na tela.</div>
+      </div>
+
+      <h3>Bloco 3 — Contratação e governança</h3>
+      <div class="mermaid-card">
+        <pre class="mermaid">
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#E7ECFA','primaryTextColor':'#142868','primaryBorderColor':'#1E3A8A','lineColor':'#545F78','tertiaryColor':'#FBFBFD','fontFamily':'Public Sans'}}}%%
+erDiagram
+  PROCESSO ||--o| CONTRATO : formaliza_em
+  PROCESSO ||--o| ATA : formaliza_em
+  FORNECEDOR ||--o{ CONTRATO : é_parte_de
+  CONTRATO ||--o{ ENTREGA : gera
+  ENTREGA ||--o{ MOVIMENTACAO_ESTOQUE : gera
+  CONTRATO ||--o{ ALERTA : monitorado_por
+  ETAPA ||--o{ ALERTA : monitorado_por
+  DEMANDA ||--o{ RISCO : pode_gerar
+  USUARIO ||--o{ REGISTRO_AUDITORIA : executa
+  RECOMENDACAO ||--o{ REGISTRO_AUDITORIA : decidida_em
+
+  CONTRATO {
+    string id PK
+    string fornecedor_id FK
+    date vigencia_inicio
+    date vigencia_fim
+    date proximo_reajuste
+    float valor_total
+  }
+  ALERTA {
+    string id PK
+    string origem_tipo
+    string origem_id FK
+    string severidade
+    date data_geracao
+    string status
+  }
+  REGISTRO_AUDITORIA {
+    string id PK
+    string usuario_id FK
+    string acao
+    string justificativa
+    datetime timestamp
+  }
+        </pre>
+        <div class="cap">Todo ALERTA guarda de qual origem ele veio (contrato, etapa, estoque) e todo REGISTRO_AUDITORIA amarra usuário + ação + justificativa — nenhuma decisão sensível fica sem essas duas pontas.</div>
+      </div>
+    </section>
+
+    <!-- 6. ENTIDADES -->
+    <section class="block" id="entidades">
+      <div class="block-head"><span class="block-num">06</span><h2>Principais entidades do banco de dados</h2></div>
+      <p class="lead">Descrição de referência para cada entidade citada nos diagramas acima.</p>
+      <div class="table-wrap">
+        <table class="data">
+          <thead><tr><th>Entidade</th><th>Descrição</th><th>Campos-chave</th></tr></thead>
+          <tbody>
+            <tr><td>Usuario</td><td>Pessoa com acesso ao sistema, vinculada a um ou mais perfis.</td><td class="mono">id, nome, matrícula, perfil, unidade_id</td></tr>
+            <tr><td>Unidade</td><td>Delegacia, batalhão, superintendência ou outra unidade da SSP-GO.</td><td class="mono">id, nome, tipo, unidade_superior_id</td></tr>
+            <tr><td>Item</td><td>Material ou serviço padronizado do catálogo.</td><td class="mono">codigo_padronizado, descricao, categoria, criticidade</td></tr>
+            <tr><td>Categoria</td><td>Agrupamento de itens (operacional, administrativo, tecnológico, médico-pericial).</td><td class="mono">id, nome, categoria_pai_id</td></tr>
+            <tr><td>Estoque</td><td>Saldo de um item em uma unidade específica.</td><td class="mono">item_id, unidade_id, quantidade_disponivel, quantidade_reservada</td></tr>
+            <tr><td>MovimentacaoEstoque</td><td>Cada entrada, saída ou transferência registrada.</td><td class="mono">tipo, quantidade, lote, validade, data</td></tr>
+            <tr><td>Demanda</td><td>Necessidade registrada por uma unidade.</td><td class="mono">unidade_id, item_id, quantidade, urgencia, status</td></tr>
+            <tr><td>Aprovacao</td><td>Decisão de uma chefia sobre uma demanda.</td><td class="mono">demanda_id, aprovador_id, decisao, data</td></tr>
+            <tr><td>PlanejamentoAnual</td><td>Consolidação anual das demandas priorizadas.</td><td class="mono">ano, valor_estimado, status</td></tr>
+            <tr><td>Processo</td><td>Processo de contratação vinculado a um item do planejamento.</td><td class="mono">modalidade, fase_atual, planejamento_id</td></tr>
+            <tr><td>Etapa</td><td>Uma das 24 etapas configuráveis de um processo.</td><td class="mono">processo_id, nome, prazo, responsavel_id, situacao</td></tr>
+            <tr><td>Documento</td><td>Arquivo ou minuta vinculado a uma etapa.</td><td class="mono">etapa_id, tipo, versao, status ("minuta"/"aprovado")</td></tr>
+            <tr><td>Licitacao</td><td>Dados específicos do certame (edital, propostas, julgamento).</td><td class="mono">processo_id, edital_numero, data_sessao</td></tr>
+            <tr><td>Contrato</td><td>Instrumento contratual resultante do processo.</td><td class="mono">fornecedor_id, vigencia_fim, proximo_reajuste, valor_total</td></tr>
+            <tr><td>Ata</td><td>Ata de registro de preços resultante do processo.</td><td class="mono">validade, itens_registrados, orgaos_participantes</td></tr>
+            <tr><td>Fornecedor</td><td>Empresa contratada ou registrada em ata.</td><td class="mono">cnpj, razao_social, historico_desempenho</td></tr>
+            <tr><td>Entrega</td><td>Remessa física de um item por um fornecedor.</td><td class="mono">contrato_id, data_prevista, data_efetiva, status</td></tr>
+            <tr><td>Alerta</td><td>Sinalização gerada pelo motor de prazos.</td><td class="mono">origem_tipo, origem_id, severidade, status</td></tr>
+            <tr><td>Risco</td><td>Risco identificado (atraso, desabastecimento, duplicidade, desperdício).</td><td class="mono">tipo, origem_id, probabilidade, impacto</td></tr>
+            <tr><td>Recomendacao</td><td>Sugestão da IA pendente de decisão humana.</td><td class="mono">tipo, nivel_confianca, status_aceite, justificativa_ia</td></tr>
+            <tr><td>HistoricoPreco</td><td>Preços praticados em compras anteriores por item/fornecedor.</td><td class="mono">item_id, fornecedor_id, valor, data</td></tr>
+            <tr><td>PrevisaoConsumo</td><td>Saída do modelo de aprendizagem de consumo por item/unidade.</td><td class="mono">item_id, consumo_medio, data_esgotamento_prevista</td></tr>
+            <tr><td>RegistroAuditoria</td><td>Registro imutável de qualquer ação sensível.</td><td class="mono">usuario_id, acao, justificativa, timestamp</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 7. REGRAS -->
+    <section class="block" id="regras">
+      <div class="block-head"><span class="block-num">07</span><h2>Regras de negócio</h2></div>
+      <p class="lead">As regras abaixo são o que efetivamente torna o sistema "inteligente" em vez de um cadastro — elas descrevem o que acontece automaticamente antes de qualquer tela ser desenhada.</p>
+      <div class="rn-list">
+        <div class="rn"><div class="rn-id">RN-01</div><p>Toda nova demanda é verificada automaticamente contra estoque da unidade, estoque de outras unidades, processos em andamento, contratos e atas vigentes e demandas semelhantes ainda não consolidadas — antes de poder avançar para aprovação.</p></div>
+        <div class="rn"><div class="rn-id">RN-02</div><p>Uma similaridade semântica igual ou acima de 85% entre uma nova demanda e um processo/contrato existente bloqueia o prosseguimento automático e exige decisão humana registrada (Módulo 3).</p></div>
+        <div class="rn"><div class="rn-id">RN-03</div><p>Toda equivalência entre itens diferentes sugerida pela IA (ex.: "notebook" ≈ "microcomputador móvel") fica pendente até confirmação de um usuário com perfil de Administrador geral ou Unidade de planejamento.</p></div>
+        <div class="rn"><div class="rn-id">RN-04</div><p>Nenhuma etapa do fluxo de contratação pode ser marcada como concluída sem os documentos obrigatórios daquela etapa anexados.</p></div>
+        <div class="rn"><div class="rn-id">RN-05</div><p>Quantidade reservada em estoque não pode ser retirada por outra unidade enquanto a reserva estiver ativa.</p></div>
+        <div class="rn"><div class="rn-id">RN-06</div><p>Alertas classificados como "crítico" (vigência, garantia ou prazo de etapa vencendo em até 15 dias) exigem que o responsável registre uma providência antes do vencimento — o alerta não pode ser simplesmente descartado.</p></div>
+        <div class="rn"><div class="rn-id">RN-07</div><p>O serviço de IA não possui permissão de escrita em Demanda, Processo, Contrato ou Estoque. Toda saída da IA é gravada como Recomendação e só produz efeito quando aceita por um usuário autorizado.</p></div>
+        <div class="rn"><div class="rn-id">RN-08</div><p>Toda decisão de aceitar, rejeitar ou justificar uma recomendação da IA, um alerta de duplicidade ou uma reprogramação do planejamento gera um Registro de Auditoria com usuário, data/hora e justificativa.</p></div>
+        <div class="rn"><div class="rn-id">RN-09</div><p>Documentos gerados com apoio da IA nascem com status "minuta" e não têm validade para instruir o processo até serem revisados e aprovados por servidor competente.</p></div>
+        <div class="rn"><div class="rn-id">RN-10</div><p>A priorização de itens no planejamento anual segue a matriz de pontuação do Módulo 4 (ver critério 09) — nenhum item entra no plano por ordem de chegada.</p></div>
+        <div class="rn"><div class="rn-id">RN-11</div><p>Consumo fora do padrão histórico (ex.: grandes eventos, operações especiais) é sinalizado como "extraordinário" e não entra automaticamente no cálculo da taxa média de consumo, para não distorcer previsões futuras.</p></div>
+        <div class="rn"><div class="rn-id">RN-12</div><p>Um item só pode ser excluído do catálogo se não houver estoque, demanda ou contrato ativo vinculado a ele; caso contrário, é apenas inativado.</p></div>
+      </div>
+    </section>
+
+    <!-- 8. PERMISSÕES -->
+    <section class="block" id="permissoes">
+      <div class="block-head"><span class="block-num">08</span><h2>Matriz de permissões</h2></div>
+      <p class="lead"><span class="perm c" style="display:inline">C</span> criar · <span class="perm e" style="display:inline">E</span> editar · <span class="perm a" style="display:inline">A</span> aprovar/homologar · <span class="perm v" style="display:inline">V</span> visualizar · <span class="perm n" style="display:inline">—</span> sem acesso</p>
+      <div class="table-wrap">
+        <table class="data">
+          <thead>
+            <tr>
+              <th>Módulo / ação</th>
+              <th>Admin.</th><th>Autoridade</th><th>Planej.</th><th>Compras</th><th>Demandante</th><th>Gestor/fiscal</th><th>Almoxar.</th><th>Financ.</th><th>Jurídico</th><th>Auditoria</th><th>Consulta</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Cadastro de itens (M1)</td><td class="perm c">C</td><td class="perm v">V</td><td class="perm e">E</td><td class="perm v">V</td><td class="perm v">V</td><td class="perm v">V</td><td class="perm v">V</td><td class="perm n">—</td><td class="perm n">—</td><td class="perm v">V</td><td class="perm v">V</td></tr>
+            <tr><td>Registrar demanda (M2)</td><td class="perm c">C</td><td class="perm v">V</td><td class="perm v">V</td><td class="perm v">V</td><td class="perm c">C</td><td class="perm v">V</td><td class="perm n">—</td><td class="perm n">—</td><td class="perm n">—</td><td class="perm v">V</td><td class="perm v">V</td></tr>
+            <tr><td>Decidir alerta de duplicidade (M3)</td><td class="perm a">A</td><td class="perm a">A</td><td class="perm a">A</td><td class="perm e">E</td><td class="perm n">—</td><td class="perm n">—</td><td class="perm n">—</td><td class="perm n">—</td><td class="perm n">—</td><td class="perm v">V</td><td class="perm n">—</td></tr>
+            <tr><td>Planejamento anual (M4)</td><td class="perm e">E</td><td class="perm a">A</td><td class="perm c">C</td><td class="perm v">V</td><td class="perm n">—</td><td class="perm n">—</td><td class="perm n">—</td><td class="perm e">E</td><td class="perm n">—</td><td class="perm v">V</td><td class="perm v">V</td></tr>
+            <tr><td>Conduzir etapa do processo (M5)</td><td class="perm e">E</td><td class="perm a">A</td><td class="perm v">V</td><td class="perm e">E</td><td class="perm v">V</td><td class="perm e">E</td><td class="perm n">—</td><td class="perm e">E</td><td class="perm e">E</td><td class="perm v">V</td><td class="perm v">V</td></tr>
+            <tr><td>Tratar alerta de prazo (M6)</td><td class="perm e">E</td><td class="perm v">V</td><td class="perm v">V</td><td class="perm e">E</td><td class="perm n">—</td><td class="perm e">E</td><td class="perm v">V</td><td class="perm v">V</td><td class="perm v">V</td><td class="perm v">V</td><td class="perm v">V</td></tr>
+            <tr><td>Movimentar estoque (M7)</td><td class="perm e">E</td><td class="perm n">—</td><td class="perm v">V</td><td class="perm v">V</td><td class="perm v">V</td><td class="perm v">V</td><td class="perm c">C</td><td class="perm n">—</td><td class="perm n">—</td><td class="perm v">V</td><td class="perm v">V</td></tr>
+            <tr><td>Consultar assistente de IA (M8)</td><td class="perm v">V</td><td class="perm v">V</td><td class="perm v">V</td><td class="perm v">V</td><td class="perm v">V</td><td class="perm v">V</td><td class="perm v">V</td><td class="perm v">V</td><td class="perm v">V</td><td class="perm v">V</td><td class="perm v">V</td></tr>
+            <tr><td>Aprovar/editar documento (M9)</td><td class="perm e">E</td><td class="perm a">A</td><td class="perm e">E</td><td class="perm e">E</td><td class="perm n">—</td><td class="perm e">E</td><td class="perm n">—</td><td class="perm n">—</td><td class="perm a">A</td><td class="perm v">V</td><td class="perm n">—</td></tr>
+            <tr><td>Painéis e indicadores (M10)</td><td class="perm v">V</td><td class="perm v">V</td><td class="perm v">V</td><td class="perm v">V</td><td class="perm v">V</td><td class="perm v">V</td><td class="perm v">V</td><td class="perm v">V</td><td class="perm v">V</td><td class="perm v">V</td><td class="perm v">V</td></tr>
+            <tr><td>Configurar usuários e perfis (M11)</td><td class="perm c">C</td><td class="perm n">—</td><td class="perm n">—</td><td class="perm n">—</td><td class="perm n">—</td><td class="perm n">—</td><td class="perm n">—</td><td class="perm n">—</td><td class="perm n">—</td><td class="perm v">V</td><td class="perm n">—</td></tr>
+            <tr><td>Ler trilha de auditoria (M11)</td><td class="perm v">V</td><td class="perm n">—</td><td class="perm n">—</td><td class="perm n">—</td><td class="perm n">—</td><td class="perm n">—</td><td class="perm n">—</td><td class="perm n">—</td><td class="perm n">—</td><td class="perm v">V</td><td class="perm n">—</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 9. CRITÉRIOS DA IA -->
+    <section class="block" id="ia">
+      <div class="block-head"><span class="block-num">09</span><h2>Critérios utilizados pela inteligência artificial</h2></div>
+      <p class="lead">Três motores de IA sustentam o sistema. Todos os três seguem o mesmo formato de resposta, para que a recomendação nunca chegue como uma "caixa preta".</p>
+
+      <h3>1 · Detecção de duplicidade e equivalência de itens</h3>
+      <p>A comparação roda em quatro camadas, da mais barata e exata para a mais cara e aproximada: <strong>(1)</strong> código padronizado idêntico, <strong>(2)</strong> mesma categoria e unidade de medida, <strong>(3)</strong> mesma unidade demandante e período, <strong>(4)</strong> similaridade semântica entre as descrições, calculada por comparação vetorial de texto. Só quando as três primeiras camadas não decidem sozinhas é que a quarta é usada — o que mantém o custo computacional baixo na maioria dos casos.</p>
+      <div class="kpi-row">
+        <div class="kpi"><div class="n">≥ 85%</div><div class="l">similaridade → bloqueio crítico, decisão obrigatória</div></div>
+        <div class="kpi"><div class="n">70–84%</div><div class="l">similaridade → alerta de atenção, sugestão de consolidar</div></div>
+        <div class="kpi"><div class="n">&lt; 70%</div><div class="l">similaridade → não sinaliza, mas fica no histórico de análise</div></div>
+      </div>
+
+      <h3>2 · Previsão de consumo e ponto de reposição</h3>
+      <p>Reaproveita o método já validado no protótipo de fiscalização contratual deste projeto: taxa de consumo diária calculada sobre o histórico de requisições, usada para prever a data de esgotamento do saldo. A novidade aqui é distinguir <strong>consumo recorrente</strong> de <strong>consumo extraordinário</strong>: uma requisição fora de mais de duas vezes o desvio padrão do histórico (ex.: uma grande operação policial) é sinalizada e excluída do cálculo da taxa-base, mas continua registrada para quem quiser revisar o padrão depois.</p>
+
+      <h3>3 · Matriz de priorização do planejamento</h3>
+      <p>Cada demanda candidata ao plano anual recebe uma pontuação de 0 a 100, soma ponderada de seis critérios:</p>
+      <div class="table-wrap short">
+        <table class="data">
+          <thead><tr><th>Critério</th><th>Peso sugerido</th><th>Como é medido</th></tr></thead>
+          <tbody>
+            <tr><td>Urgência declarada</td><td class="mono">25%</td><td>Classificação informada pela unidade demandante</td></tr>
+            <tr><td>Risco de desabastecimento</td><td class="mono">20%</td><td>Saída da Previsão de Consumo (Módulo 7/8)</td></tr>
+            <tr><td>Criticidade operacional do item</td><td class="mono">20%</td><td>Grau de criticidade cadastrado no item (Módulo 1)</td></tr>
+            <tr><td>Nº de unidades beneficiadas</td><td class="mono">15%</td><td>Contagem de demandas agrupadas para o mesmo item</td></tr>
+            <tr><td>Disponibilidade orçamentária</td><td class="mono">10%</td><td>Saldo informado pelo setor financeiro</td></tr>
+            <tr><td>Tempo estimado do processo</td><td class="mono">10%</td><td>Histórico médio da modalidade de contratação</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="font-size:14px;color:var(--ink-faint)">Os pesos acima são um ponto de partida proposto — devem ser validados e ajustados pela Unidade de Planejamento antes da entrada em operação.</p>
+
+      <h3>Formato obrigatório de toda recomendação</h3>
+      <p>Seguindo o mesmo princípio de explicabilidade adotado no restante deste projeto, toda saída da IA — duplicidade, previsão, priorização ou resposta do assistente conversacional — é estruturada nestes seis campos:</p>
+      <ol class="plain">
+        <li><strong>Dados utilizados</strong> — quais registros do banco embasaram a resposta.</li>
+        <li><strong>Critérios considerados</strong> — quais regras/pesos foram aplicados.</li>
+        <li><strong>Nível de confiança</strong> — percentual ou faixa (alto/médio/baixo).</li>
+        <li><strong>Risco identificado</strong> — atraso, desabastecimento, duplicidade ou desperdício.</li>
+        <li><strong>Providência sugerida</strong> — a próxima ação concreta recomendada.</li>
+        <li><strong>Necessidade de validação humana</strong> — sempre presente; nunca "nenhuma".</li>
+      </ol>
+
+      <div class="why-box">
+        <div class="tag-risk"><h4>Limite explícito</h4><p>A IA nunca aprova, homologa, empenha ou transfere estoque sozinha. Essas ações continuam exclusivas dos perfis Autoridade Competente, Setor Financeiro e Almoxarifado, respectivamente — a IA só chega até a "Recomendação".</p></div>
+        <div class="tag-need"><h4>Para funcionar bem</h4><p>O motor de similaridade semântica precisa de um volume mínimo de itens cadastrados com descrição consistente; nos primeiros meses, o cadastro padronizado (Módulo 1) é o que mais vai exigir curadoria humana.</p></div>
+      </div>
+    </section>
+
+    <!-- 10. IMPLANTAÇÃO -->
+    <section class="block" id="implantacao">
+      <div class="block-head"><span class="block-num">10</span><h2>Plano de implantação por etapas</h2></div>
+      <p class="lead">Seis fases de implantação real do sistema — não confundir com as cinco etapas deste projeto de desenvolvimento. Cada fase entrega valor sozinha, mesmo que as seguintes atrasem.</p>
+      <div class="table-wrap short">
+        <table class="data">
+          <thead><tr><th>Fase</th><th>Entrega</th><th>Depende de</th></tr></thead>
+          <tbody>
+            <tr><td class="mono">Fase 0</td><td><strong>Fundação</strong> — infraestrutura, modelo de dados, cadastro de usuários e do catálogo inicial de itens.</td><td>—</td></tr>
+            <tr><td class="mono">Fase 1</td><td><strong>Operação básica</strong> — Módulos 2 (demandas), 3 (duplicidade) e 7 (estoque) em produção.</td><td>Fase 0</td></tr>
+            <tr><td class="mono">Fase 2</td><td><strong>Processo completo</strong> — Módulos 4 (planejamento), 5 (fluxo) e 6 (prazos).</td><td>Fase 1</td></tr>
+            <tr><td class="mono">Fase 3</td><td><strong>Inteligência avançada</strong> — Módulo 8 completo: previsão de consumo, matriz de priorização e assistente conversacional.</td><td>Fase 2 + ao menos 6 meses de histórico real de consumo</td></tr>
+            <tr><td class="mono">Fase 4</td><td><strong>Governança plena</strong> — Módulos 9 (documental), 10 (painéis) e 11 (auditoria) na versão final.</td><td>Fase 2</td></tr>
+            <tr><td class="mono">Fase 5</td><td><strong>Integrações externas</strong> — SEI, sistemas orçamentários, portais de compras, assinatura eletrônica, e-mail institucional, BI.</td><td>Fase 4 + definição institucional de qual sistema integrar primeiro</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="font-size:14px;color:var(--ink-faint)">A Fase 3 depender de histórico real é deliberado: uma previsão de consumo calculada sobre dados de teste ou poucos meses de uso tende a errar bastante — é mais honesto atrasar essa entrega do que publicá-la com baixa confiabilidade.</p>
+    </section>
+
+  </main>
+
+  <footer class="doc-foot">
+    SICOMP-IA — Documento técnico da Etapa 1 · próxima entrega: wireframes e descrição detalhada das 17 telas (Etapa 2), mediante aprovação deste conteúdo.
+  </footer>
+</div>

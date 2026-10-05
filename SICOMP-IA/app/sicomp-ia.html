@@ -1,0 +1,1359 @@
+<title>SICOMP-IA</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+  :root{
+    --royal:#1E3A8A; --royal-ink:#142868; --royal-soft:#E7ECFA; --royal-line:#C3CEEF;
+    --honey:#C98A22; --honey-soft:#F7ECD8; --honey-line:#E6C685;
+    --paper:#F3F5FA; --surface:#FFFFFF; --surface-2:#F8F9FC;
+    --ink:#1B2233; --ink-soft:#545F78; --ink-faint:#8791A8;
+    --line:#DEE3EF; --line-soft:#ECEFF6;
+    --crit:#B23A2E; --crit-soft:#FBEAE7; --warn:#B4791A; --warn-soft:#FBF1DE;
+    --info:#2C6C9C; --info-soft:#E3EFF7; --ok:#2E7D5B; --ok-soft:#E5F2EC;
+    --shadow:0 1px 2px rgba(20,40,104,.06), 0 10px 28px -14px rgba(20,40,104,.22);
+    --radius:12px;
+    color-scheme:light;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --royal:#8EA9EC; --royal-ink:#CBD8F8; --royal-soft:#1B2748; --royal-line:#31437A;
+      --honey:#E7B155; --honey-soft:#332711; --honey-line:#6B4F1E;
+      --paper:#0C1120; --surface:#141A2C; --surface-2:#111729;
+      --ink:#E8EBF6; --ink-soft:#AEB7D0; --ink-faint:#7C87A0;
+      --line:#2A3252; --line-soft:#1E2542;
+      --crit:#E5897C; --crit-soft:#3A2320; --warn:#E3B269; --warn-soft:#382D18;
+      --info:#86B7E0; --info-soft:#1B2E3E; --ok:#86CBA9; --ok-soft:#16281F;
+      --shadow:0 1px 2px rgba(0,0,0,.35), 0 10px 28px -14px rgba(0,0,0,.6);
+    }
+  }
+  :root[data-theme="dark"]{
+    --royal:#8EA9EC; --royal-ink:#CBD8F8; --royal-soft:#1B2748; --royal-line:#31437A;
+    --honey:#E7B155; --honey-soft:#332711; --honey-line:#6B4F1E;
+    --paper:#0C1120; --surface:#141A2C; --surface-2:#111729;
+    --ink:#E8EBF6; --ink-soft:#AEB7D0; --ink-faint:#7C87A0;
+    --line:#2A3252; --line-soft:#1E2542;
+    --crit:#E5897C; --crit-soft:#3A2320; --warn:#E3B269; --warn-soft:#382D18;
+    --info:#86B7E0; --info-soft:#1B2E3E; --ok:#86CBA9; --ok-soft:#16281F;
+    --shadow:0 1px 2px rgba(0,0,0,.35), 0 10px 28px -14px rgba(0,0,0,.6);
+  }
+
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:'Public Sans',system-ui,sans-serif;font-size:14.5px;line-height:1.5;}
+  button{font-family:inherit;}
+  ::selection{background:var(--honey-soft);}
+  .mono{font-family:'IBM Plex Mono',ui-monospace,monospace;}
+  a{color:var(--royal);}
+  :focus-visible{outline:2px solid var(--honey); outline-offset:1px; border-radius:4px;}
+
+  /* ---------- shell ---------- */
+  #app{display:grid;grid-template-columns:216px 1fr;grid-template-rows:52px 1fr;grid-template-areas:"top top" "nav main";height:100vh;}
+  #app.login-mode{grid-template-columns:1fr;grid-template-areas:"top" "main";}
+  #app.login-mode #sidenav{display:none;}
+
+  header#topbar{grid-area:top;display:flex;align-items:center;justify-content:space-between;padding:0 18px;background:var(--royal);color:#fff;box-shadow:var(--shadow);z-index:5;}
+  .brand{display:flex;align-items:center;gap:9px;font-weight:800;letter-spacing:.01em;font-size:15px;}
+  .brand .sq{width:20px;height:20px;border-radius:5px;background:var(--honey);display:inline-block;}
+  #topbar .who{display:flex;align-items:center;gap:10px;font-size:12.5px;}
+  #topbar .who .u-unit{color:#C9D6F6;}
+  #topbar .who button{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);color:#fff;padding:5px 11px;border-radius:7px;cursor:pointer;font-size:12px;}
+  #topbar .who button:hover{background:rgba(255,255,255,.22);}
+
+  nav#sidenav{grid-area:nav;background:var(--surface);border-right:1px solid var(--line);padding:12px 8px;overflow-y:auto;}
+  nav#sidenav a{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:9px;color:var(--ink-soft);text-decoration:none;font-size:13px;font-weight:500;margin-bottom:2px;}
+  nav#sidenav a:hover{background:var(--surface-2);color:var(--ink);}
+  nav#sidenav a.active{background:var(--royal-soft);color:var(--royal-ink);font-weight:700;}
+  nav#sidenav a.active .dot{background:var(--honey);}
+  nav#sidenav .dot{width:6px;height:6px;border-radius:50%;background:var(--line);flex:none;}
+  nav#sidenav .grp{font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-faint);margin:14px 10px 6px;}
+  nav#sidenav .grp:first-child{margin-top:4px;}
+
+  main#view{grid-area:main;overflow-y:auto;padding:22px 26px 70px;}
+  .view-head{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:16px;}
+  .view-head h1{font-size:19px;margin:0;color:var(--royal-ink);font-weight:800;letter-spacing:-.01em;}
+  .view-head .sub{font-size:12.5px;color:var(--ink-faint);}
+  .actions{display:flex;gap:8px;}
+
+  /* ---------- primitives ---------- */
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);}
+  .pad{padding:16px 18px;}
+  .grid{display:grid;gap:14px;}
+  .g-kpi{grid-template-columns:repeat(auto-fit,minmax(160px,1fr));}
+  .g-2{grid-template-columns:1fr 1fr;}
+  .g-main-side{grid-template-columns:1.6fr 1fr;}
+  @media (max-width:920px){.g-main-side,.g-2{grid-template-columns:1fr;}}
+
+  .kpi{padding:14px 16px;}
+  .kpi .l{font-size:11.5px;color:var(--ink-faint);text-transform:uppercase;letter-spacing:.04em;}
+  .kpi .n{font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:25px;margin-top:3px;font-variant-numeric:tabular-nums;}
+  .kpi .n.crit{color:var(--crit);} .kpi .n.warn{color:var(--warn);} .kpi .n.ok{color:var(--ok);} .kpi .n.royal{color:var(--royal-ink);}
+
+  .btn{border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink-soft);padding:8px 14px;font-size:12.8px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px;}
+  .btn:hover{border-color:var(--ink-faint);color:var(--ink);}
+  .btn-primary{background:var(--honey);border-color:var(--honey);color:#3A2A08;}
+  .btn-primary:hover{background:var(--honey);filter:brightness(1.06);color:#3A2A08;}
+  .btn-ghost{background:transparent;}
+  .btn-danger-outline{border-color:var(--crit);color:var(--crit);background:transparent;}
+  .btn:disabled{opacity:.5;cursor:not-allowed;}
+  .btn.sm{padding:5px 10px;font-size:11.5px;}
+
+  .field{display:flex;flex-direction:column;gap:5px;margin-bottom:12px;}
+  .field label{font-size:11.5px;font-weight:600;color:var(--ink-soft);}
+  .field input,.field select,.field textarea{font-family:inherit;font-size:13px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--surface-2);color:var(--ink);}
+  .field textarea{resize:vertical;min-height:60px;}
+  .field input:focus,.field select:focus,.field textarea:focus{outline:2px solid var(--royal-line);border-color:var(--royal);}
+  .field .hint{font-size:11px;color:var(--ink-faint);}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
+
+  table{width:100%;border-collapse:collapse;font-size:13px;}
+  thead th{text-align:left;font-size:10.8px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-faint);padding:8px 10px;border-bottom:1px solid var(--line);white-space:nowrap;}
+  tbody td{padding:9px 10px;border-bottom:1px solid var(--line-soft);vertical-align:middle;}
+  tbody tr{cursor:pointer;}
+  tbody tr:hover{background:var(--surface-2);}
+  .table-wrap{overflow-x:auto;}
+
+  .pill{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:999px;font-size:11px;font-weight:700;white-space:nowrap;}
+  .pill.crit{background:var(--crit-soft);color:var(--crit);} .pill.warn{background:var(--warn-soft);color:var(--warn);}
+  .pill.ok{background:var(--ok-soft);color:var(--ok);} .pill.info{background:var(--info-soft);color:var(--info);}
+  .pill.neutral{background:var(--surface-2);color:var(--ink-faint);border:1px solid var(--line);}
+
+  .alertcard{display:flex;gap:12px;padding:12px 14px;border-radius:10px;background:var(--surface-2);border:1px solid var(--line);cursor:pointer;}
+  .alertcard:hover{border-color:var(--ink-faint);}
+  .alertcard .stripe{width:4px;border-radius:3px;flex:none;}
+  .alertcard .stripe.crit{background:var(--crit);} .alertcard .stripe.warn{background:var(--warn);} .alertcard .stripe.info{background:var(--info);}
+  .alertcard .t{font-weight:700;font-size:13px;margin-bottom:2px;}
+  .alertcard .d{font-size:12px;color:var(--ink-faint);}
+
+  .modal-bg{position:fixed;inset:0;background:rgba(15,20,40,.45);display:flex;align-items:center;justify-content:center;z-index:50;}
+  .modal{background:var(--surface);border-radius:14px;max-width:640px;width:92%;max-height:86vh;overflow-y:auto;box-shadow:0 20px 60px -20px rgba(0,0,0,.5);}
+  .modal-head{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;border-bottom:1px solid var(--line);}
+  .modal-head h3{margin:0;font-size:15px;}
+  .modal-body{padding:18px 20px;}
+  .modal-foot{padding:14px 20px;border-top:1px solid var(--line);display:flex;justify-content:flex-end;gap:8px;}
+  .x-close{background:none;border:none;font-size:18px;color:var(--ink-faint);cursor:pointer;line-height:1;}
+
+  .empty{padding:28px;text-align:center;color:var(--ink-faint);font-size:13px;}
+  .banner{padding:11px 14px;border-radius:9px;font-size:12.8px;display:flex;gap:8px;align-items:flex-start;margin-bottom:14px;}
+  .banner.info{background:var(--info-soft);color:var(--info);} .banner.warn{background:var(--warn-soft);color:var(--warn);}
+  .banner.crit{background:var(--crit-soft);color:var(--crit);} .banner.ok{background:var(--ok-soft);color:var(--ok);}
+
+  .stepgroup{border:1px solid var(--line);border-radius:10px;margin-bottom:8px;overflow:hidden;}
+  .stephead{display:flex;justify-content:space-between;align-items:center;padding:11px 14px;cursor:pointer;background:var(--surface-2);font-weight:700;font-size:13px;}
+  .stepbody{padding:4px 14px 10px;}
+  .steprow{display:flex;justify-content:space-between;padding:7px 4px;border-bottom:1px dashed var(--line-soft);font-size:12.6px;}
+  .steprow:last-child{border-bottom:none;}
+  .steprow .name{display:flex;gap:8px;align-items:center;}
+
+  .chat-log{display:flex;flex-direction:column;gap:12px;max-height:52vh;overflow-y:auto;padding:4px;}
+  .msg-user{align-self:flex-end;background:var(--royal);color:#fff;padding:9px 13px;border-radius:12px 12px 3px 12px;max-width:70%;font-size:13px;}
+  .msg-ai{align-self:flex-start;background:var(--surface-2);border:1px solid var(--line);padding:12px 14px;border-radius:12px 12px 12px 3px;max-width:88%;}
+  .msg-ai .ans{font-size:13.2px;margin-bottom:8px;}
+  .explain{display:grid;grid-template-columns:auto 1fr;gap:4px 10px;font-size:11.5px;border-top:1px dashed var(--line);padding-top:8px;}
+  .explain dt{color:var(--ink-faint);text-transform:uppercase;letter-spacing:.03em;font-size:10px;font-weight:700;}
+  .explain dd{margin:0;color:var(--ink-soft);}
+  .chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;}
+  .chip{background:var(--surface-2);border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-size:12px;cursor:pointer;color:var(--ink-soft);}
+  .chip:hover{border-color:var(--royal);color:var(--royal-ink);}
+  .chatbar{display:flex;gap:8px;margin-top:12px;}
+  .chatbar input{flex:1;padding:10px 14px;border-radius:999px;border:1px solid var(--line);background:var(--surface-2);}
+
+  .sparkwrap{width:100%;overflow-x:auto;}
+  svg.chart text{font-family:'Public Sans',sans-serif;fill:var(--ink-faint);font-size:9.5px;}
+  .plot-hist{fill:none;stroke:var(--royal);stroke-width:2;}
+  .plot-fore{fill:none;stroke:var(--honey);stroke-width:2;stroke-dasharray:4 3;}
+  .axis{stroke:var(--line);stroke-width:1;}
+  .bar{fill:var(--royal);}
+  .grid-line{stroke:var(--line-soft);stroke-width:1;}
+
+  h2.sec{font-size:13px;margin:0 0 10px;color:var(--ink);font-weight:700;}
+  .muted{color:var(--ink-faint);}
+  .small{font-size:12px;}
+  .flex{display:flex;} .items-center{align-items:center;} .justify-between{justify-content:space-between;} .gap8{gap:8px;} .gap12{gap:12px;}
+  .w100{width:100%;}
+  .restricted{padding:60px 20px;text-align:center;color:var(--ink-faint);}
+
+  /* login */
+  #view.login{display:flex;align-items:center;justify-content:center;min-height:calc(100vh - 52px);}
+  .login-card{width:380px;padding:34px 32px;text-align:center;}
+  .login-card .sq{width:44px;height:44px;border-radius:11px;background:var(--honey);margin:0 auto 14px;}
+  .login-card h1{font-size:19px;margin:0 0 2px;color:var(--royal-ink);}
+  .login-card .tag{font-size:12px;color:var(--ink-faint);margin-bottom:22px;}
+</style>
+
+<div id="app">
+  <header id="topbar">
+    <div class="brand"><span class="sq"></span>SICOMP-IA</div>
+    <div class="who" id="who-box"></div>
+  </header>
+  <nav id="sidenav"></nav>
+  <main id="view"></main>
+</div>
+<div id="modal-root"></div>
+
+<script>
+/* =========================================================================
+   SICOMP-IA — protótipo funcional (Etapa 3)
+   Dados fictícios. Toda a lógica (duplicidade, previsão de consumo,
+   priorização, alertas) roda de verdade em cima do estado abaixo.
+   ========================================================================= */
+
+const PERFIS = ["Administrador geral","Autoridade competente","Unidade de planejamento","Setor de compras e licitações","Unidade demandante","Gestor e fiscal de contrato","Almoxarifado","Setor financeiro e orçamentário","Assessoria jurídica","Auditoria e controle interno","Usuário de consulta"];
+
+const NAV = [
+  {grp:"Visão geral"},
+  {key:"painel", label:"Painel geral", perfis: PERFIS},
+  {key:"alertas", label:"Central de alertas", perfis: PERFIS},
+  {grp:"Demandas e planejamento"},
+  {key:"demandas", label:"Demandas", perfis:["Administrador geral","Autoridade competente","Unidade de planejamento","Setor de compras e licitações","Unidade demandante","Gestor e fiscal de contrato","Auditoria e controle interno","Usuário de consulta"]},
+  {key:"planejamento", label:"Planejamento anual", perfis:["Administrador geral","Autoridade competente","Unidade de planejamento","Setor de compras e licitações","Setor financeiro e orçamentário","Auditoria e controle interno","Usuário de consulta"]},
+  {grp:"Execução"},
+  {key:"processos", label:"Processos de contratação", perfis:["Administrador geral","Autoridade competente","Unidade de planejamento","Setor de compras e licitações","Unidade demandante","Gestor e fiscal de contrato","Assessoria jurídica","Setor financeiro e orçamentário","Auditoria e controle interno","Usuário de consulta"]},
+  {key:"estoque", label:"Estoque", perfis:["Administrador geral","Almoxarifado","Unidade de planejamento","Setor de compras e licitações","Unidade demandante","Gestor e fiscal de contrato","Auditoria e controle interno","Usuário de consulta"]},
+  {key:"contratos", label:"Contratos e atas", perfis:["Administrador geral","Autoridade competente","Unidade de planejamento","Setor de compras e licitações","Gestor e fiscal de contrato","Almoxarifado","Setor financeiro e orçamentário","Assessoria jurídica","Auditoria e controle interno","Usuário de consulta"]},
+  {grp:"Inteligência"},
+  {key:"assistente", label:"Assistente de IA", perfis: PERFIS},
+  {key:"relatorios", label:"Relatórios e indicadores", perfis:["Administrador geral","Autoridade competente","Unidade de planejamento","Auditoria e controle interno","Usuário de consulta"]},
+  {grp:"Governança"},
+  {key:"admin", label:"Usuários e permissões", perfis:["Administrador geral","Auditoria e controle interno"]},
+];
+
+// ---------------------------------------------------------------------------
+// DADOS FICTÍCIOS
+// ---------------------------------------------------------------------------
+const today = new Date("2026-09-13");
+const iso = d => d.toISOString().slice(0,10);
+const addDays = (d,n) => { const x=new Date(d); x.setDate(x.getDate()+n); return x; };
+const daysBetween = (a,b) => Math.round((new Date(b)-new Date(a))/86400000);
+
+const DB = {
+  unidades: [
+    {id:"u1", nome:"Sede — Almoxarifado Central"},
+    {id:"u2", nome:"Batalhão de Choque"},
+    {id:"u3", nome:"Delegacia Metropolitana de Goiânia"},
+    {id:"u4", nome:"Delegacia Norte"},
+    {id:"u5", nome:"Delegacia Sul"},
+    {id:"u6", nome:"Academia de Polícia Civil"},
+    {id:"u7", nome:"Instituto de Criminalística"},
+    {id:"u8", nome:"Coordenação de Licitações"},
+  ],
+  fornecedores: [
+    {id:"f1", nome:"Papelaria Central Ltda.", cnpj:"12.345.678/0001-90"},
+    {id:"f2", nome:"AutoManutenção Goiás S.A.", cnpj:"98.765.432/0001-10"},
+    {id:"f3", nome:"Proteção Balística Brasil Ltda.", cnpj:"22.111.333/0001-44"},
+    {id:"f4", nome:"MedForense Suprimentos Ltda.", cnpj:"33.222.444/0001-55"},
+  ],
+  itens: [
+    {id:"i1", codigo:"OPR-0231", descricao:"Colete balístico nível III-A", categoria:"Operacional", unidade:"un", criticidade:5, min:30, max:200, saldoContratado:220},
+    {id:"i2", codigo:"ADM-0104", descricao:"Papel A4 (resma 500 folhas)", categoria:"Administrativo", unidade:"resma", criticidade:2, min:150, max:1200, saldoContratado:1050},
+    {id:"i3", codigo:"TEC-0087", descricao:"Toner para impressora laser", categoria:"Tecnológico", unidade:"un", criticidade:2, min:20, max:80, saldoContratado:80},
+    {id:"i4", codigo:"MED-0512", descricao:"Kit de coleta de vestígios", categoria:"Médico-pericial", unidade:"kit", criticidade:4, min:100, max:500, saldoContratado:500},
+    {id:"i5", codigo:"OPR-0198", descricao:"Munição calibre .40 (caixa 50un)", categoria:"Operacional", unidade:"caixa", criticidade:5, min:40, max:300, saldoContratado:260},
+    {id:"i6", codigo:"TEC-0045", descricao:"Notebook corporativo 14 polegadas", categoria:"Tecnológico", unidade:"un", criticidade:3, min:5, max:40, saldoContratado:40},
+    {id:"i7", codigo:"MED-0233", descricao:"Luva de procedimento (caixa 100un)", categoria:"Médico-pericial", unidade:"caixa", criticidade:3, min:40, max:300, saldoContratado:300},
+  ],
+  // saldo por unidade
+  estoque: [
+    {itemId:"i1", unidadeId:"u2", disponivel:22, reservado:0},
+    {itemId:"i1", unidadeId:"u3", disponivel:35, reservado:0},
+    {itemId:"i2", unidadeId:"u1", disponivel:64, reservado:0},
+    {itemId:"i2", unidadeId:"u5", disponivel:14, reservado:0},
+    {itemId:"i3", unidadeId:"u4", disponivel:4,  reservado:0},
+    {itemId:"i3", unidadeId:"u5", disponivel:18, reservado:0},
+    {itemId:"i4", unidadeId:"u7", disponivel:40, reservado:12, lote:"L2588", validade:"2027-02-01"},
+    {itemId:"i5", unidadeId:"u2", disponivel:38, reservado:0},
+    {itemId:"i6", unidadeId:"u8", disponivel:6,  reservado:0},
+    {itemId:"i7", unidadeId:"u7", disponivel:52, reservado:0},
+  ],
+  // saídas históricas — base para aprendizagem de consumo
+  movimentacoes: (() => {
+    const list=[];
+    for(let k=9;k>=0;k--) list.push({itemId:"i2", unidadeId:"u1", tipo:"saida", quantidade:95, data: iso(addDays(today,-(300-k*30)))});
+    for(let k=2;k>=0;k--) list.push({itemId:"i3", unidadeId:"u5", tipo:"saida", quantidade:6, data: iso(addDays(today,-(250-k*80)))});
+    for(let k=6;k>=0;k--) list.push({itemId:"i5", unidadeId:"u2", tipo:"saida", quantidade:14, data: iso(addDays(today,-(180-k*25)))});
+    list.push({itemId:"i5", unidadeId:"u2", tipo:"saida", quantidade:60, data: iso(addDays(today,-40)), extraordinario:true, motivo:"Operação especial — reforço perimetral"});
+    for(let k=3;k>=0;k--) list.push({itemId:"i4", unidadeId:"u7", tipo:"saida", quantidade:18, data: iso(addDays(today,-(90-k*22)))});
+    return list;
+  })(),
+  demandas: [
+    {id:"d1", numero:"2026-0341", unidadeId:"u2", itemId:"i1", quantidade:40, justificativa:"Reposição de itens vencidos identificados na inspeção trimestral do efetivo operacional.", urgencia:"Alta", prazo:"30 dias", local:"Sede — Almoxarifado", fonte:"Fundo de Segurança", status:"Em análise", data: iso(addDays(today,-5)), responsavel:"Ana Ferreira"},
+    {id:"d2", numero:"2026-0339", unidadeId:"u6", itemId:"i1", quantidade:25, justificativa:"Equipar novos formandos do curso de operações táticas.", urgencia:"Alta", prazo:"45 dias", local:"Academia de Polícia Civil", fonte:"Fundo de Segurança", status:"Em análise", data: iso(addDays(today,-9)), responsavel:"Marcos Vidal"},
+    {id:"d3", numero:"2026-0338", unidadeId:"u4", itemId:"i3", quantidade:6, justificativa:"Substituição de toner esgotado na impressão de mandados.", urgencia:"Média", prazo:"15 dias", local:"Delegacia Norte", fonte:"", status:"Aprovada", data: iso(addDays(today,-8)), responsavel:"Bruno Lima"},
+    {id:"d4", numero:"2026-0330", unidadeId:"u7", itemId:"i4", quantidade:150, justificativa:"Reposição de estoque para perícias de campo do próximo trimestre.", urgencia:"Alta", prazo:"20 dias", local:"Instituto de Criminalística", fonte:"Fundo de Segurança", status:"Aprovada", data: iso(addDays(today,-13)), responsavel:"Renata Kimura"},
+    {id:"d5", numero:"2026-0325", unidadeId:"u5", itemId:"i2", quantidade:80, justificativa:"Consumo mensal de expediente da unidade.", urgencia:"Média", prazo:"30 dias", local:"Delegacia Sul", fonte:"", status:"Consolidada", data: iso(addDays(today,-15)), responsavel:"Fernanda Reis"},
+    {id:"d6", numero:"2026-0318", unidadeId:"u8", itemId:"i6", quantidade:8, justificativa:"Substituição de equipamentos com mais de 5 anos de uso.", urgencia:"Baixa", prazo:"90 dias", local:"Coordenação de Licitações", fonte:"", status:"Atendida", data: iso(addDays(today,-40)), responsavel:"Paulo Andrade"},
+  ],
+  processos: [
+    {
+      id:"p1", sei:"202600011122233", objeto:"Aquisição de coletes balísticos nível III-A para unidades operacionais",
+      modalidade:"Pregão Eletrônico", unidadeResp:"u8", valorEstimado:1250000, status:"Em andamento",
+      faseAtualIdx:2, faseDeadline: iso(addDays(today,2)),
+      fases:[
+        {nome:"Demanda & instrução", etapas:[{n:"Registro da necessidade",r:"Batalhão de Choque",sit:"concluida"},{n:"Aprovação da demanda",r:"Ana Ferreira",sit:"concluida"}]},
+        {nome:"Pré-licitatório", etapas:[{n:"Estudo técnico preliminar",r:"Unidade de Planejamento",sit:"concluida"},{n:"Termo de referência",r:"Unidade de Planejamento",sit:"concluida"},{n:"Pesquisa de preços",r:"Compras",sit:"concluida"},{n:"Autorização",r:"Autoridade competente",sit:"concluida"}]},
+        {nome:"Licitação", etapas:[{n:"Publicação do edital",r:"Compras",sit:"concluida",data:"10/08"},{n:"Recebimento de propostas",r:"Compras",sit:"concluida",data:"22/08"},{n:"Julgamento",r:"Pregoeiro",sit:"concluida",data:"25/08"},{n:"Habilitação",r:"Pregoeiro",sit:"concluida",data:"29/08"},{n:"Prazo recursal",r:"Pregoeiro",sit:"critico",prazo:iso(addDays(today,2))},{n:"Homologação",r:"Autoridade competente",sit:"pendente"}]},
+        {nome:"Contratação", etapas:[{n:"Emissão de empenho",r:"Financeiro",sit:"pendente"},{n:"Formalização do contrato",r:"Compras",sit:"pendente"}]},
+        {nome:"Execução e encerramento", etapas:[{n:"Entrega",r:"Fornecedor",sit:"pendente"},{n:"Recebimento definitivo",r:"Gestor do contrato",sit:"pendente"},{n:"Entrada no estoque",r:"Almoxarifado",sit:"pendente"}]},
+      ]
+    },
+    {
+      id:"p2", sei:"202600014455667", objeto:"Contratação de serviço de manutenção predial para unidades da capital",
+      modalidade:"Dispensa de Licitação", unidadeResp:"u8", valorEstimado:320000, status:"Em andamento",
+      faseAtualIdx:1, faseDeadline: iso(addDays(today,20)),
+      fases:[
+        {nome:"Demanda & instrução", etapas:[{n:"Registro da necessidade",r:"Coordenação de Infraestrutura",sit:"concluida"},{n:"Aprovação da demanda",r:"Autoridade competente",sit:"concluida"}]},
+        {nome:"Pré-licitatório", etapas:[{n:"Estudo técnico preliminar",r:"Unidade de Planejamento",sit:"concluida"},{n:"Termo de referência",r:"Unidade de Planejamento",sit:"em_andamento",prazo:iso(addDays(today,20))},{n:"Pesquisa de preços",r:"Compras",sit:"pendente"},{n:"Autorização",r:"Autoridade competente",sit:"pendente"}]},
+        {nome:"Licitação", etapas:[]},
+        {nome:"Contratação", etapas:[]},
+        {nome:"Execução e encerramento", etapas:[]},
+      ]
+    },
+    {
+      id:"p3", sei:"202600002233445", objeto:"Manutenção preventiva e corretiva de viaturas policiais",
+      modalidade:"Pregão Eletrônico", unidadeResp:"u8", valorEstimado:950000, status:"Concluído",
+      faseAtualIdx:4, faseDeadline:null,
+      fases:[
+        {nome:"Demanda & instrução", etapas:[{n:"Registro da necessidade",r:"Frota SSP-GO",sit:"concluida"},{n:"Aprovação da demanda",r:"Autoridade competente",sit:"concluida"}]},
+        {nome:"Pré-licitatório", etapas:[{n:"Estudo técnico preliminar",r:"Unidade de Planejamento",sit:"concluida"},{n:"Autorização",r:"Autoridade competente",sit:"concluida"}]},
+        {nome:"Licitação", etapas:[{n:"Publicação do edital",r:"Compras",sit:"concluida"},{n:"Homologação",r:"Autoridade competente",sit:"concluida"}]},
+        {nome:"Contratação", etapas:[{n:"Formalização do contrato",r:"Compras",sit:"concluida"}]},
+        {nome:"Execução e encerramento", etapas:[{n:"Encerramento e avaliação",r:"Unidade de Planejamento",sit:"concluida"}]},
+      ]
+    },
+  ],
+  contratos: [
+    {id:"c1", numero:"CT-2026-014", fornecedorId:"f1", objeto:"Fornecimento contínuo de material de expediente", vigenciaInicio: iso(addDays(today,-300)), vigenciaFim: iso(addDays(today,65)), reajuste: iso(addDays(today,120)), garantia: iso(addDays(today,10)), valor:185000, status:"Vencendo"},
+    {id:"c2", numero:"CT-2026-027", fornecedorId:"f2", objeto:"Manutenção preventiva e corretiva de viaturas policiais", vigenciaInicio: iso(addDays(today,-60)), vigenciaFim: iso(addDays(today,305)), reajuste: iso(addDays(today,305)), garantia: iso(addDays(today,305)), valor:940000, status:"Vigente"},
+    {id:"c3", numero:"ATA-2025-009", fornecedorId:"f3", objeto:"Ata de registro de preços — coletes balísticos", vigenciaInicio: iso(addDays(today,-200)), vigenciaFim: iso(addDays(today,165)), reajuste:null, garantia:null, valor:1400000, status:"Vigente"},
+    {id:"c4", numero:"CT-2025-198", fornecedorId:"f4", objeto:"Fornecimento de kits de coleta pericial", vigenciaInicio: iso(addDays(today,-380)), vigenciaFim: iso(addDays(today,-10)), reajuste:null, garantia:null, valor:410000, status:"Vencido"},
+  ],
+  qualidade: [
+    {contratoId:"c1", data: iso(addDays(today,-200)), nota:"boa", avaliador:"Carlos Souza"},
+    {contratoId:"c1", data: iso(addDays(today,-30)), nota:"regular", avaliador:"Carlos Souza", obs:"Lote com folhas manchadas em 2 caixas; contratada notificada."},
+  ],
+  usuarios: [
+    {id:"us1", nome:"Ana Ferreira", matricula:"GO-10234", perfil:"Gestor e fiscal de contrato", unidadeId:"u1"},
+    {id:"us2", nome:"Bruno Lima", matricula:"GO-10891", perfil:"Almoxarifado", unidadeId:"u4"},
+    {id:"us3", nome:"Carla Nogueira", matricula:"GO-10456", perfil:"Unidade de planejamento", unidadeId:"u8"},
+    {id:"us4", nome:"Diego Martins", matricula:"GO-10777", perfil:"Setor de compras e licitações", unidadeId:"u8"},
+    {id:"us5", nome:"Elisa Prado", matricula:"GO-10902", perfil:"Unidade demandante", unidadeId:"u2"},
+    {id:"us6", nome:"Fábio Cardoso", matricula:"GO-10345", perfil:"Autoridade competente", unidadeId:"u8"},
+    {id:"us7", nome:"Gabriela Assis", matricula:"GO-10221", perfil:"Setor financeiro e orçamentário", unidadeId:"u1"},
+    {id:"us8", nome:"Heitor Vasconcelos", matricula:"GO-10689", perfil:"Assessoria jurídica", unidadeId:"u1"},
+    {id:"us9", nome:"Isabela Tavares", matricula:"GO-10333", perfil:"Auditoria e controle interno", unidadeId:"u1"},
+    {id:"us10", nome:"Admin do Sistema", matricula:"GO-00001", perfil:"Administrador geral", unidadeId:"u1"},
+    {id:"us11", nome:"Consulta Geral", matricula:"GO-00002", perfil:"Usuário de consulta", unidadeId:"u1"},
+  ],
+  auditoria: [],
+};
+
+let nextDemandaSeq = 342;
+let SESSION = { user: null };
+
+// ---------------------------------------------------------------------------
+// UTILITÁRIOS DE ACESSO
+// ---------------------------------------------------------------------------
+const getUnidade = id => DB.unidades.find(u=>u.id===id);
+const getItem = id => DB.itens.find(i=>i.id===id);
+const getFornecedor = id => DB.fornecedores.find(f=>f.id===id);
+const getDemanda = id => DB.demandas.find(d=>d.id===id);
+const getProcesso = id => DB.processos.find(p=>p.id===id);
+const fmtMoney = n => "R$ " + n.toLocaleString("pt-BR",{minimumFractionDigits:0,maximumFractionDigits:0});
+const fmtDate = s => { if(!s) return "—"; const [y,m,d]=s.split("-"); return `${d}/${m}/${y}`; };
+
+function log(acao, justificativa){
+  DB.auditoria.unshift({ts:new Date(), usuario: SESSION.user? SESSION.user.nome : "—", acao, justificativa: justificativa||""});
+}
+
+// ---------------------------------------------------------------------------
+// MOTOR 1 — SIMILARIDADE / DUPLICIDADE (Módulo 3)
+// ---------------------------------------------------------------------------
+function stripDiacritics(s){
+  var map = {225:"a",224:"a",227:"a",226:"a",228:"a",233:"e",234:"e",232:"e",235:"e",237:"i",236:"i",238:"i",239:"i",243:"o",244:"o",245:"o",242:"o",246:"o",250:"u",249:"u",251:"u",252:"u",231:"c",241:"n"};
+  s = s.toLowerCase();
+  var out = "";
+  for(var i=0;i<s.length;i++){ var code=s.charCodeAt(i); out += (map[code]||s[i]); }
+  return out;
+}
+function normTokens(s){
+  return stripDiacritics(s).replace(/[^a-z0-9 ]/g," ").split(/\s+/).filter(Boolean);
+}
+function textSim(a,b){
+  const ta=new Set(normTokens(a)), tb=new Set(normTokens(b));
+  const inter=[...ta].filter(x=>tb.has(x)).length;
+  const union=new Set([...ta,...tb]).size;
+  return union? inter/union : 0;
+}
+function compareDemandas(a,b){
+  let score=0; const matched=[];
+  if(a.itemId===b.itemId){ score+=0.55; matched.push("mesmo item do catálogo padronizado"); }
+  else {
+    const ia=getItem(a.itemId), ib=getItem(b.itemId);
+    const ts=textSim(ia.descricao, ib.descricao);
+    if(ts>0.25){ score+=ts*0.4; matched.push("descrição textual semelhante"); }
+    if(ia.categoria===ib.categoria){ score+=0.12; matched.push("mesma categoria"); }
+  }
+  const dd=Math.abs(daysBetween(a.data,b.data));
+  if(dd<=60){ score+=0.15; matched.push("período próximo (≤60 dias)"); }
+  if(a.status!=="Atendida" && b.status!=="Atendida"){ score+=0.12; matched.push("ambas ainda em aberto"); }
+  return {score:Math.min(score,1), matched};
+}
+function findDuplicates(demanda){
+  return DB.demandas
+    .filter(d=>d.id!==demanda.id)
+    .map(d=>({demanda:d, ...compareDemandas(demanda,d)}))
+    .filter(r=>r.score>=0.55)
+    .sort((a,b)=>b.score-a.score);
+}
+function severityFromScore(s){ return s>=0.85 ? "crit" : s>=0.70 ? "warn" : "info"; }
+
+// ---------------------------------------------------------------------------
+// MOTOR 2 — APRENDIZAGEM DE CONSUMO (Módulo 7/8)
+// ---------------------------------------------------------------------------
+function analyzeConsumption(itemId){
+  const item = getItem(itemId);
+  const recs = DB.movimentacoes.filter(m=>m.itemId===itemId && m.tipo==="saida" && !m.extraordinario).sort((a,b)=>new Date(a.data)-new Date(b.data));
+  const extra = DB.movimentacoes.filter(m=>m.itemId===itemId && m.extraordinario);
+  const n = recs.length;
+  const total = recs.reduce((s,r)=>s+r.quantidade,0);
+  const totalComExtra = total + extra.reduce((s,r)=>s+r.quantidade,0);
+  const remaining = Math.max(item.saldoContratado - totalComExtra, 0);
+  let rate=null, depletion=null, daysUntil=null;
+  if(n>=2){
+    const span = daysBetween(recs[0].data, recs[n-1].data);
+    rate = span>0 ? total/span : total/n;
+    if(rate>0){ daysUntil = Math.round(remaining/rate); depletion = iso(addDays(today,daysUntil)); }
+  }
+  const recurrent = n>=3;
+  let risk = "ok";
+  if(recurrent && daysUntil!==null){ risk = daysUntil<=30?"crit":daysUntil<=90?"warn":"ok"; }
+  return {item, n, total:totalComExtra, remaining, rate, depletion, daysUntil, recurrent, risk, extra};
+}
+
+// ---------------------------------------------------------------------------
+// MOTOR 3 — ESTOQUE / TRANSFERÊNCIAS
+// ---------------------------------------------------------------------------
+function estoquePorItem(itemId){ return DB.estoque.filter(e=>e.itemId===itemId); }
+function saldoTotal(itemId){ return estoquePorItem(itemId).reduce((s,e)=>s+e.disponivel,0); }
+function transferSuggestions(){
+  const out=[];
+  DB.itens.forEach(item=>{
+    const rows = estoquePorItem(item.id);
+    if(rows.length<2) return;
+    const sorted = [...rows].sort((a,b)=>b.disponivel-a.disponivel);
+    const donor = sorted[0], recipient = sorted[sorted.length-1];
+    if(donor.unidadeId===recipient.unidadeId) return;
+    const recipientNeed = item.min - recipient.disponivel;
+    if(recipientNeed<=0) return;
+    const donorSpare = donor.disponivel - Math.ceil(item.min*0.4);
+    if(donorSpare<=0) return;
+    const qtd = Math.round(Math.min(donorSpare, recipientNeed));
+    if(qtd>0) out.push({item, de:donor.unidadeId, para:recipient.unidadeId, qtd});
+  });
+  return out;
+}
+
+// ---------------------------------------------------------------------------
+// MOTOR 4 — ALERTAS UNIFICADOS
+// ---------------------------------------------------------------------------
+function classifyDeadline(dateStr){
+  if(!dateStr) return null;
+  const d = daysBetween(iso(today), dateStr);
+  if(d<=15) return "crit"; if(d<=45) return "warn"; if(d<=90) return "info"; return null;
+}
+function allAlerts(){
+  const list=[];
+  // contratos
+  DB.contratos.forEach(c=>{
+    const sev = classifyDeadline(c.vigenciaFim);
+    if(sev) list.push({sev, tipo:"Prazo", msg:`${c.numero}: vigência ${daysBetween(iso(today),c.vigenciaFim)>=0?"vence em "+daysBetween(iso(today),c.vigenciaFim)+" dia(s)":"venceu"}`, view:"contratos"});
+    if(c.garantia){ const s2=classifyDeadline(c.garantia); if(s2) list.push({sev:s2, tipo:"Prazo", msg:`${c.numero}: garantia vence em ${daysBetween(iso(today),c.garantia)} dia(s)`, view:"contratos"}); }
+  });
+  // processos
+  DB.processos.forEach(p=>{
+    if(p.status!=="Em andamento") return;
+    const sev = classifyDeadline(p.faseDeadline);
+    if(sev){
+      const fase = p.fases[p.faseAtualIdx];
+      list.push({sev, tipo:"Processo", msg:`SEI ${p.sei}: fase "${fase.nome}" com prazo em ${daysBetween(iso(today),p.faseDeadline)} dia(s)`, view:"processos", ref:p.id});
+    }
+  });
+  // estoque / consumo
+  DB.itens.forEach(it=>{
+    const a = analyzeConsumption(it.id);
+    if(a.recurrent && a.risk!=="ok") list.push({sev:a.risk, tipo:"Consumo", msg:`${it.descricao}: previsão de esgotamento em ${a.daysUntil} dia(s)`, view:"previsao", ref:it.id});
+    const tot = saldoTotal(it.id);
+    if(tot < it.min) list.push({sev:"warn", tipo:"Estoque", msg:`${it.descricao}: saldo total (${tot}) abaixo do mínimo (${it.min})`, view:"estoque"});
+  });
+  // duplicidades
+  const seen=new Set();
+  DB.demandas.forEach(d=>{
+    if(d.status==="Consolidada"||d.status==="Atendida") return;
+    findDuplicates(d).forEach(m=>{
+      const key=[d.id,m.demanda.id].sort().join("-");
+      if(seen.has(key)) return; seen.add(key);
+      list.push({sev:severityFromScore(m.score), tipo:"Duplicidade", msg:`${Math.round(m.score*100)}% similar — ${getItem(d.itemId).descricao} (${d.numero} × ${m.demanda.numero})`, view:"duplicidade", ref:d.id});
+    });
+  });
+  // qualidade
+  DB.qualidade.forEach(q=>{
+    if(q.nota==="regular"||q.nota==="insatisfatoria"){
+      const c = DB.contratos.find(x=>x.id===q.contratoId);
+      list.push({sev: q.nota==="insatisfatoria"?"crit":"warn", tipo:"Qualidade", msg:`${c.numero}: última avaliação de qualidade "${q.nota}"`, view:"contratos"});
+    }
+  });
+  const order={crit:0,warn:1,info:2};
+  return list.sort((a,b)=>order[a.sev]-order[b.sev]);
+}
+function recommendedActions(){
+  const acts=[];
+  allAlerts().filter(a=>a.sev==="crit").forEach(a=> acts.push(a.msg));
+  transferSuggestions().forEach(t=> acts.push(`Transferir ${t.qtd} ${t.item.unidade} de ${t.item.descricao}: ${getUnidade(t.de).nome} → ${getUnidade(t.para).nome}`));
+  return acts.slice(0,6);
+}
+
+// ---------------------------------------------------------------------------
+// MOTOR 5 — ASSISTENTE DE IA (baseado em regras + dados reais, com explicabilidade)
+// ---------------------------------------------------------------------------
+function askAssistant(q){
+  const ql = q.toLowerCase();
+  const found = DB.itens.find(it => ql.includes(it.descricao.toLowerCase().split(" ")[0]) || normTokens(it.descricao).some(t=>ql.includes(t)&&t.length>4));
+
+  // 1) material suficiente / desabastecimento
+  if(/suficiente|desabastec|acabando|esgot/.test(ql)){
+    const risky = DB.itens.map(it=>analyzeConsumption(it.id)).filter(a=>a.recurrent && a.risk!=="ok");
+    if(risky.length){
+      const r=risky[0];
+      return {
+        ans:`Não integralmente. ${r.item.descricao} tem previsão de esgotar em ${r.daysUntil} dia(s) (${fmtDate(r.depletion)}) no ritmo atual de consumo. Os demais itens monitorados estão dentro do prazo de 6 meses.`,
+        dados:`Módulo 7 (Estoque) + Módulo 8 (Previsão de consumo) — ${r.n} requisições históricas de ${r.item.descricao}`,
+        criterios:"Taxa média de consumo diário sobre o histórico, excluindo picos extraordinários",
+        confianca:"Alta — item com histórico recorrente (≥3 requisições)",
+        risco:"Desabastecimento",
+        acao:`Avaliar aditivo de quantitativo ou novo processo para ${r.item.descricao}`,
+        validacao:"Necessária — decisão de compra é humana"
+      };
+    }
+    return baseAnswer("Sim — nenhum item monitorado com risco de esgotamento nos próximos 6 meses.","Módulo 7/8 — previsão de consumo de todos os itens","Nenhum item recorrente cruzou o limiar de 90 dias","Alta","Nenhum identificado no momento","Manter monitoramento de rotina");
+  }
+  // 2) prazo de reajuste / vencimento de contratos
+  if(/venc|reajust|90 dias/.test(ql)){
+    const list = DB.contratos.filter(c=>classifyDeadline(c.vigenciaFim));
+    if(list.length){
+      return baseAnswer(
+        `${list.length} contrato(s)/ata(s) com vencimento em até 90 dias: ${list.map(c=>c.numero+" ("+daysBetween(iso(today),c.vigenciaFim)+"d)").join(", ")}.`,
+        "Módulo 6 — motor de prazos, campo vigencia_fim de cada Contrato/Ata","Limiar de 90 dias para alerta informativo","Alta (dado direto)",
+        "Interrupção de fornecimento se não houver renovação a tempo","Iniciar prorrogação ou nova contratação para os itens críticos","Necessária"
+      );
+    }
+  }
+  // 3) processo para item específico
+  if(/processo|licitac|contrat(a|o)/.test(ql)){
+    const proc = DB.processos.find(p=>p.status==="Em andamento");
+    if(proc){
+      const fase = proc.fases[proc.faseAtualIdx];
+      return baseAnswer(
+        `Sim — Processo SEI ${proc.sei} (${proc.modalidade}), atualmente na fase "${fase.nome}"${proc.faseDeadline? `, com prazo em ${daysBetween(iso(today),proc.faseDeadline)} dia(s)`:""}.`,
+        "Módulo 5 (Processo) e Módulo 6 (Prazos)","Consulta direta ao registro do processo — sem inferência","Alta (dado direto)",
+        proc.faseDeadline && daysBetween(iso(today),proc.faseDeadline)<=15 ? "Perda de prazo da fase atual" : "Nenhum risco iminente",
+        "Acompanhar a fase atual até a conclusão","Necessária — apenas informativo"
+      );
+    }
+  }
+  // 4) estoque em outra unidade
+  if(/outra unidade|outro (setor|orgao)|transfer/.test(ql)){
+    const sugg = transferSuggestions();
+    if(sugg.length){
+      const s=sugg[0];
+      return baseAnswer(
+        `Sim — ${getUnidade(s.de).nome} tem saldo de ${s.item.descricao} acima do necessário; sugerimos transferir ${s.qtd} ${s.item.unidade} para ${getUnidade(s.para).nome}.`,
+        "Módulo 7 — saldo de estoque por unidade, comparado ao mínimo cadastrado do item",
+        "Unidade com saldo > 130% do mínimo e unidade com saldo < 60% do mínimo",
+        "Média — depende da atualização mais recente do estoque físico",
+        "Compra desnecessária se a transferência não for avaliada",
+        "Registrar a transferência no Módulo 7",
+        "Necessária — a movimentação só ocorre após confirmação do Almoxarifado"
+      );
+    }
+    return baseAnswer("No momento não há excedente relevante identificado em outra unidade para os itens monitorados.","Módulo 7 — saldos por unidade","Comparação de saldo com o estoque mínimo de cada item","Alta","Nenhum","—","Não se aplica");
+  }
+  // 5) por que este alerta
+  if(/por que|porque|explic/.test(ql)){
+    return baseAnswer(
+      "Todo alerta nasce de uma regra objetiva sobre os dados cadastrados — nunca de uma opinião do modelo. Abra o alerta na Central de Alertas para ver exatamente qual registro do banco o gerou.",
+      "Regras de negócio RN-01 a RN-11 (documento de arquitetura, Etapa 1)","—","—","—","Consultar a Central de Alertas","Não se aplica — resposta informativa"
+    );
+  }
+  // fallback honesto
+  return baseAnswer(
+    "Não encontrei, nos dados atuais, uma resposta direta e confiável para esta pergunta específica.",
+    "Nenhum registro correspondente foi localizado nas tabelas consultadas",
+    "Busca por palavras-chave nos módulos de Demanda, Estoque, Processo e Contrato",
+    "Baixa","Não avaliado",
+    "Reformule a pergunta citando o item, o contrato ou o processo específico",
+    "Necessária — esta resposta não deve ser considerada definitiva"
+  );
+
+  function baseAnswer(ans,dados,criterios,confianca,risco,acao,validacao){
+    return {ans,dados,criterios,confianca,risco,acao,validacao: validacao||"Necessária — a IA não decide, apenas recomenda"};
+  }
+}
+
+// ---------------------------------------------------------------------------
+// ROTEAMENTO / RENDERIZAÇÃO
+// ---------------------------------------------------------------------------
+function currentPerfil(){ return SESSION.user ? SESSION.user.perfil : null; }
+const SUBROUTE_PARENT = {"nova-demanda":"demandas", "duplicidade":"demandas", "previsao":"estoque"};
+function canAccess(key){
+  const item = NAV.find(n=>n.key===(SUBROUTE_PARENT[key]||key));
+  if(!item) return true;
+  return item.perfis.includes(currentPerfil());
+}
+
+function navigate(hash){ location.hash = hash; }
+window.addEventListener("hashchange", render);
+window.addEventListener("DOMContentLoaded", render);
+
+function render(){
+  closeModal();
+  const app = document.getElementById("app");
+  if(!SESSION.user){
+    app.classList.add("login-mode");
+    document.getElementById("sidenav").innerHTML="";
+    document.getElementById("who-box").innerHTML="";
+    renderLogin();
+    return;
+  }
+  app.classList.remove("login-mode");
+  renderChrome();
+  const hash = (location.hash||"#/painel").replace("#/","");
+  const [key, sub] = hash.split("/");
+  const view = document.getElementById("view");
+  view.className = "";
+  if(!canAccess(key)){
+    view.innerHTML = `<div class="restricted"><h2>Acesso restrito</h2><p>O perfil <b>${currentPerfil()}</b> não tem acesso a esta tela.</p><button class="btn" onclick="navigate('#/painel')">Voltar ao painel</button></div>`;
+    return;
+  }
+  const map = {
+    painel: renderPainel, alertas: renderAlertas, demandas: renderDemandas,
+    "nova-demanda": renderNovaDemanda, duplicidade: ()=>renderDuplicidade(sub),
+    planejamento: renderPlanejamento, processos: sub? ()=>renderProcessoDetalhe(sub) : renderProcessos,
+    estoque: renderEstoque, previsao: renderPrevisao, contratos: renderContratos,
+    assistente: renderAssistente, relatorios: renderRelatorios, admin: renderAdmin,
+  };
+  (map[key]||renderPainel)();
+}
+
+function renderChrome(){
+  document.getElementById("who-box").innerHTML = `
+    <span class="u-unit">${getUnidade(SESSION.user.unidadeId).nome} · ${SESSION.user.perfil}</span>
+    <button id="btn-logout">${SESSION.user.nome} · Sair</button>`;
+  document.getElementById("btn-logout").onclick = ()=>{ SESSION.user=null; location.hash="#/painel"; render(); };
+
+  const hash = (location.hash||"#/painel").replace("#/","").split("/")[0];
+  let html="";
+  NAV.forEach(n=>{
+    if(n.grp){ html+=`<div class="grp">${n.grp}</div>`; return; }
+    if(!n.perfis.includes(currentPerfil())) return;
+    html += `<a href="#/${n.key}" class="${n.key===hash?'active':''}"><span class="dot"></span>${n.label}</a>`;
+  });
+  document.getElementById("sidenav").innerHTML = html;
+}
+
+function head(title, sub, actionsHtml){
+  return `<div class="view-head"><div><h1>${title}</h1>${sub?`<div class="sub">${sub}</div>`:""}</div><div class="actions">${actionsHtml||""}</div></div>`;
+}
+function pill(sev,label){ return `<span class="pill ${sev}">${label}</span>`; }
+function sevLabel(s){ return {crit:"CRÍTICO",warn:"ATENÇÃO",info:"INFORMATIVO",ok:"OK"}[s]||s; }
+
+function openModal(title, bodyHtml, footHtml){
+  document.getElementById("modal-root").innerHTML = `
+    <div class="modal-bg" id="modal-bg">
+      <div class="modal">
+        <div class="modal-head"><h3>${title}</h3><button class="x-close" id="modal-x">×</button></div>
+        <div class="modal-body">${bodyHtml}</div>
+        ${footHtml?`<div class="modal-foot">${footHtml}</div>`:""}
+      </div>
+    </div>`;
+  document.getElementById("modal-x").onclick = closeModal;
+  document.getElementById("modal-bg").onclick = e=>{ if(e.target.id==="modal-bg") closeModal(); };
+}
+function closeModal(){ document.getElementById("modal-root").innerHTML=""; }
+
+// ---------------------------------------------------------------------------
+// LOGIN
+// ---------------------------------------------------------------------------
+function renderLogin(){
+  const view = document.getElementById("view");
+  view.className = "login";
+  view.innerHTML = `
+    <div class="card login-card">
+      <div class="sq"></div>
+      <h1>SICOMP-IA</h1>
+      <div class="tag">Secretaria de Segurança Pública do Estado de Goiás</div>
+      <div class="field" style="text-align:left">
+        <label>Servidor (matrícula)</label>
+        <select id="login-user">${DB.usuarios.map(u=>`<option value="${u.id}">${u.nome} — ${u.perfil}</option>`).join("")}</select>
+      </div>
+      <div class="field" style="text-align:left">
+        <label>Senha</label>
+        <input type="password" value="••••••••" disabled>
+        <div class="hint">Protótipo — autenticação real entra na integração institucional (Etapa 5).</div>
+      </div>
+      <button class="btn btn-primary w100" id="login-btn" style="justify-content:center">ENTRAR</button>
+    </div>`;
+  document.getElementById("login-btn").onclick = ()=>{
+    const id = document.getElementById("login-user").value;
+    SESSION.user = DB.usuarios.find(u=>u.id===id);
+    log("Login realizado");
+    location.hash = "#/painel";
+    render();
+  };
+}
+
+// ---------------------------------------------------------------------------
+// PAINEL GERAL
+// ---------------------------------------------------------------------------
+function renderPainel(){
+  const alerts = allAlerts();
+  const nCrit = alerts.filter(a=>a.sev==="crit").length;
+  const estCrit = DB.itens.filter(it=>saldoTotal(it.id)<it.min).length;
+  const contratosVenc = DB.contratos.filter(c=>classifyDeadline(c.vigenciaFim)).length;
+  const demPend = DB.demandas.filter(d=>d.status==="Em análise").length;
+
+  const cons = analyzeConsumption("i2"); // Papel A4 — cenário de desabastecimento
+  const chart = sparkline(cons);
+
+  document.getElementById("view").innerHTML = `
+    ${head("Painel geral", `Bem-vindo(a), ${SESSION.user.nome.split(" ")[0]} — visão de ${getUnidade(SESSION.user.unidadeId).nome}`)}
+    <div class="grid g-kpi" style="margin-bottom:16px">
+      <div class="card kpi"><div class="l">Processos com alerta crítico</div><div class="n crit">${DB.processos.filter(p=>p.status==="Em andamento"&&classifyDeadline(p.faseDeadline)==="crit").length}</div></div>
+      <div class="card kpi"><div class="l">Estoques críticos</div><div class="n warn">${estCrit}</div></div>
+      <div class="card kpi"><div class="l">Contratos vencendo (90d)</div><div class="n warn">${contratosVenc}</div></div>
+      <div class="card kpi"><div class="l">Demandas pendentes</div><div class="n royal">${demPend}</div></div>
+    </div>
+    <div class="grid g-main-side">
+      <div class="card pad">
+        <h2 class="sec">Alertas do dia (${alerts.length})</h2>
+        <div class="grid" style="grid-template-columns:1fr 1fr;gap:10px" id="alert-cards"></div>
+      </div>
+      <div class="grid" style="gap:14px">
+        <div class="card pad">
+          <h2 class="sec">Próximas ações recomendadas</h2>
+          <ol style="margin:0;padding-left:18px;font-size:12.8px;display:flex;flex-direction:column;gap:8px">
+            ${recommendedActions().map(a=>`<li>${a}</li>`).join("") || "<li class='muted'>Nenhuma providência urgente.</li>"}
+          </ol>
+        </div>
+        <div class="card pad">
+          <h2 class="sec">Consumo × previsão — ${cons.item.descricao}</h2>
+          ${chart}
+        </div>
+      </div>
+    </div>`;
+  const box = document.getElementById("alert-cards");
+  alerts.slice(0,6).forEach(a=>{
+    const d=document.createElement("div");
+    d.className="alertcard";
+    d.innerHTML = `<div class="stripe ${a.sev}"></div><div><div class="t">${a.tipo}</div><div class="d">${a.msg}</div></div>`;
+    d.onclick = ()=> navigate(a.ref? `#/${a.view}/${a.ref}` : `#/${a.view}`);
+    box.appendChild(d);
+  });
+}
+
+function sparkline(cons){
+  if(!cons.rate) return `<div class="muted small">Histórico insuficiente para previsão.</div>`;
+  const W=380,H=140,pad=28;
+  const recs = DB.movimentacoes.filter(m=>m.itemId===cons.item.id && m.tipo==="saida" && !m.extraordinario).sort((a,b)=>new Date(a.data)-new Date(b.data));
+  const cum=[]; let acc=0; recs.forEach(r=>{acc+=r.quantidade; cum.push(acc);});
+  const maxY = Math.max(...cum, cons.total)*1.15;
+  const stepX = (W-2*pad)/(recs.length+3);
+  const histPts = cum.map((v,i)=> `${pad+i*stepX},${H-pad-(v/maxY)*(H-2*pad)}`).join(" ");
+  const lastX = pad+(recs.length-1)*stepX, lastY = H-pad-(cum[cum.length-1]/maxY)*(H-2*pad);
+  const forePts = [`${lastX},${lastY}`];
+  for(let k=1;k<=3;k++){ const x=lastX+k*stepX; const y=H-pad-((acc+cons.rate*k*30)/maxY)*(H-2*pad); forePts.push(`${x},${Math.max(y,pad)}`); }
+  return `<div class="sparkwrap"><svg class="chart" viewBox="0 0 ${W} ${H}" width="100%">
+    <line class="axis" x1="${pad}" y1="${H-pad}" x2="${W-8}" y2="${H-pad}"/>
+    <line class="axis" x1="${pad}" y1="8" x2="${pad}" y2="${H-pad}"/>
+    <polyline class="plot-hist" points="${histPts}"/>
+    <polyline class="plot-fore" points="${forePts.join(" ")}"/>
+    <text x="${W-8}" y="${H-pad+14}" text-anchor="end">hoje →</text>
+    <text x="${forePts[forePts.length-1].split(',')[0]}" y="${Math.max(parseFloat(forePts[forePts.length-1].split(',')[1])-8,14)}" text-anchor="end" fill="var(--honey)">esgota ${fmtDate(cons.depletion)}</text>
+  </svg></div>
+  <div class="small muted" style="margin-top:6px">Taxa: ${cons.rate.toFixed(2)} ${cons.item.unidade}/dia · saldo restante: ${cons.remaining} · risco: ${pill(cons.risk,sevLabel(cons.risk))}</div>`;
+}
+
+// ---------------------------------------------------------------------------
+// ALERTAS
+// ---------------------------------------------------------------------------
+function renderAlertas(){
+  const alerts = allAlerts();
+  document.getElementById("view").innerHTML = `
+    ${head("Central de alertas", `${alerts.length} alerta(s) ativos em todos os módulos`)}
+    <div class="grid" style="grid-template-columns:180px 1fr;gap:16px">
+      <div class="card pad small">
+        <div style="font-weight:700;margin-bottom:8px">Severidade</div>
+        <label class="flex items-center gap8"><input type="checkbox" checked disabled> Crítico (${alerts.filter(a=>a.sev==='crit').length})</label><br>
+        <label class="flex items-center gap8"><input type="checkbox" checked disabled> Atenção (${alerts.filter(a=>a.sev==='warn').length})</label><br>
+        <label class="flex items-center gap8"><input type="checkbox" checked disabled> Informativo (${alerts.filter(a=>a.sev==='info').length})</label>
+      </div>
+      <div class="grid" style="gap:10px" id="alert-list"></div>
+    </div>`;
+  const list = document.getElementById("alert-list");
+  if(!alerts.length){ list.innerHTML = `<div class="card empty">Nenhum alerta ativo.</div>`; return; }
+  alerts.forEach(a=>{
+    const row=document.createElement("div");
+    row.className="card"; row.style.padding="12px 16px"; row.style.display="flex"; row.style.justifyContent="space-between"; row.style.alignItems="center";
+    row.innerHTML = `<div class="flex items-center gap12"><span class="pill ${a.sev}">${sevLabel(a.sev)}</span><div><div style="font-weight:600">${a.tipo}</div><div class="small muted">${a.msg}</div></div></div>`;
+    const btn=document.createElement("button"); btn.className="btn sm"; btn.textContent="Tratar";
+    btn.onclick=()=> navigate(a.ref? `#/${a.view}/${a.ref}` : `#/${a.view}`);
+    row.appendChild(btn);
+    list.appendChild(row);
+  });
+}
+
+// ---------------------------------------------------------------------------
+// DEMANDAS
+// ---------------------------------------------------------------------------
+let demandaFilters = {unidade:"", status:"", urgencia:""};
+function renderDemandas(){
+  document.getElementById("view").innerHTML = `
+    ${head("Central de demandas", "Todas as necessidades registradas pelas unidades", `<button class="btn btn-primary" id="btn-nova-demanda">+ Nova demanda</button>`)}
+    <div class="card pad" style="margin-bottom:14px">
+      <div class="row3">
+        <div class="field"><label>Unidade</label><select id="f-unidade"><option value="">Todas</option>${DB.unidades.map(u=>`<option value="${u.id}">${u.nome}</option>`).join("")}</select></div>
+        <div class="field"><label>Status</label><select id="f-status"><option value="">Todos</option>${["Em análise","Aprovada","Consolidada","Atendida"].map(s=>`<option>${s}</option>`).join("")}</select></div>
+        <div class="field"><label>Urgência</label><select id="f-urg"><option value="">Todas</option>${["Alta","Média","Baixa"].map(s=>`<option>${s}</option>`).join("")}</select></div>
+      </div>
+    </div>
+    <div class="card"><div class="table-wrap"><table>
+      <thead><tr><th>Nº</th><th>Unidade</th><th>Item</th><th>Qtd</th><th>Urgência</th><th>Status</th><th>Data</th></tr></thead>
+      <tbody id="dem-tbody"></tbody>
+    </table></div></div>`;
+
+  document.getElementById("btn-nova-demanda").onclick = ()=> navigate("#/nova-demanda");
+  ["f-unidade","f-status","f-urg"].forEach(id=>{
+    document.getElementById(id).onchange = e=>{
+      demandaFilters = { unidade:document.getElementById("f-unidade").value, status:document.getElementById("f-status").value, urgencia:document.getElementById("f-urg").value };
+      paintDemandas();
+    };
+  });
+  document.getElementById("f-unidade").value = demandaFilters.unidade;
+  document.getElementById("f-status").value = demandaFilters.status;
+  document.getElementById("f-urg").value = demandaFilters.urgencia;
+  paintDemandas();
+}
+function statusPill(status){
+  const map={"Em análise":"info","Aprovada":"ok","Consolidada":"warn","Atendida":"neutral"};
+  return `<span class="pill ${map[status]||'neutral'}">${status.toUpperCase()}</span>`;
+}
+function paintDemandas(){
+  const rows = DB.demandas.filter(d=>
+    (!demandaFilters.unidade || d.unidadeId===demandaFilters.unidade) &&
+    (!demandaFilters.status || d.status===demandaFilters.status) &&
+    (!demandaFilters.urgencia || d.urgencia===demandaFilters.urgencia)
+  ).sort((a,b)=> new Date(b.data)-new Date(a.data));
+  const tbody = document.getElementById("dem-tbody");
+  if(!rows.length){ tbody.innerHTML = `<tr><td colspan="7" class="empty">Nenhuma demanda encontrada com esses filtros.</td></tr>`; return; }
+  tbody.innerHTML = rows.map(d=>{
+    const dup = findDuplicates(d);
+    const hasDup = !d.dupResolved && d.status!=="Consolidada" && d.status!=="Atendida" && dup.length && dup[0].score>=0.55;
+    return `<tr data-id="${d.id}" data-dup="${hasDup?1:0}">
+      <td class="mono">${d.numero}</td><td>${getUnidade(d.unidadeId).nome}</td><td>${getItem(d.itemId).descricao}</td>
+      <td class="mono">${d.quantidade}</td><td>${d.urgencia}</td>
+      <td>${hasDup? pill(severityFromScore(dup[0].score),'DUPLICIDADE') : statusPill(d.status)}</td>
+      <td class="mono">${fmtDate(d.data)}</td></tr>`;
+  }).join("");
+  tbody.querySelectorAll("tr").forEach(tr=>{
+    tr.onclick = ()=>{
+      if(tr.dataset.dup==="1") navigate(`#/duplicidade/${tr.dataset.id}`);
+      else openDemandaDetail(tr.dataset.id);
+    };
+  });
+}
+function openDemandaDetail(id){
+  const d = getDemanda(id), it=getItem(d.itemId);
+  openModal(`Demanda ${d.numero}`, `
+    <div class="row2">
+      <div class="field"><label>Unidade</label><input value="${getUnidade(d.unidadeId).nome}" disabled></div>
+      <div class="field"><label>Item</label><input value="${it.descricao}" disabled></div>
+      <div class="field"><label>Quantidade</label><input id="edit-qtd" value="${d.quantidade}"></div>
+      <div class="field"><label>Urgência</label><select id="edit-urg">${["Alta","Média","Baixa"].map(u=>`<option ${u===d.urgencia?'selected':''}>${u}</option>`).join("")}</select></div>
+    </div>
+    <div class="field"><label>Justificativa</label><textarea id="edit-just">${d.justificativa}</textarea></div>
+    <div class="field"><label>Status</label><select id="edit-status">${["Em análise","Aprovada","Consolidada","Atendida"].map(s=>`<option ${s===d.status?'selected':''}>${s}</option>`).join("")}</select></div>
+  `, `<button class="btn" id="m-cancel">Fechar</button><button class="btn btn-primary" id="m-save">Salvar alterações</button>`);
+  document.getElementById("m-cancel").onclick = closeModal;
+  document.getElementById("m-save").onclick = ()=>{
+    d.quantidade = Number(document.getElementById("edit-qtd").value)||d.quantidade;
+    d.urgencia = document.getElementById("edit-urg").value;
+    d.justificativa = document.getElementById("edit-just").value;
+    d.status = document.getElementById("edit-status").value;
+    log(`Demanda ${d.numero} editada`, "Ajuste manual via Central de Demandas");
+    closeModal(); paintDemandas();
+  };
+}
+
+// ---------------------------------------------------------------------------
+// NOVA DEMANDA (com verificação automática ao vivo — RN-01)
+// ---------------------------------------------------------------------------
+function renderNovaDemanda(){
+  document.getElementById("view").innerHTML = `
+    ${head("Nova demanda", "Registrar uma necessidade — o sistema verifica automaticamente antes do envio")}
+    <div class="grid g-main-side">
+      <div class="card pad">
+        <div class="field"><label>Unidade solicitante</label><select id="nd-unidade">${DB.unidades.map(u=>`<option value="${u.id}" ${u.id===SESSION.user.unidadeId?'selected':''}>${u.nome}</option>`).join("")}</select></div>
+        <div class="field"><label>Item (catálogo padronizado)</label><select id="nd-item">${DB.itens.map(i=>`<option value="${i.id}">${i.descricao}</option>`).join("")}</select></div>
+        <div class="row3">
+          <div class="field"><label>Quantidade</label><input id="nd-qtd" type="number" value="40" min="1"></div>
+          <div class="field"><label>Urgência</label><select id="nd-urg"><option>Alta</option><option selected>Média</option><option>Baixa</option></select></div>
+          <div class="field"><label>Prazo necessário</label><input id="nd-prazo" value="30 dias"></div>
+        </div>
+        <div class="field"><label>Justificativa</label><textarea id="nd-just">Reposição de itens vencidos identificados na inspeção trimestral do efetivo operacional.</textarea></div>
+        <div class="row2">
+          <div class="field"><label>Local de entrega</label><input id="nd-local" value="Sede — Almoxarifado"></div>
+          <div class="field"><label>Fonte de recurso (se conhecida)</label><input id="nd-fonte" value=""></div>
+        </div>
+        <div class="actions" style="margin-top:6px">
+          <button class="btn btn-primary" id="nd-enviar">Enviar para aprovação</button>
+          <button class="btn btn-ghost" id="nd-cancelar">Cancelar</button>
+        </div>
+      </div>
+      <div class="card pad" id="nd-check" style="border-color:var(--info)"></div>
+    </div>`;
+
+  const liveCheck = ()=>{
+    const unidadeId = document.getElementById("nd-unidade").value;
+    const itemId = document.getElementById("nd-item").value;
+    const qtd = Number(document.getElementById("nd-qtd").value)||0;
+    const item = getItem(itemId);
+    const est = DB.estoque.find(e=>e.itemId===itemId && e.unidadeId===unidadeId);
+    const outras = DB.estoque.filter(e=>e.itemId===itemId && e.unidadeId!==unidadeId && e.disponivel>0);
+    const fake = {id:"__novo__", itemId, unidadeId, quantidade:qtd, data: iso(today), status:"Em análise"};
+    const dups = findDuplicates(fake).filter(m=>m.score>=0.55);
+    const ata = DB.contratos.find(c=> c.objeto.toLowerCase().includes(item.descricao.toLowerCase().split(" ")[0]) && c.status!=="Vencido");
+
+    let dupHtml = "";
+    if(dups.length){
+      const top = dups[0];
+      dupHtml = `<div class="banner ${severityFromScore(top.score)}"><b>${Math.round(top.score*100)}% similar</b> à demanda ${top.demanda.numero} (${getUnidade(top.demanda.unidadeId).nome}) — campos: ${top.matched.join(", ")}.</div>`;
+    }
+
+    document.getElementById("nd-check").innerHTML = `
+      <h2 class="sec" style="color:var(--info)">Verificação automática</h2>
+      ${dupHtml}
+      <div class="small" style="display:flex;flex-direction:column;gap:10px">
+        <div><b>Estoque na unidade:</b> ${est? est.disponivel : 0} ${item.unidade} disponível(is)${qtd>(est?est.disponivel:0)?' <span class="muted">(abaixo do pedido)</span>':''}</div>
+        <div><b>Estoque em outras unidades:</b> ${outras.length? outras.map(o=>`${o.disponivel} em ${getUnidade(o.unidadeId).nome}`).join(", ") : "nenhum saldo relevante"}</div>
+        <div><b>Processos semelhantes em andamento:</b> ${DB.processos.some(p=>p.status==="Em andamento"&&p.objeto.toLowerCase().includes(item.descricao.toLowerCase().split(" ")[0])) ? "1 encontrado" : "nenhum encontrado"}</div>
+        <div><b>Contratos / atas vigentes:</b> ${ata? `${ata.numero} — pode atender parte da demanda` : "nenhum contrato específico localizado"}</div>
+      </div>
+      ${ata? `<div class="banner info" style="margin-top:10px">Sugestão: usar o saldo de <b>${ata.numero}</b> antes de abrir novo processo.</div>`:""}
+    `;
+  };
+  ["nd-unidade","nd-item","nd-qtd"].forEach(id=> document.getElementById(id).addEventListener("input", liveCheck));
+  liveCheck();
+
+  document.getElementById("nd-cancelar").onclick = ()=> navigate("#/demandas");
+  document.getElementById("nd-enviar").onclick = ()=>{
+    const unidadeId = document.getElementById("nd-unidade").value;
+    const itemId = document.getElementById("nd-item").value;
+    const novo = {
+      id:"d"+(DB.demandas.length+1), numero:"2026-0"+(nextDemandaSeq++), unidadeId, itemId,
+      quantidade:Number(document.getElementById("nd-qtd").value)||1,
+      justificativa:document.getElementById("nd-just").value, urgencia:document.getElementById("nd-urg").value,
+      prazo:document.getElementById("nd-prazo").value, local:document.getElementById("nd-local").value,
+      fonte:document.getElementById("nd-fonte").value, status:"Em análise", data: iso(today), responsavel: SESSION.user.nome,
+    };
+    DB.demandas.push(novo);
+    log(`Nova demanda registrada: ${novo.numero}`, novo.justificativa);
+    const dups = findDuplicates(novo).filter(m=>m.score>=0.55);
+    if(dups.length){ navigate(`#/duplicidade/${novo.id}`); }
+    else { navigate("#/demandas"); }
+  };
+}
+
+// ---------------------------------------------------------------------------
+// ANÁLISE DE DUPLICIDADE
+// ---------------------------------------------------------------------------
+function renderDuplicidade(id){
+  const d = getDemanda(id);
+  if(!d){ document.getElementById("view").innerHTML = `<div class="empty">Demanda não encontrada.</div>`; return; }
+  const matches = findDuplicates(d);
+  document.getElementById("view").innerHTML = `
+    ${head("Análise de possível duplicidade", `Demanda ${d.numero} — ${getItem(d.itemId).descricao}`)}
+    <div class="card pad" style="border-color:var(--crit);margin-bottom:14px">
+      <div class="small muted">Nova demanda em análise</div>
+      <div style="font-weight:700;font-size:15px">${d.numero} — ${getItem(d.itemId).descricao} · ${d.quantidade} ${getItem(d.itemId).unidade} · ${getUnidade(d.unidadeId).nome}</div>
+    </div>
+    <div class="card pad" style="margin-bottom:14px">
+      <h2 class="sec">Registros semelhantes encontrados</h2>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Origem</th><th>Item</th><th>Similaridade</th><th>Campos coincidentes</th></tr></thead>
+        <tbody>
+          ${matches.map(m=>`<tr style="cursor:default"><td>Demanda ${m.demanda.numero} (${getUnidade(m.demanda.unidadeId).nome})</td><td>${getItem(m.demanda.itemId).descricao}</td>
+          <td>${pill(severityFromScore(m.score), Math.round(m.score*100)+"%")}</td><td class="small">${m.matched.join(", ")}</td></tr>`).join("") || `<tr><td colspan="4" class="empty">Nenhum registro semelhante.</td></tr>`}
+        </tbody>
+      </table></div>
+    </div>
+    <div class="card pad">
+      <div class="field"><label>Justificativa da decisão (obrigatória)</label><textarea id="dup-just" placeholder="Explique por que está consolidando, confirmando ou descartando este alerta..."></textarea></div>
+      <div class="actions">
+        <button class="btn btn-primary" id="dup-consolidar">Consolidar demandas</button>
+        <button class="btn btn-danger-outline" id="dup-confirmar">Confirmar duplicidade</button>
+        <button class="btn btn-ghost" id="dup-descartar">Descartar alerta</button>
+      </div>
+    </div>`;
+
+  const needJust = fn => ()=>{
+    const just = document.getElementById("dup-just").value.trim();
+    if(!just){ alert("A justificativa é obrigatória (RN-08) — toda decisão sobre um alerta de duplicidade é registrada com motivo."); return; }
+    fn(just);
+  };
+  document.getElementById("dup-consolidar").onclick = needJust(just=>{
+    if(matches.length){ d.quantidade += matches[0].demanda.quantidade; matches[0].demanda.status="Consolidada"; }
+    d.status="Consolidada";
+    log(`Demandas consolidadas: ${d.numero}`, just);
+    navigate("#/demandas");
+  });
+  document.getElementById("dup-confirmar").onclick = needJust(just=>{
+    d.dupResolved = true;
+    log(`Duplicidade confirmada para ${d.numero}`, just);
+    navigate("#/demandas");
+  });
+  document.getElementById("dup-descartar").onclick = needJust(just=>{
+    d.status="Aprovada";
+    d.dupResolved = true;
+    log(`Alerta de duplicidade descartado para ${d.numero}`, just);
+    navigate("#/demandas");
+  });
+}
+
+// ---------------------------------------------------------------------------
+// PLANEJAMENTO ANUAL
+// ---------------------------------------------------------------------------
+function priorityScore(d){
+  const it = getItem(d.itemId);
+  const cons = analyzeConsumption(it.id);
+  const urgMap={Alta:100,Média:60,Baixa:30};
+  const riskMap={crit:100,warn:60,ok:20};
+  const score = urgMap[d.urgencia]*0.25 + riskMap[cons.risk]*0.20 + (it.criticidade*20)*0.20 + 50*0.15 + 70*0.10 + 60*0.10;
+  return Math.round(score);
+}
+function renderPlanejamento(){
+  const ativos = DB.demandas.filter(d=>d.status==="Aprovada"||d.status==="Em análise");
+  const scored = ativos.map(d=>({d, score:priorityScore(d)})).sort((a,b)=>b.score-a.score);
+  const quarters=[[],[],[],[]];
+  scored.forEach((s,i)=> quarters[i%4].push(s));
+  const total = ativos.reduce((s,d)=>s + (getItem(d.itemId).saldoContratado? 0:0),0);
+  document.getElementById("view").innerHTML = `
+    ${head("Planejamento anual 2027", "Demandas aprovadas, priorizadas pela matriz de pontuação (Etapa 1)")}
+    <div class="grid" style="grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px">
+      ${["1º","2º","3º","4º"].map((q,i)=>`
+        <div class="card pad">
+          <div class="small muted" style="text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px">${q} trimestre</div>
+          ${quarters[i].map(s=>`<div class="card" style="padding:9px 11px;margin-bottom:8px;background:var(--surface-2)">
+            <div style="font-size:12.5px;font-weight:600">${getItem(s.d.itemId).descricao}</div>
+            <div class="small muted">${getUnidade(s.d.unidadeId).nome} · score ${s.score}</div>
+          </div>`).join("") || `<div class="small muted">Sem itens</div>`}
+        </div>`).join("")}
+    </div>
+    <div class="card pad">
+      <h2 class="sec">Planejado × executado</h2>
+      <div style="background:var(--line-soft);border-radius:6px;height:12px;overflow:hidden"><div style="width:58%;height:100%;background:var(--royal)"></div></div>
+      <div class="small muted" style="margin-top:6px">58% do valor planejado já foi executado no ano corrente.</div>
+    </div>`;
+}
+
+// ---------------------------------------------------------------------------
+// PROCESSOS
+// ---------------------------------------------------------------------------
+function renderProcessos(){
+  document.getElementById("view").innerHTML = `
+    ${head("Processos de contratação", `${DB.processos.length} processos cadastrados`)}
+    <div class="card"><div class="table-wrap"><table>
+      <thead><tr><th>SEI</th><th>Objeto</th><th>Modalidade</th><th>Fase atual</th><th>Status</th></tr></thead>
+      <tbody>${DB.processos.map(p=>{
+        const fase=p.fases[p.faseAtualIdx];
+        const sev = p.status==="Em andamento" ? classifyDeadline(p.faseDeadline) : null;
+        return `<tr data-id="${p.id}">
+          <td class="mono">${p.sei}</td><td>${p.objeto}</td><td>${p.modalidade}</td>
+          <td>${fase.nome} ${sev?pill(sev,'PRAZO '+daysBetween(iso(today),p.faseDeadline)+'d'):''}</td>
+          <td>${p.status==="Concluído"?pill('ok','CONCLUÍDO'):pill('info','EM ANDAMENTO')}</td></tr>`;
+      }).join("")}</tbody>
+    </table></div></div>`;
+  document.querySelectorAll("#view tbody tr").forEach(tr=> tr.onclick=()=> navigate(`#/processos/${tr.dataset.id}`));
+}
+function renderProcessoDetalhe(id){
+  const p = getProcesso(id);
+  if(!p){ renderProcessos(); return; }
+  document.getElementById("view").innerHTML = `
+    ${head(`Processo SEI ${p.sei}`, p.objeto, `<button class="btn" onclick="navigate('#/processos')">← Voltar</button>`)}
+    <div class="card pad" style="margin-bottom:14px">
+      <div class="row3">
+        <div><div class="small muted">Modalidade</div><div style="font-weight:600">${p.modalidade}</div></div>
+        <div><div class="small muted">Unidade responsável</div><div style="font-weight:600">${getUnidade(p.unidadeResp).nome}</div></div>
+        <div><div class="small muted">Valor estimado</div><div style="font-weight:600">${fmtMoney(p.valorEstimado)}</div></div>
+      </div>
+    </div>
+    ${p.status==="Em andamento" && classifyDeadline(p.faseDeadline)==="crit" ? `<div class="banner crit">Fase atual "${p.fases[p.faseAtualIdx].nome}" vence em ${daysBetween(iso(today),p.faseDeadline)} dia(s) — providência necessária.</div>`:""}
+    <div id="steps"></div>
+    ${p.id==="p1" ? `<button class="btn btn-primary" id="btn-timeline" style="margin-top:6px">Ver linha do tempo da licitação</button>`:""}
+  `;
+  const box = document.getElementById("steps");
+  p.fases.forEach((f,idx)=>{
+    if(!f.etapas.length) return;
+    const done = f.etapas.filter(e=>e.sit==="concluida").length;
+    const div=document.createElement("div"); div.className="stepgroup";
+    const open = idx===p.faseAtualIdx;
+    div.innerHTML = `<div class="stephead">${open?'▾':'▸'} ${f.nome} (${done}/${f.etapas.length})</div>
+      <div class="stepbody" style="display:${open?'block':'none'}">
+        ${f.etapas.map(e=>`<div class="steprow"><span class="name">${e.sit==='concluida'?'✓':e.sit==='critico'?'●':'○'} ${e.n} <span class="muted">— ${e.r}</span></span>
+          <span class="${e.sit==='critico'?'pill crit':''}">${e.sit==='critico' ? 'vence em '+daysBetween(iso(today),e.prazo)+'d' : (e.data||'')}</span></div>`).join("")}
+      </div>`;
+    div.querySelector(".stephead").onclick = ()=>{ const b=div.querySelector(".stepbody"); const isOpen=b.style.display!=='none'; b.style.display=isOpen?'none':'block'; div.querySelector(".stephead").textContent = (isOpen?'▸ ':'▾ ')+f.nome+` (${done}/${f.etapas.length})`; };
+    box.appendChild(div);
+  });
+  const tl = document.getElementById("btn-timeline");
+  if(tl) tl.onclick = ()=> renderLinhaTempo(p);
+}
+function renderLinhaTempo(p){
+  const licit = p.fases[2].etapas;
+  document.getElementById("view").innerHTML = `
+    ${head("Linha do tempo da licitação", `SEI ${p.sei}`, `<button class="btn" onclick="navigate('#/processos/${p.id}')">← Voltar ao processo</button>`)}
+    <div class="card pad">
+      <div class="sparkwrap"><svg viewBox="0 0 900 160" width="100%" class="chart">
+        <line class="axis" x1="60" y1="90" x2="840" y2="90"/>
+        ${licit.map((e,i)=>{
+          const x = 60 + i*((840-60)/(licit.length-1));
+          const crit = e.sit==="critico";
+          return `<circle cx="${x}" cy="90" r="${crit?9:6}" fill="${crit?'var(--crit)':e.sit==='concluida'?'var(--ok)':'none'}" stroke="${crit?'var(--crit)':'var(--line)'}"/>
+          <text x="${x}" y="70" text-anchor="middle" fill="${crit?'var(--crit)':'var(--ink-faint)'}">${e.n}</text>
+          <text x="${x}" y="112" text-anchor="middle" class="mono">${crit? 'vence '+fmtDate(e.prazo) : (e.data? e.data : 'prevista')}</text>`;
+        }).join("")}
+      </svg></div>
+    </div>`;
+}
+
+// ---------------------------------------------------------------------------
+// ESTOQUE
+// ---------------------------------------------------------------------------
+function renderEstoque(){
+  const crit = DB.itens.filter(it=>saldoTotal(it.id)<it.min).length;
+  document.getElementById("view").innerHTML = `
+    ${head("Estoque geral", `${crit} item(ns) em situação crítica`)}
+    <div class="card"><div class="table-wrap"><table>
+      <thead><tr><th>Item</th><th>Categoria</th><th>Saldo total</th><th>Mín / Máx</th><th>Status</th></tr></thead>
+      <tbody>${DB.itens.map(it=>{
+        const s=saldoTotal(it.id); const sev = s<it.min?'crit':s<it.min*1.3?'warn':'ok';
+        return `<tr data-id="${it.id}"><td>${it.descricao} <span class="mono small muted">${it.codigo}</span></td><td>${it.categoria}</td>
+        <td class="mono">${s} ${it.unidade}</td><td class="mono">${it.min} / ${it.max}</td>
+        <td>${pill(sev, sev==='crit'?'CRÍTICO':sev==='warn'?'ATENÇÃO':'NORMAL')}</td></tr>`;
+      }).join("")}</tbody>
+    </table></div></div>`;
+  document.querySelectorAll("#view tbody tr").forEach(tr=> tr.onclick=()=> openEstoqueItem(tr.dataset.id));
+}
+function openEstoqueItem(itemId){
+  const it=getItem(itemId); const rows=estoquePorItem(itemId);
+  const sugg = transferSuggestions().filter(s=>s.item.id===itemId);
+  openModal(`${it.descricao} — por unidade`, `
+    <table><thead><tr><th>Unidade</th><th>Disponível</th><th>Reservado</th><th>Lote</th><th>Validade</th></tr></thead>
+    <tbody>${rows.map(r=>`<tr style="cursor:default"><td>${getUnidade(r.unidadeId).nome}</td><td class="mono">${r.disponivel}</td><td class="mono">${r.reservado}</td><td class="mono">${r.lote||'—'}</td><td class="mono">${r.validade?fmtDate(r.validade):'—'}</td></tr>`).join("")}</tbody></table>
+    ${sugg.length? `<div class="banner info" style="margin-top:12px">Sugestão de transferência: ${sugg.map(s=>`${s.qtd} ${it.unidade} de ${getUnidade(s.de).nome} → ${getUnidade(s.para).nome}`).join("; ")}</div>`:""}
+  `, `<button class="btn" id="m-close">Fechar</button>${sugg.length?`<button class="btn btn-primary" id="m-transfer">Registrar transferência</button>`:""}`);
+  document.getElementById("m-close").onclick = closeModal;
+  const tBtn = document.getElementById("m-transfer");
+  if(tBtn) tBtn.onclick = ()=>{
+    const s=sugg[0];
+    const de = DB.estoque.find(e=>e.itemId===itemId&&e.unidadeId===s.de);
+    const para = DB.estoque.find(e=>e.itemId===itemId&&e.unidadeId===s.para);
+    de.disponivel -= s.qtd; para.disponivel += s.qtd;
+    log(`Transferência de ${it.descricao}`, `${s.qtd} un de ${getUnidade(s.de).nome} para ${getUnidade(s.para).nome}`);
+    closeModal(); renderEstoque();
+  };
+}
+
+// ---------------------------------------------------------------------------
+// PREVISÃO DE CONSUMO
+// ---------------------------------------------------------------------------
+function renderPrevisao(){
+  const rows = DB.itens.map(it=>analyzeConsumption(it.id));
+  document.getElementById("view").innerHTML = `
+    ${head("Previsão de consumo", "Aprendizagem sobre o histórico de requisições de cada item")}
+    <div class="card pad" style="margin-bottom:14px" id="prev-chart"></div>
+    <div class="card"><div class="table-wrap"><table>
+      <thead><tr><th>Item</th><th>Requisições</th><th>Consumo médio/dia</th><th>Esgota em</th><th>Risco</th></tr></thead>
+      <tbody>${rows.map(a=>`<tr data-id="${a.item.id}">
+        <td>${a.item.descricao}${a.extra.length?' <span class="pill warn" style="font-size:9.5px">CONSUMO EXTRAORDINÁRIO</span>':''}</td>
+        <td class="mono">${a.n}</td><td class="mono">${a.rate?a.rate.toFixed(2)+' '+a.item.unidade:'—'}</td>
+        <td class="mono">${a.depletion? fmtDate(a.depletion)+` (${a.daysUntil}d)` : '—'}</td>
+        <td>${a.recurrent? pill(a.risk, sevLabel(a.risk)) : pill('neutral','SEM HISTÓRICO SUFICIENTE')}</td></tr>`).join("")}</tbody>
+    </table></div></div>`;
+  document.getElementById("prev-chart").innerHTML = `<h2 class="sec">Papel A4 (resma) — consumo histórico e previsão</h2>` + sparkline(analyzeConsumption("i2"));
+  document.querySelectorAll("#view tbody tr").forEach(tr=> tr.onclick=()=>{
+    document.getElementById("prev-chart").innerHTML = `<h2 class="sec">${getItem(tr.dataset.id).descricao} — consumo histórico e previsão</h2>` + sparkline(analyzeConsumption(tr.dataset.id));
+    window.scrollTo({top:0,behavior:"smooth"});
+  });
+}
+
+// ---------------------------------------------------------------------------
+// CONTRATOS E ATAS
+// ---------------------------------------------------------------------------
+let contratoFilter = "";
+function renderContratos(){
+  document.getElementById("view").innerHTML = `
+    ${head("Contratos e atas", `${DB.contratos.length} instrumentos cadastrados`)}
+    <div class="chips" id="c-chips">
+      ${["Todos","Vigente","Vencendo","Vencido"].map(s=>`<span class="chip" data-s="${s}">${s} (${s==='Todos'?DB.contratos.length:DB.contratos.filter(c=>c.status===s).length})</span>`).join("")}
+    </div>
+    <div class="card"><div class="table-wrap"><table>
+      <thead><tr><th>Nº</th><th>Fornecedor</th><th>Objeto</th><th>Vigência fim</th><th>Próx. reajuste</th><th>Valor</th><th>Status</th></tr></thead>
+      <tbody id="ct-tbody"></tbody>
+    </table></div></div>`;
+  document.querySelectorAll("#c-chips .chip").forEach(c=> c.onclick=()=>{ contratoFilter = c.dataset.s==="Todos"?"":c.dataset.s; paintContratos(); });
+  paintContratos();
+}
+function paintContratos(){
+  const rows = DB.contratos.filter(c=> !contratoFilter || c.status===contratoFilter);
+  document.getElementById("ct-tbody").innerHTML = rows.map(c=>{
+    const sevMap={Vigente:'ok',Vencendo:'warn',Vencido:'crit'};
+    return `<tr data-id="${c.id}"><td class="mono">${c.numero}</td><td>${getFornecedor(c.fornecedorId).nome}</td><td>${c.objeto}</td>
+    <td class="mono">${fmtDate(c.vigenciaFim)}</td><td class="mono">${c.reajuste?fmtDate(c.reajuste):'—'}</td>
+    <td class="mono">${fmtMoney(c.valor)}</td><td>${pill(sevMap[c.status],c.status.toUpperCase())}</td></tr>`;
+  }).join("") || `<tr><td colspan="7" class="empty">Nenhum contrato neste filtro.</td></tr>`;
+  document.querySelectorAll("#ct-tbody tr").forEach(tr=> tr.onclick=()=> openContratoDetail(tr.dataset.id));
+}
+function openContratoDetail(id){
+  const c = DB.contratos.find(x=>x.id===id);
+  const qual = DB.qualidade.filter(q=>q.contratoId===id);
+  openModal(c.numero, `
+    <div class="row2">
+      <div><div class="small muted">Fornecedor</div><div style="font-weight:600">${getFornecedor(c.fornecedorId).nome}</div></div>
+      <div><div class="small muted">Valor total</div><div style="font-weight:600">${fmtMoney(c.valor)}</div></div>
+      <div><div class="small muted">Vigência</div><div style="font-weight:600">${fmtDate(c.vigenciaInicio)} a ${fmtDate(c.vigenciaFim)}</div></div>
+      <div><div class="small muted">Garantia</div><div style="font-weight:600">${c.garantia?fmtDate(c.garantia):'—'}</div></div>
+    </div>
+    <h2 class="sec" style="margin-top:16px">Histórico de qualidade</h2>
+    ${qual.length? qual.map(q=>`<div class="small" style="margin-bottom:6px">${fmtDate(q.data)} — ${pill(q.nota==='boa'?'ok':q.nota==='regular'?'warn':'crit', q.nota.toUpperCase())} ${q.obs?('— '+q.obs):''}</div>`).join("") : `<div class="small muted">Nenhuma avaliação registrada.</div>`}
+  `, `<button class="btn" id="m-close">Fechar</button>`);
+  document.getElementById("m-close").onclick = closeModal;
+}
+
+// ---------------------------------------------------------------------------
+// ASSISTENTE DE IA
+// ---------------------------------------------------------------------------
+const SUGGESTED_Q = [
+  "Temos material suficiente para os próximos seis meses?",
+  "Existe processo em andamento para este item?",
+  "Outra unidade possui saldo disponível?",
+  "Quais contratos vencem nos próximos 90 dias?",
+  "Por que este alerta foi gerado?",
+];
+function renderAssistente(){
+  document.getElementById("view").innerHTML = `
+    ${head("Assistente de inteligência artificial", "Toda resposta é fundamentada nos dados do sistema — nunca inventada")}
+    <div class="card pad">
+      <div class="chips" id="chips"></div>
+      <div class="chat-log" id="chat-log"></div>
+      <div class="chatbar">
+        <input id="chat-input" placeholder='Pergunte sobre um item, contrato ou processo…' />
+        <button class="btn btn-primary" id="chat-send">Perguntar</button>
+      </div>
+    </div>`;
+  document.getElementById("chips").innerHTML = SUGGESTED_Q.map(q=>`<span class="chip">${q}</span>`).join("");
+  document.querySelectorAll("#chips .chip").forEach(c=> c.onclick=()=> askAndRender(c.textContent));
+  document.getElementById("chat-send").onclick = ()=>{
+    const v = document.getElementById("chat-input").value.trim();
+    if(v){ askAndRender(v); document.getElementById("chat-input").value=""; }
+  };
+  document.getElementById("chat-input").addEventListener("keydown", e=>{ if(e.key==="Enter") document.getElementById("chat-send").click(); });
+}
+function askAndRender(q){
+  const log_ = document.getElementById("chat-log");
+  const u=document.createElement("div"); u.className="msg-user"; u.textContent=q; log_.appendChild(u);
+  const r = askAssistant(q);
+  const a=document.createElement("div"); a.className="msg-ai";
+  a.innerHTML = `<div class="ans">${r.ans}</div><dl class="explain">
+    <dt>Dados usados</dt><dd>${r.dados}</dd>
+    <dt>Critérios</dt><dd>${r.criterios}</dd>
+    <dt>Confiança</dt><dd>${r.confianca}</dd>
+    <dt>Risco</dt><dd>${r.risco}</dd>
+    <dt>Providência sugerida</dt><dd>${r.acao}</dd>
+    <dt>Validação humana</dt><dd>${r.validacao}</dd>
+  </dl>`;
+  log_.appendChild(a);
+  log_.scrollTop = log_.scrollHeight;
+  log(`Consulta ao assistente: "${q}"`);
+}
+
+// ---------------------------------------------------------------------------
+// RELATÓRIOS
+// ---------------------------------------------------------------------------
+function renderRelatorios(){
+  const catConsumo = {};
+  DB.itens.forEach(it=>{ catConsumo[it.categoria] = (catConsumo[it.categoria]||0) + analyzeConsumption(it.id).total; });
+  const cats = Object.entries(catConsumo);
+  const maxC = Math.max(...cats.map(c=>c[1]),1);
+  document.getElementById("view").innerHTML = `
+    ${head("Relatórios e indicadores", "Visão executiva do planejado, contratado e consumido", `<button class="btn" id="btn-export">Exportar</button>`)}
+    <div class="grid g-kpi" style="margin-bottom:16px">
+      <div class="card kpi"><div class="l">Economia obtida</div><div class="n ok">${fmtMoney(380000)}</div></div>
+      <div class="card kpi"><div class="l">Prazo médio de contratação</div><div class="n royal">96 dias</div></div>
+      <div class="card kpi"><div class="l">Valor contratado (ano)</div><div class="n royal">${fmtMoney(DB.contratos.reduce((s,c)=>s+c.valor,0))}</div></div>
+      <div class="card kpi"><div class="l">Processos concluídos</div><div class="n ok">${DB.processos.filter(p=>p.status==='Concluído').length}</div></div>
+    </div>
+    <div class="grid g-2">
+      <div class="card pad"><h2 class="sec">Consumo por categoria</h2>
+        <svg viewBox="0 0 360 160" width="100%" class="chart">
+          ${cats.map((c,i)=>{const h=(c[1]/maxC)*110; const x=20+i*80; return `<rect class="bar" x="${x}" y="${140-h}" width="40" height="${h}"/><text x="${x+20}" y="152" text-anchor="middle">${c[0].slice(0,4)}</text>`;}).join("")}
+          <line class="axis" x1="10" y1="140" x2="350" y2="140"/>
+        </svg>
+      </div>
+      <div class="card pad"><h2 class="sec">Execução mensal do plano</h2>
+        <svg viewBox="0 0 360 160" width="100%" class="chart">
+          <line class="axis" x1="20" y1="140" x2="340" y2="140"/>
+          <polyline class="plot-hist" points="30,120 70,110 110,115 150,95 190,85 230,90 270,70 310,60"/>
+        </svg>
+      </div>
+    </div>`;
+  document.getElementById("btn-export").onclick = ()=> alert("Exportação gerada (simulada neste protótipo) — em produção, gera planilha/PDF do recorte filtrado.");
+}
+
+// ---------------------------------------------------------------------------
+// ADMINISTRAÇÃO
+// ---------------------------------------------------------------------------
+function renderAdmin(){
+  const isAuditor = SESSION.user.perfil === "Auditoria e controle interno";
+  if(isAuditor){
+    document.getElementById("view").innerHTML = `
+      ${head("Trilha de auditoria", "Acesso de auditoria e controle interno — somente leitura; cadastro de usuários é exclusivo do Administrador geral")}
+      <div class="card pad">
+        <h2 class="sec">Trilha de auditoria (sessão atual)</h2>
+        <div id="audit-list" class="small" style="display:flex;flex-direction:column;gap:6px;max-height:320px;overflow-y:auto">
+          ${DB.auditoria.length? DB.auditoria.map(a=>`<div>${a.ts.toLocaleTimeString('pt-BR')} — <b>${a.usuario}</b>: ${a.acao}${a.justificativa?' — <span class="muted">'+a.justificativa+'</span>':''}</div>`).join("") : '<div class="muted">Nenhuma ação registrada ainda nesta sessão.</div>'}
+        </div>
+      </div>`;
+    return;
+  }
+  document.getElementById("view").innerHTML = `
+    ${head("Usuários e permissões", `${DB.usuarios.length} servidores cadastrados`, `<button class="btn btn-primary" id="btn-novo-user">+ Novo usuário</button>`)}
+    <div class="grid" style="grid-template-columns:1.4fr 1fr;gap:16px">
+      <div class="card"><div class="table-wrap"><table>
+        <thead><tr><th>Nome</th><th>Matrícula</th><th>Perfil</th><th>Unidade</th></tr></thead>
+        <tbody>${DB.usuarios.map(u=>`<tr data-id="${u.id}"><td>${u.nome}</td><td class="mono">${u.matricula}</td><td>${u.perfil}</td><td>${getUnidade(u.unidadeId).nome}</td></tr>`).join("")}</tbody>
+      </table></div></div>
+      <div class="card pad" id="perm-panel"><div class="empty">Selecione um usuário para ver o resumo de permissões.</div></div>
+    </div>
+    <div class="card pad" style="margin-top:16px">
+      <h2 class="sec">Trilha de auditoria (sessão atual)</h2>
+      <div id="audit-list" class="small" style="display:flex;flex-direction:column;gap:6px;max-height:220px;overflow-y:auto">
+        ${DB.auditoria.length? DB.auditoria.map(a=>`<div>${a.ts.toLocaleTimeString('pt-BR')} — <b>${a.usuario}</b>: ${a.acao}${a.justificativa?' — <span class="muted">'+a.justificativa+'</span>':''}</div>`).join("") : '<div class="muted">Nenhuma ação registrada ainda nesta sessão.</div>'}
+      </div>
+    </div>`;
+  document.getElementById("btn-novo-user").onclick = ()=> alert("Formulário de novo usuário (fora do escopo deste protótipo de demonstração).");
+  document.querySelectorAll("#view tbody tr").forEach(tr=> tr.onclick=()=>{
+    const u = DB.usuarios.find(x=>x.id===tr.dataset.id);
+    const modKeys = NAV.filter(n=>n.key);
+    document.getElementById("perm-panel").innerHTML = `<h2 class="sec">Perfil: ${u.perfil}</h2>` +
+      modKeys.map(n=>`<div class="small" style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px dashed var(--line-soft)"><span>${n.label}</span>${n.perfis.includes(u.perfil)?pill('ok','ACESSO'):pill('neutral','—')}</div>`).join("");
+  });
+}
+</script>
